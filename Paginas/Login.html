@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket | Iniciar Sesión</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/Login.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <a href="index.html" class="back-link">
+        <i data-lucide="arrow-left"></i>
+        <span>Regresar a la página principal</span>
+    </a>
+
+    <div class="login-card">
+        <div class="login-logo">
+            <i data-lucide="scale"></i>
+            <span>LawPocket</span>
+        </div>
+
+        <h1>Bienvenido</h1>
+        <p>Ingresa tus credenciales para continuar</p>
+
+        <form id="loginForm" novalidate>
+            <div class="field">
+                <label for="userId" id="userIdLabel">ID de usuario o correo:</label>
+                <input type="text" id="userId" placeholder="Ej. ABG042 o ADMIN01" autocomplete="username">
+                <p class="field-error" id="userIdError" style="display:none;"></p>
+            </div>
+
+            <div class="field">
+                <label for="password" id="passwordLabel">Contraseña:</label>
+                <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
+                <p class="field-error" id="passwordError" style="display:none;"></p>
+            </div>
+
+            <div class="form-error" id="formError" style="display:none;">
+                <i data-lucide="alert-circle"></i>
+                <p id="formErrorText"></p>
+            </div>
+
+            <button type="submit" class="btn-submit">Entrar</button>
+        </form>
+
+        <p class="login-footer">Sistema interno · Corporativo Jurídico Fusión TGZ</p>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const form = document.getElementById('loginForm');
+        const userIdInput = document.getElementById('userId');
+        const passwordInput = document.getElementById('password');
+        const userIdLabel = document.getElementById('userIdLabel');
+        const passwordLabel = document.getElementById('passwordLabel');
+        const userIdError = document.getElementById('userIdError');
+        const passwordError = document.getElementById('passwordError');
+        const formError = document.getElementById('formError');
+        const formErrorText = document.getElementById('formErrorText');
+
+        function clearFieldError(input, label, errorEl) {
+            input.classList.remove('input-error');
+            label.classList.remove('error-label');
+            errorEl.style.display = 'none';
+            errorEl.textContent = '';
+        }
+
+        function setFieldError(input, label, errorEl, message) {
+            input.classList.add('input-error');
+            label.classList.add('error-label');
+            errorEl.style.display = 'block';
+            errorEl.textContent = message;
+        }
+
+        userIdInput.addEventListener('input', () => {
+            if (userIdInput.classList.contains('input-error')) {
+                clearFieldError(userIdInput, userIdLabel, userIdError);
+            }
+        });
+
+        passwordInput.addEventListener('input', () => {
+            if (passwordInput.classList.contains('input-error')) {
+                clearFieldError(passwordInput, passwordLabel, passwordError);
+            }
+        });
+
+        // Usuarios de prueba 
+        const USERS = {
+            'ADMIN01': { password: '123', role: 'admin', name: 'González Velasco Santos Enoch', redirect: 'admin.html' },
+            'ABG01':   { password: '123', role: 'abogado', name: 'Nucamendi Ruiz Leonardo', redirect: 'agenda.html' },
+            'ABG02':   { password: '123', role: 'abogado', name: 'Rodriguez Cruz Pablo Isaias', redirect: 'agenda.html' },
+            'ABG03':   { password: '123', role: 'abogado', name: 'Abogado 3', redirect: 'agenda.html' },
+        };
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            formError.style.display = 'none';
+            clearFieldError(userIdInput, userIdLabel, userIdError);
+            clearFieldError(passwordInput, passwordLabel, passwordError);
+
+            let hasError = false;
+
+            if (!userIdInput.value.trim()) {
+                setFieldError(userIdInput, userIdLabel, userIdError, 'ID de usuario o correo obligatorio');
+                hasError = true;
+            }
+
+            if (!passwordInput.value.trim()) {
+                setFieldError(passwordInput, passwordLabel, passwordError, 'Contraseña obligatoria');
+                hasError = true;
+            }
+
+            if (hasError) return;
+
+            const id = userIdInput.value.trim().toUpperCase();
+            const password = passwordInput.value;
+            const user = USERS[id];
+
+            if (user && user.password === password) {
+                sessionStorage.setItem('lawpocket_role', user.role);
+                sessionStorage.setItem('lawpocket_name', user.name);
+                window.location.href = user.redirect;
+                return;
+            }
+
+            formErrorText.textContent = 'Error: El ID de usuario o la contraseña son incorrectos. Por favor, verifique sus credenciales.';
+            formError.style.display = 'flex';
+        });
+    </script>
+</body>
+</html>
