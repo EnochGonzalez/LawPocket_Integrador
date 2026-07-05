@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket | Gestión de Usuarios</title>
+    <!-- Fuente Inter, hoja de estilos propia y librería de iconos Lucide -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/GestionUsuarios.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="admin-layout">
+
+        <!-- ================= SIDEBAR (barra lateral de navegación) ================= -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Logo LawPocket Admin -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="scale"></i>
+                    <div class="sidebar-logo-text"><span class="name">LawPocket</span><span class="role">Admin</span></div>
+                </div>
+            </div>
+            <!-- Sección: Administración (páginas del panel) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Administración</p>
+                <nav class="sidebar-nav">
+                    <a href="PanelAnalitico.html" class="sidebar-nav-item"><i data-lucide="bar-chart-3"></i> Panel Analítico</a>
+                    <a href="GestionUsuarios.html" class="sidebar-nav-item active"><i data-lucide="users"></i> Gestión de Usuarios</a>
+                    <a href="SistemaAlmacenamiento.html" class="sidebar-nav-item"><i data-lucide="archive"></i> Sistema y Almacenamiento</a>
+                </nav>
+            </div>
+            <!-- Sección: Herramientas de trabajo (deshabilitadas por ahora) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Herramientas de trabajo</p>
+                <nav class="sidebar-nav">
+                    <button class="sidebar-nav-item disabled"><i data-lucide="calendar-days"></i> Agenda</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="folder-lock"></i> Expedientes</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="book-open"></i> Biblioteca Digital</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="download"></i> Mis Descargas</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="file-text"></i> Manuales de Usuario</button>
+                </nav>
+            </div>
+            <!-- Botón de cerrar sesión -->
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" id="logoutBtn"><i data-lucide="log-out"></i> Cerrar sesión</button>
+            </div>
+        </aside>
+
+        <!-- ================= ÁREA PRINCIPAL ================= -->
+        <div class="main-area">
+            <!-- Topbar: título del panel y datos del usuario logueado -->
+            <header class="topbar">
+                <div class="topbar-title"><h1>Panel de Administración</h1><p>Control total del despacho</p></div>
+                <div class="topbar-user">
+                    <div class="avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <p class="name" id="userName">González Velasco Santos Enoch</p>
+                        <p class="org">Corporativo Jurídico Fusión TGZ</p>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Contenido: tarjeta con la tabla de abogados -->
+            <main class="content">
+                <div class="card">
+                    <!-- Toolbar: título con contador, buscador y botón de agregar -->
+                    <div class="table-toolbar">
+                        <div class="card-title" style="margin-bottom:0;"><i data-lucide="users"></i> Gestión de Abogados (<span id="userCount">4</span>)</div>
+                        <div style="display:flex; gap:0.6rem; flex-wrap:wrap;">
+                            <div class="search-wrap">
+                                <i data-lucide="search"></i>
+                                <input type="text" id="userSearch" placeholder="Buscar usuario...">
+                            </div>
+                            <button class="btn btn-emerald" id="openCreateModal"><i data-lucide="plus"></i> Agregar nuevo abogado</button>
+                        </div>
+                    </div>
+
+                    <!-- Tabla de abogados (las filas las genera GestionUsuarios.js) -->
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th><th>ID</th><th>Teléfono</th><th>Rol</th><th>Estado</th><th class="right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody"></tbody>
+                        </table>
+                        <!-- Estado vacío: se muestra cuando no hay abogados o no hay resultados -->
+                        <div class="empty-state" id="emptyState" style="display:none;">
+                            <i data-lucide="user-x" style="width:56px;height:56px;"></i>
+                            <p class="title">No hay abogados registrados</p>
+                            <p class="desc">Haz clic en el botón "+ Agregar nuevo abogado" en la parte superior para registrar al primer integrante del despacho.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ================= MODALES ================= -->
+
+    <!-- Modal: Agregar nuevo abogado -->
+    <div class="modal-overlay hidden" id="createModal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title"><i data-lucide="plus"></i> Agregar nuevo abogado</div>
+                <button class="modal-close" data-close="createModal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <!-- Campos del formulario con su mensaje de error oculto -->
+                <div class="field-group"><label><i data-lucide="user"></i> Nombre</label><input type="text" id="create-nombre" placeholder="Lic. Nombre Apellido"><p class="field-error" id="err-create-nombre" style="display:none;"></p></div>
+                <div class="field-group"><label><i data-lucide="id-card"></i> ID de Usuario</label><input type="text" id="create-userId" placeholder="Ej. ABG042"><p class="field-error" id="err-create-userId" style="display:none;"></p></div>
+                <div class="field-group"><label><i data-lucide="lock"></i> Contraseña</label><input type="password" id="create-password" placeholder="••••••••"><p class="field-error" id="err-create-password" style="display:none;"></p></div>
+                <div class="field-group"><label><i data-lucide="phone"></i> Teléfono</label><input type="text" id="create-telefono" placeholder="961 000 0000"><p class="field-error" id="err-create-telefono" style="display:none;"></p></div>
+                <div class="field-group"><label>Rol</label><select id="create-rol"><option value="Socio">Socio</option><option value="Abogado" selected>Abogado</option><option value="Asistente">Asistente</option></select></div>
+                <p class="create-note">El nuevo usuario se crea automáticamente como <strong class="text-activo">Activo</strong>. Puedes darlo de baja después desde la tabla.</p>
+                <!-- Alerta de datos duplicados (nombre, ID o teléfono ya registrados) -->
+                <div class="modal-alert" id="createAlert" style="display:none;"><i data-lucide="alert-triangle"></i><p id="createAlertText"></p></div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn secondary" data-close="createModal">Cancelar</button><button class="modal-btn primary" id="saveCreateBtn">Guardar</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Editar abogado -->
+    <div class="modal-overlay hidden" id="editModal">
+        <div class="modal" onclick="event.stopPropagation()">
+            <div class="modal-header"><div class="modal-title"><i data-lucide="pencil"></i> Editar abogado</div><button class="modal-close" data-close="editModal"><i data-lucide="x"></i></button></div>
+            <div class="modal-content">
+                <!-- Campo oculto con el id del usuario que se está editando -->
+                <input type="hidden" id="edit-id">
+                <div class="field-group"><label><i data-lucide="user"></i> Nombre</label><input type="text" id="edit-nombre"><p class="field-error" id="err-edit-nombre" style="display:none;"></p></div>
+                <div class="field-group"><label><i data-lucide="id-card"></i> ID de Usuario</label><input type="text" id="edit-userId"><p class="field-error" id="err-edit-userId" style="display:none;"></p></div>
+                <div class="field-group"><label><i data-lucide="phone"></i> Teléfono</label><input type="text" id="edit-telefono"><p class="field-error" id="err-edit-telefono" style="display:none;"></p></div>
+                <div class="field-group"><label>Rol</label><select id="edit-rol"><option value="Socio">Socio</option><option value="Abogado">Abogado</option><option value="Asistente">Asistente</option></select></div>
+                <div class="field-group"><label>Estado</label><select id="edit-activo"><option value="activo">Activo</option><option value="baja">Dar de baja</option></select></div>
+                <!-- Alerta de datos duplicados (otro usuario ya tiene estos datos) -->
+                <div class="modal-alert" id="editAlert" style="display:none;"><i data-lucide="alert-triangle"></i><p id="editAlertText"></p></div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn secondary" data-close="editModal">Cancelar</button><button class="modal-btn primary" id="saveEditBtn">Guardar cambios</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Confirmación de eliminación -->
+    <div class="modal-overlay hidden" id="confirmModal">
+        <div class="modal confirm-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div class="modal-title" style="gap: 0;"><span style="color: var(--red);">¿Eliminar usuario?</span></div>
+                <button class="modal-close" data-close="confirmModal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-message">
+                    <div class="description">Esta acción eliminará permanentemente al abogado del sistema.</div>
+                </div>
+            </div>
+            <div class="modal-footer"><button class="modal-btn secondary" id="cancelDeleteBtn">Cancelar</button><button class="modal-btn danger" id="confirmDeleteBtn">Eliminar</button></div>
+        </div>
+    </div>
+
+    <!-- Modal: Éxito "¡Operación exitosa!" -->
+    <div class="modal-overlay hidden" id="successModal">
+        <div class="modal success-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div style="flex: 1;"></div>
+                <button class="modal-close" data-close="successModal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-icon-wrap success"><i data-lucide="check-circle"></i></div>
+                <div class="modal-message">
+                    <div class="title">¡Operación exitosa!</div>
+                    <div class="description" id="successMessage"></div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button class="modal-btn primary full" data-close="successModal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica de la página -->
+    <script src="../JS/GestionUsuarios.js"></script>
+</body>
+</html>

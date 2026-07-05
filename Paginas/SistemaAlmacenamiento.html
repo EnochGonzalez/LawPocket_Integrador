@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket | Sistema y Almacenamiento</title>
+    <!-- Fuente Inter, hoja de estilos propia, iconos Lucide y librería de gráficas Chart.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/SistemaAlmacenamiento.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+
+        <!-- ================= SIDEBAR (barra lateral de navegación) ================= -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Logo LawPocket Admin -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="scale"></i>
+                    <div class="sidebar-logo-text"><span class="name">LawPocket</span><span class="role">Admin</span></div>
+                </div>
+            </div>
+            <!-- Sección: Administración (páginas del panel) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Administración</p>
+                <nav class="sidebar-nav">
+                    <a href="PanelAnalitico.html" class="sidebar-nav-item"><i data-lucide="bar-chart-3"></i> Panel Analítico</a>
+                    <a href="GestionUsuarios.html" class="sidebar-nav-item"><i data-lucide="users"></i> Gestión de Usuarios</a>
+                    <a href="SistemaAlmacenamiento.html" class="sidebar-nav-item active"><i data-lucide="archive"></i> Sistema y Almacenamiento</a>
+                </nav>
+            </div>
+            <!-- Sección: Herramientas de trabajo (deshabilitadas por ahora) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Herramientas de trabajo</p>
+                <nav class="sidebar-nav">
+                    <button class="sidebar-nav-item disabled"><i data-lucide="calendar-days"></i> Agenda</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="folder-lock"></i> Expedientes</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="book-open"></i> Biblioteca Digital</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="download"></i> Mis Descargas</button>
+                    <button class="sidebar-nav-item disabled"><i data-lucide="file-text"></i> Manuales de Usuario</button>
+                </nav>
+            </div>
+            <!-- Botón de cerrar sesión -->
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" id="logoutBtn"><i data-lucide="log-out"></i> Cerrar sesión</button>
+            </div>
+        </aside>
+
+        <!-- ================= ÁREA PRINCIPAL ================= -->
+        <div class="main-area">
+            <!-- Topbar: título del panel y datos del usuario logueado -->
+            <header class="topbar">
+                <div class="topbar-title"><h1>Panel de Administración</h1><p>Control total del despacho</p></div>
+                <div class="topbar-user">
+                    <div class="avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <p class="name" id="userName">González Velasco Santos Enoch</p>
+                        <p class="org">Corporativo Jurídico Fusión TGZ</p>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+                <!-- Pestañas para cambiar entre las vistas del sistema -->
+                <div class="tab-pills" id="sistemaPills">
+                    <button class="tab-pill active" data-sistema="cache"><i data-lucide="hard-drive"></i> Caché del Despacho</button>
+                    <button class="tab-pill" data-sistema="abogados"><i data-lucide="users-round"></i> Uso por Abogado</button>
+                    <button class="tab-pill" data-sistema="documentos"><i data-lucide="file-text"></i> Documentos en el Sistema</button>
+                </div>
+
+                <!-- Vista: Caché Total del Despacho -->
+                <div class="card sistema-view active" id="sistema-cache">
+                    <div class="card-title"><i data-lucide="hard-drive"></i> Caché Total del Despacho</div>
+                    <div class="storage-flex">
+                        <!-- Gráfica de dona con el porcentaje al centro -->
+                        <div class="donut-wrap">
+                            <canvas id="chartCache"></canvas>
+                            <div class="donut-center">
+                                <span class="pct" id="cachePct">43%</span>
+                                <span class="label">ocupado</span>
+                            </div>
+                        </div>
+                        <!-- Detalle: GB usados y barra de progreso -->
+                        <div class="storage-info">
+                            <p class="row-label" style="margin-bottom:0;"><span>Almacenamiento total</span></p>
+                            <p class="big-value">4.3 / 10 GB</p>
+                            <div class="progress-track"><div class="progress-fill" style="width:43%;"></div></div>
+                            <p class="desc">Suma del caché ocupado por todos los abogados.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vista: Uso por Abogado (gráfica de barras horizontales) -->
+                <div class="card sistema-view" id="sistema-abogados">
+                    <div class="card-title"><i data-lucide="users-round"></i> Uso por Abogado</div>
+                    <div class="chart-box"><canvas id="chartAbogados"></canvas></div>
+                </div>
+
+                <!-- Vista: Documentos en el Sistema (pastel + leyenda con barras) -->
+                <div class="card sistema-view" id="sistema-documentos">
+                    <div class="card-title"><i data-lucide="file-text"></i> Documentos en el Sistema</div>
+                    <div class="pie-flex">
+                        <div class="pie-chart-wrap"><canvas id="chartDocumentos"></canvas></div>
+                        <!-- Leyenda: cantidad de PDFs por categoría con barra de proporción -->
+                        <div class="pie-legend">
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Expedientes</span><span class="val">842 PDFs</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:67.5%; background-color:#1a2b4b;"></div></div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Biblioteca</span><span class="val">287 PDFs</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:23%; background-color:#10B981;"></div></div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Manuales</span><span class="val">118 PDFs</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:9.5%; background-color:#3B82F6;"></div></div>
+                            </div>
+                            <p class="pie-total">1,247 PDFs</p>
+                            <p class="pie-total-label">Total almacenados en el sistema</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card: Notificaciones del Despacho (aviso para los abogados) -->
+                <div class="card">
+                    <div class="card-title"><i data-lucide="bell"></i> Notificaciones del Despacho</div>
+                    <p class="notif-desc">Escribe un aviso para tus abogados. Se mostrará como ventana emergente al iniciar sesión.</p>
+                    <!-- Campo de texto del aviso -->
+                    <textarea class="field-textarea" id="notifMessage" rows="3" placeholder="Ej. El viernes 27 habrá reunión obligatoria a las 10:00 hrs..."></textarea>
+                    <!-- Selector de duración del aviso -->
+                    <div class="duration-row">
+                        <label for="notifDuration">Duración del aviso:</label>
+                        <select id="notifDuration">
+                            <option value="0.04">1 hora</option>
+                            <option value="0.25">6 horas</option>
+                            <option value="1" selected>1 día</option>
+                            <option value="3">3 días</option>
+                            <option value="7">1 semana</option>
+                        </select>
+                    </div>
+                    <!-- Botones: guardar o limpiar el aviso -->
+                    <div class="notif-actions">
+                        <button class="btn btn-emerald" id="saveNotifBtn">Guardar notificación</button>
+                        <button class="btn btn-outline" id="clearNotifBtn">Limpiar aviso</button>
+                    </div>
+                    <p class="notif-success" id="notifSuccessMsg" style="display:none;">✓ Notificación guardada exitosamente.</p>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <!-- Modal: Éxito "¡Operación exitosa!" -->
+    <div class="modal-overlay hidden" id="successModal">
+        <div class="modal success-modal" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <div style="flex: 1;"></div>
+                <button class="modal-close" data-close="successModal"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-icon-wrap success"><i data-lucide="check-circle"></i></div>
+                <div class="modal-message">
+                    <div class="title">¡Operación exitosa!</div>
+                    <div class="description" id="successMessage"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn primary full" data-close="successModal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica de la página -->
+    <script src="../JS/SistemaAlmacenamiento.js"></script>
+</body>
+</html>

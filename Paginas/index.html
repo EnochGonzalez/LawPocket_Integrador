@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LawPocket | Gestión Legal Inteligente</title>
+    <!-- Fuente Inter, hoja de estilos propia y librería de iconos Lucide -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/Landing.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
+    <!-- ================= NAVBAR (barra de navegación superior) ================= -->
     <header class="navbar">
         <div class="navbar-inner">
+            <!-- Logo LawPocket -->
             <a href="#inicio" class="logo">
                 <i data-lucide="scale"></i>
                 <span>LawPocket</span>
             </a>
+            <!-- Menú de navegación con anclas a las secciones y acceso al login -->
             <nav>
                 <ul>
                     <li><a href="#inicio">Inicio</a></li>
@@ -28,9 +32,10 @@
     </header>
 
     <main>
-        <!-- Hero Section -->
+        <!-- ================= HERO (portada principal) ================= -->
         <section id="inicio" class="hero">
             <div class="hero-content">
+                <!-- Texto principal -->
                 <div class="hero-text">
                     <span class="badge">PWA para despachos jurídicos</span>
                     <h1>El control de tu despacho en tu bolsillo, <span class="highlight">con o sin internet</span></h1>
@@ -38,6 +43,7 @@
                     <a href="#funcionalidades" class="btn-hero">Ver características</a>
                 </div>
 
+                <!-- Panel de con tarjetas de ejemplo del sistema -->
                 <div class="hero-panel">
                     <div class="hero-cards">
                         <div class="card-sm">
@@ -66,12 +72,13 @@
             </div>
         </section>
 
-        <!-- Beneficios Section -->
+        <!-- ================= BENEFICIOS (problema, solución y estadísticas) ================= -->
         <section id="beneficios" class="section-gray">
             <div class="inner">
                 <span class="subtitle">El problema y la solución</span>
                 <h2>Menos papel, más control. Funciona aun cuando no hay señal.</h2>
                 <p>En los despachos jurídicos se acumulan miles de hojas y muchas veces los abogados llegan a juzgados donde no hay señal. <strong>LawPocket</strong> elimina el uso excesivo de papel digitalizando expedientes y agendas, y te permite consultar toda tu información de forma segura incluso sin internet.</p>
+                <!-- Estadísticas destacadas -->
                 <div class="stats-grid">
                     <div class="stat"><h3>90%</h3><p>menos uso de papel en tu despacho</p></div>
                     <div class="stat"><h3>100%</h3><p>disponibilidad offline de tus archivos</p></div>
@@ -80,7 +87,7 @@
             </div>
         </section>
 
-        <!-- Funcionalidades Section -->
+        <!-- ================= FUNCIONALIDADES (tarjetas de características) ================= -->
         <section id="funcionalidades">
             <div class="inner">
                 <div class="head">
@@ -88,6 +95,7 @@
                     <h2>Todo lo que necesita tu despacho, en un solo lugar</h2>
                     <p>Herramientas pensadas para abogados que trabajan dentro y fuera del juzgado.</p>
                 </div>
+                <!-- Grid de tarjetas: cada una con icono, título y descripción -->
                 <div class="features-grid">
                     <div class="f-card">
                         <div class="f-icon"><i data-lucide="folder-lock"></i></div>
@@ -118,7 +126,7 @@
             </div>
         </section>
 
-        <!-- Final -->
+        <!-- ================= FINAL ================= -->
         <section class="cta-final">
             <div class="inner">
                 <h2>¿Listo para llevar tu despacho en el bolsillo?</h2>
@@ -128,6 +136,7 @@
         </section>
     </main>
 
+    <!-- ================= FOOTER (información del proyecto y creadores) ================= -->
     <footer class="footer">
         <div class="footer-grid">
             <div>
@@ -151,11 +160,13 @@
                 </ul>
             </div>
         </div>
+        <!-- Derechos reservados -->
         <div class="copyright-wrap">
             <p class="copyright">&copy; 2026 LawPocket. Todos los derechos reservados.</p>
         </div>
     </footer>
 
+    <!-- Lógica de la página -->
     <script src="../js/Landing.js"></script>
 </body>
 </html>

@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket | Panel Analítico</title>
+    <!-- Fuente Inter, hoja de estilos propia, iconos Lucide y librería de gráficas Chart.js -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/PanelAnalitico.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <div class="admin-layout">
+
+        <!-- ================= SIDEBAR (barra lateral de navegación) ================= -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Logo LawPocket Admin -->
+            <div class="sidebar-header">
+                <div class="sidebar-logo">
+                    <i data-lucide="scale"></i>
+                    <div class="sidebar-logo-text">
+                        <span class="name">LawPocket</span>
+                        <span class="role">Admin</span>
+                    </div>
+                </div>
+            </div>
+            <!-- Sección: Administración (páginas del panel) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Administración</p>
+                <nav class="sidebar-nav">
+                    <a href="PanelAnalitico.html" class="sidebar-nav-item active"><i data-lucide="bar-chart-3"></i> Panel Analítico</a>
+                    <a href="GestionUsuarios.html" class="sidebar-nav-item"><i data-lucide="users"></i> Gestión de Usuarios</a>
+                    <a href="SistemaAlmacenamiento.html" class="sidebar-nav-item"><i data-lucide="archive"></i> Sistema y Almacenamiento</a>
+                </nav>
+            </div>
+            <!-- Sección: Herramientas de trabajo (deshabilitadas por ahora) -->
+            <div class="sidebar-section">
+                <p class="sidebar-section-title">Herramientas de trabajo</p>
+                <nav class="sidebar-nav">
+                    <button class="sidebar-nav-item disabled" title="Próximamente"><i data-lucide="calendar-days"></i> Agenda</button>
+                    <button class="sidebar-nav-item disabled" title="Próximamente"><i data-lucide="folder-lock"></i> Expedientes</button>
+                    <button class="sidebar-nav-item disabled" title="Próximamente"><i data-lucide="book-open"></i> Biblioteca Digital</button>
+                    <button class="sidebar-nav-item disabled" title="Próximamente"><i data-lucide="download"></i> Mis Descargas</button>
+                    <button class="sidebar-nav-item disabled" title="Próximamente"><i data-lucide="file-text"></i> Manuales de Usuario</button>
+                </nav>
+            </div>
+            <!-- Botón de cerrar sesión -->
+            <div class="sidebar-footer">
+                <button class="sidebar-logout" id="logoutBtn"><i data-lucide="log-out"></i> Cerrar sesión</button>
+            </div>
+        </aside>
+
+        <!-- ================= ÁREA PRINCIPAL ================= -->
+        <div class="main-area">
+            <!-- Topbar: título del panel y datos del usuario logueado -->
+            <header class="topbar">
+                <div class="topbar-title">
+                    <h1>Panel de Administración</h1>
+                    <p>Control total del despacho</p>
+                </div>
+                <div class="topbar-user">
+                    <div class="avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <p class="name" id="userName">González Velasco Santos Enoch</p>
+                        <p class="org">Corporativo Jurídico Fusión TGZ</p>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+                <!-- Título de la página -->
+                <div class="page-title">
+                    <h2>Rendimiento del Despacho</h2>
+                    <p>Resumen analítico del mes en curso.</p>
+                </div>
+
+                <!-- Card: Almacenamiento Disponible -->
+                <div class="card">
+                    <div class="card-title"><i data-lucide="archive"></i> Almacenamiento Disponible (Offline)</div>
+                    <div class="storage-flex">
+                        <!-- Gráfica de dona con el porcentaje al centro -->
+                        <div class="donut-wrap">
+                            <canvas id="chartDisponible"></canvas>
+                            <div class="donut-center">
+                                <span class="pct" id="disponiblePct">38%</span>
+                                <span class="label">disponible</span>
+                            </div>
+                        </div>
+                        <!-- Detalle: porcentaje usado y barra de progreso -->
+                        <div class="storage-info">
+                            <div class="row-label"><span>Usado</span><span class="row-value">62%</span></div>
+                            <div class="progress-track"><div class="progress-fill" style="width:62%;"></div></div>
+                            <p class="desc">Espacio en navegador para archivos sin conexión.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pestañas para cambiar entre las gráficas analíticas -->
+                <div class="tab-pills" id="analiticoPills">
+                    <button class="tab-pill active" data-chart="ganados"><i data-lucide="trophy"></i> Casos Ganados vs Perdidos</button>
+                    <button class="tab-pill" data-chart="origen"><i data-lucide="users-round"></i> Origen de Clientes</button>
+                    <button class="tab-pill" data-chart="tipos"><i data-lucide="briefcase"></i> Tipos de Casos</button>
+                    <button class="tab-pill" data-chart="exito"><i data-lucide="trending-up"></i> Éxito Mensual</button>
+                </div>
+
+                <!-- Vista: Casos Ganados vs Perdidos -->
+                <div class="card chart-view active" id="chart-ganados">
+                    <div class="card-title"><i data-lucide="trophy"></i> Casos Ganados vs Perdidos</div>
+                    <div class="split-flex">
+                        <div class="split-chart"><canvas id="chartGanados"></canvas></div>
+                        <!-- Estadísticas: tasa de éxito y totales -->
+                        <div class="split-stats">
+                            <p class="pct">78%</p>
+                            <p class="pct-label">Tasa de éxito del despacho</p>
+                            <div class="stat-row">
+                                <div class="stat-item ganados"><p class="label">Ganados</p><p class="value">64</p></div>
+                                <div class="stat-item perdidos"><p class="label">Perdidos</p><p class="value">18</p></div>
+                                <div class="stat-item total"><p class="label">Total</p><p class="value">82</p></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vista: Origen de Clientes (gráfica de pastel) -->
+                <div class="card chart-view" id="chart-origen">
+                    <div class="card-title"><i data-lucide="users-round"></i> Origen de Clientes</div>
+                    <div class="pie-flex">
+                        <div class="pie-chart-wrap"><canvas id="chartOrigen"></canvas></div>
+                    </div>
+                </div>
+
+                <!-- Vista: Tipos de Casos (gráfica de barras) -->
+                <div class="card chart-view" id="chart-tipos">
+                    <div class="card-title"><i data-lucide="briefcase"></i> Tipos de Casos</div>
+                    <div class="chart-box"><canvas id="chartTipos"></canvas></div>
+                </div>
+
+                <!-- Vista: Éxito Mensual (gráfica de línea) -->
+                <div class="card chart-view" id="chart-exito">
+                    <div class="card-title"><i data-lucide="trending-up"></i> Éxito Mensual</div>
+                    <div class="chart-box"><canvas id="chartExito"></canvas></div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Modal: Trabajo sin conexión -->
+    <div class="modal-overlay" id="offlineModal">
+        <div class="modal">
+            <div class="modal-header">
+                <div style="flex: 1;"></div>
+                <button class="modal-close" id="closeOfflineModal">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <div class="modal-icon-wrap info">
+                    <i data-lucide="wifi-off"></i>
+                </div>
+                <div class="modal-message">
+                    <div class="title">Trabajo sin conexión</div>
+                    <div class="description">Recuerda descargar los expedientes, libros o manuales que vayas a necesitar antes de quedarte sin internet. Los archivos guardados estarán disponibles en "Mis Descargas" incluso sin conexión.</div>
+                </div>
+            </div>
+            <div class="modal-footer center">
+                <button class="modal-btn primary full" id="dismissOfflineModal">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lógica de la página -->
+    <script src="../JS/PanelAnalitico.js"></script>
+</body>
+</html>

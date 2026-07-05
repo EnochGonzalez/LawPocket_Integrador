@@ -4,18 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LawPocket | Iniciar Sesión</title>
+    <!-- Fuente Inter, hoja de estilos propia y librería de iconos Lucide -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/Login.css">
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
+    <!-- Link para regresar a la página principal -->
     <a href="index.html" class="back-link">
         <i data-lucide="arrow-left"></i>
         <span>Regresar a la página principal</span>
     </a>
 
+    <!-- ================= TARJETA DE LOGIN ================= -->
     <div class="login-card">
+        <!-- Logo LawPocket -->
         <div class="login-logo">
             <i data-lucide="scale"></i>
             <span>LawPocket</span>
@@ -24,19 +28,23 @@
         <h1>Bienvenido</h1>
         <p>Ingresa tus credenciales para continuar</p>
 
+        <!-- Formulario de inicio de sesión (novalidate: la validación la hace el JS) -->
         <form id="loginForm" novalidate>
+            <!-- Campo: ID de usuario o correo -->
             <div class="field">
                 <label for="userId" id="userIdLabel">ID de usuario o correo:</label>
                 <input type="text" id="userId" placeholder="Ej. ABG042 o ADMIN01" autocomplete="username">
                 <p class="field-error" id="userIdError" style="display:none;"></p>
             </div>
 
+            <!-- Campo: Contraseña -->
             <div class="field">
                 <label for="password" id="passwordLabel">Contraseña:</label>
                 <input type="password" id="password" placeholder="••••••••" autocomplete="current-password">
                 <p class="field-error" id="passwordError" style="display:none;"></p>
             </div>
 
+            <!-- Error general (credenciales incorrectas) -->
             <div class="form-error" id="formError" style="display:none;">
                 <i data-lucide="alert-circle"></i>
                 <p id="formErrorText"></p>
@@ -48,9 +56,12 @@
         <p class="login-footer">Sistema interno · Corporativo Jurídico Fusión TGZ</p>
     </div>
 
+    <!-- ================= LÓGICA DEL LOGIN ================= -->
     <script>
+        // Inicializar los iconos de la librería Lucide
         lucide.createIcons();
 
+        // Referencias a los elementos del formulario
         const form = document.getElementById('loginForm');
         const userIdInput = document.getElementById('userId');
         const passwordInput = document.getElementById('password');
@@ -61,6 +72,7 @@
         const formError = document.getElementById('formError');
         const formErrorText = document.getElementById('formErrorText');
 
+        // Quita el estado de error de un campo (borde rojo, label rojo y mensaje)
         function clearFieldError(input, label, errorEl) {
             input.classList.remove('input-error');
             label.classList.remove('error-label');
@@ -68,6 +80,7 @@
             errorEl.textContent = '';
         }
 
+        // Marca un campo con error (borde rojo, label rojo y mensaje visible)
         function setFieldError(input, label, errorEl, message) {
             input.classList.add('input-error');
             label.classList.add('error-label');
@@ -75,6 +88,7 @@
             errorEl.textContent = message;
         }
 
+        // Al escribir en un campo con error, se limpia su estado de error
         userIdInput.addEventListener('input', () => {
             if (userIdInput.classList.contains('input-error')) {
                 clearFieldError(userIdInput, userIdLabel, userIdError);
@@ -87,21 +101,25 @@
             }
         });
 
-        // Usuarios de prueba 
+        // Usuarios de prueba (cada uno con su contraseña, rol, nombre y página destino)
         const USERS = {
-            'ADMIN01': { password: '123', role: 'admin', name: 'González Velasco Santos Enoch', redirect: 'admin.html' },
+            'ADMIN01': { password: '123', role: 'admin', name: 'González Velasco Santos Enoch', redirect: 'PanelAnalitico.html' },
             'ABG01':   { password: '123', role: 'abogado', name: 'Nucamendi Ruiz Leonardo', redirect: 'agenda.html' },
             'ABG02':   { password: '123', role: 'abogado', name: 'Rodriguez Cruz Pablo Isaias', redirect: 'agenda.html' },
             'ABG03':   { password: '123', role: 'abogado', name: 'Abogado 3', redirect: 'agenda.html' },
         };
 
+        // Envío del formulario: valida campos, verifica credenciales
+        // y redirige según el rol del usuario
         form.addEventListener('submit', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // Evitar que la página se recargue
 
+            // Limpiar errores de intentos anteriores
             formError.style.display = 'none';
             clearFieldError(userIdInput, userIdLabel, userIdError);
             clearFieldError(passwordInput, passwordLabel, passwordError);
 
+            // Validar que los campos no estén vacíos
             let hasError = false;
 
             if (!userIdInput.value.trim()) {
@@ -116,10 +134,12 @@
 
             if (hasError) return;
 
+            // Buscar el usuario y comparar la contraseña
             const id = userIdInput.value.trim().toUpperCase();
             const password = passwordInput.value;
             const user = USERS[id];
 
+            // Credenciales correctas: guardar sesión y redirigir a su página
             if (user && user.password === password) {
                 sessionStorage.setItem('lawpocket_role', user.role);
                 sessionStorage.setItem('lawpocket_name', user.name);
@@ -127,6 +147,7 @@
                 return;
             }
 
+            // Credenciales incorrectas: mostrar el error general
             formErrorText.textContent = 'Error: El ID de usuario o la contraseña son incorrectos. Por favor, verifique sus credenciales.';
             formError.style.display = 'flex';
         });

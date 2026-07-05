@@ -1,0 +1,304 @@
+/* Variables de color del sistema */
+:root {
+    --navy: #1a2b4b; --navy-soft: #22385f; --emerald: #10B981; --emerald-dark: #059669; --emerald-light: #d1fae5;
+    --red: #ef4444; --red-light: #fee2e2; --red-dark: #b91c1c; --blue: #3B82F6; --slate-50: #f8fafc;
+    --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b;
+    --slate-600: #475569; --slate-700: #334155; --slate-900: #0f172a;
+}
+
+/* Reset y estilos base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--slate-50); color: var(--slate-900); }
+button { font-family: inherit; cursor: pointer; }
+a { text-decoration: none; }
+
+/* Layout general del panel de administración */
+.admin-layout { display: flex; min-height: 100vh; }
+
+/* Sidebar (barra lateral de navegación) */
+.sidebar { width: 248px; flex-shrink: 0; background-color: var(--navy); color: white; display: flex; flex-direction: column; }
+.sidebar-header { padding: 1.4rem 1.5rem; }
+.sidebar-logo { display: flex; align-items: center; gap: 8px; }
+.sidebar-logo i { color: var(--emerald); width: 22px; height: 22px; flex-shrink: 0; }
+.sidebar-logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.sidebar-logo-text .name { font-weight: 700; font-size: 1.1rem; }
+.sidebar-logo-text .role { font-size: 0.72rem; color: var(--slate-400); }
+.sidebar-section { padding: 0 1rem; margin-top: 1.4rem; }
+.sidebar-section-title { font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--slate-400); padding: 0 0.75rem; margin-bottom: 0.5rem; font-weight: 700; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav-item { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0.75rem; border-radius: 8px; color: var(--slate-300); font-size: 0.9rem; background: none; border: none; text-align: left; width: 100%; transition: background-color .15s ease, color .15s ease; }
+.sidebar-nav-item i { width: 18px; height: 18px; flex-shrink: 0; }
+.sidebar-nav-item:hover:not(.active):not(.disabled) { background-color: rgba(255,255,255,0.07); color: white; }
+.sidebar-nav-item.active { background-color: var(--emerald); color: white; font-weight: 600; }
+.sidebar-nav-item.disabled { opacity: 0.4; cursor: not-allowed; }
+.sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logout { display: flex; align-items: center; gap: 8px; color: #fca5a5; background: none; border: none; font-size: 0.9rem; padding: 0.5rem 0.5rem; border-radius: 8px; width: 100%; }
+.sidebar-logout:hover { background-color: rgba(239,68,68,0.12); }
+
+/* Área principal y topbar (barra superior con usuario) */
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { background-color: white; border-bottom: 1px solid var(--slate-100); padding: 1.1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title h1 { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.topbar-title p { font-size: 0.85rem; color: var(--slate-500); margin-top: 2px; }
+.topbar-user { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; background-color: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; flex-shrink: 0; }
+.topbar-user-info { line-height: 1.25; }
+.topbar-user-info .name { font-size: 0.88rem; font-weight: 600; color: var(--slate-900); }
+.topbar-user-info .org { font-size: 0.78rem; color: var(--slate-500); }
+.content { padding: 1.75rem 2rem 3rem; flex: 1; }
+
+/* Título de la página (Rendimiento del Despacho) */
+.page-title { margin-bottom: 1.5rem; }
+.page-title h2 { font-size: 1.6rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+.page-title p { color: var(--slate-500); }
+
+/* Tarjetas (cards) */
+.card { background-color: white; border-radius: 16px; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.5rem; margin-bottom: 1.5rem; }
+.card-title { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--navy); font-size: 1rem; margin-bottom: 1.1rem; }
+.card-title i { width: 19px; height: 19px; color: var(--emerald); flex-shrink: 0; }
+
+/* Pestañas tipo pill (selector de gráficas) */
+.tab-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.25rem; }
+.tab-pill { display: flex; align-items: center; gap: 8px; padding: 0.55rem 1rem; border-radius: 8px; border: 1px solid var(--slate-200); background-color: white; color: var(--slate-700); font-size: 0.88rem; transition: all .15s ease; }
+.tab-pill i { width: 16px; height: 16px; }
+.tab-pill:hover:not(.active) { background-color: var(--slate-50); }
+.tab-pill.active { background-color: var(--navy); border-color: var(--navy); color: white; font-weight: 600; }
+
+/* Card "Almacenamiento Disponible" (dona + barra de progreso) */
+.storage-flex { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
+.donut-wrap { position: relative; width: 190px; height: 190px; flex-shrink: 0; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.donut-center .pct { font-size: 1.7rem; font-weight: 700; color: var(--navy); }
+.donut-center .label { color: var(--slate-500); font-size: 0.88rem; }
+.storage-info { flex: 1; min-width: 220px; }
+.storage-info .row-label { display: flex; justify-content: space-between; color: var(--slate-600); margin-bottom: 0.4rem; }
+.storage-info .row-value { font-weight: 700; }
+.progress-track { height: 8px; border-radius: 999px; background-color: var(--slate-200); overflow: hidden; margin-bottom: 0.7rem; }
+.progress-fill { height: 100%; background-color: var(--emerald); border-radius: 999px; transition: width .4s ease; }
+.storage-info .desc { color: var(--slate-500); font-size: 0.9rem; }
+
+/* Card "Casos Ganados vs Perdidos" (gráfica de barras + estadísticas) */
+.split-flex {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.split-chart { flex: 1; min-width: 300px; height: 220px; }
+.split-stats { flex: 1; min-width: 250px; padding-top: 1rem; }
+.split-stats .pct { font-size: 2.1rem; font-weight: 700; color: var(--emerald-dark); }
+.split-stats .pct-label { color: var(--slate-500); margin-bottom: 1rem; }
+.split-stats .stat-row { display: flex; gap: 2rem; }
+.split-stats .stat-item .label { color: var(--slate-500); font-size: 0.85rem; }
+.split-stats .stat-item .value { font-weight: 700; font-size: 1.2rem; }
+.split-stats .stat-item.ganados .value { color: var(--emerald-dark); }
+.split-stats .stat-item.perdidos .value { color: var(--red); }
+.split-stats .stat-item.total .value { color: var(--navy); }
+
+/* Card "Origen de Clientes" (gráfica de pastel centrada) */
+.pie-flex {
+    display: flex;
+    gap: 2.5rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+.pie-chart-wrap {
+    width: 100%;
+    max-width: 400px;
+    height: 350px;
+    margin: 0 auto;
+    position: relative;
+}
+
+/* Cards "Tipos de Casos" y "Éxito Mensual" (caja centrada para gráficas) */
+.chart-box {
+    width: 100%;
+    max-width: 800px;
+    height: 350px;
+    margin: 0 auto;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+.chart-box canvas {
+    max-width: 100%;
+}
+
+/* Vistas de gráficas (mostrar solo la pestaña activa) */
+.chart-view { display: none; }
+.chart-view.active { display: block; }
+
+/* Modal: overlay (fondo oscuro) */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    padding: 1rem;
+    backdrop-filter: blur(2px);
+}
+
+.modal-overlay.hidden {
+    display: none;
+}
+
+/* Modal: contenedor base */
+.modal {
+    background-color: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 420px;
+    padding: 0;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    max-height: 90vh;
+    overflow-y: auto;
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Animación de entrada del modal */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Modal: encabezado (título + botón de cerrar) */
+.modal-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 0.5rem 1.5rem;
+}
+
+.modal-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 1.1rem;
+    flex: 1;
+}
+
+.modal-title i {
+    width: 22px;
+    height: 22px;
+    color: var(--slate-700);
+    flex-shrink: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--slate-400);
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    margin: -4px -4px 0 0;
+}
+
+.modal-close:hover {
+    background-color: var(--slate-100);
+    color: var(--slate-600);
+}
+
+.modal-close i {
+    width: 20px;
+    height: 20px;
+}
+
+/* Modal: contenido */
+.modal-content {
+    padding: 1.5rem;
+    text-align: center;
+}
+
+/* Modal: icono circular informativo (azul, para "Trabajo sin conexión") */
+.modal-icon-wrap {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.2rem;
+    font-size: 2.2rem;
+    flex-shrink: 0;
+}
+
+.modal-icon-wrap.info {
+    background-color: #dbeafe;
+    color: #0284c7;
+}
+
+/* Modal: mensaje (título + descripción) */
+.modal-message {
+    margin-bottom: 1.5rem;
+}
+
+.modal-message .title {
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 1.15rem;
+    margin-bottom: 0.6rem;
+}
+
+.modal-message .description {
+    color: var(--slate-600);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+/* Modal: pie con botones */
+.modal-footer {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    padding: 1rem 1.5rem 1.5rem;
+}
+
+/* Modal: botones */
+.modal-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 0.65rem 1.4rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 40px;
+}
+
+.modal-btn.full {
+    width: 100%;
+}
+
+.modal-btn.primary {
+    background-color: var(--emerald);
+    color: white;
+}
+
+.modal-btn.primary:hover {
+    background-color: var(--emerald-dark);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}

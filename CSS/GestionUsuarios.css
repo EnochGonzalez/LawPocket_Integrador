@@ -1,0 +1,200 @@
+/* Variables de color del sistema */
+:root {
+    --navy: #1a2b4b; --emerald: #10B981; --emerald-dark: #059669; --emerald-light: #d1fae5;
+    --red: #ef4444; --red-light: #fee2e2; --red-dark: #b91c1c; --slate-50: #f8fafc;
+    --slate-100: #f1f5f9; --slate-200: #e2e8f0; --slate-300: #cbd5e1; --slate-400: #94a3b8;
+    --slate-500: #64748b; --slate-600: #475569; --slate-700: #334155; --slate-900: #0f172a;
+}
+
+/* Reset y estilos base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--slate-50); color: var(--slate-900); }
+button, select, input { font-family: inherit; }
+a { text-decoration: none; }
+
+/* Layout general del panel de administración */
+.admin-layout { display: flex; min-height: 100vh; }
+
+/* Sidebar (barra lateral de navegación) */
+.sidebar { width: 248px; flex-shrink: 0; background-color: var(--navy); color: white; display: flex; flex-direction: column; }
+.sidebar-header { padding: 1.4rem 1.5rem; }
+.sidebar-logo { display: flex; align-items: center; gap: 8px; }
+.sidebar-logo i { color: var(--emerald); width: 22px; height: 22px; }
+.sidebar-logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.sidebar-logo-text .name { font-weight: 700; font-size: 1.1rem; }
+.sidebar-logo-text .role { font-size: 0.72rem; color: var(--slate-400); }
+.sidebar-section { padding: 0 1rem; margin-top: 1.4rem; }
+.sidebar-section-title { font-size: 0.68rem; text-transform: uppercase; color: var(--slate-400); padding: 0 0.75rem; margin-bottom: 0.5rem; font-weight: 700; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav-item { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0.75rem; border-radius: 8px; color: var(--slate-300); font-size: 0.9rem; border: none; width: 100%; transition: all .15s ease; background: none; text-align: left; cursor: pointer; }
+.sidebar-nav-item i { width: 18px; height: 18px; }
+.sidebar-nav-item:hover:not(.active):not(.disabled) { background-color: rgba(255,255,255,0.07); color: white; }
+.sidebar-nav-item.active { background-color: var(--emerald); color: white; font-weight: 600; }
+.sidebar-nav-item.disabled { opacity: 0.4; cursor: not-allowed; }
+.sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logout { display: flex; align-items: center; gap: 8px; color: #fca5a5; background: none; border: none; font-size: 0.9rem; padding: 0.5rem; border-radius: 8px; width: 100%; cursor: pointer;}
+
+/* Área principal y topbar (barra superior con usuario) */
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { background-color: white; border-bottom: 1px solid var(--slate-100); padding: 1.1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title h1 { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.topbar-title p { font-size: 0.85rem; color: var(--slate-500); }
+.topbar-user { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; background-color: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; }
+.topbar-user-info .name { font-size: 0.88rem; font-weight: 600; }
+.topbar-user-info .org { font-size: 0.78rem; color: var(--slate-500); }
+.content { padding: 1.75rem 2rem 3rem; flex: 1; }
+
+/* Tarjetas (cards) */
+.card { background-color: white; border-radius: 16px; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.5rem; margin-bottom: 1.5rem; }
+.card-title { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--navy); font-size: 1rem; }
+.card-title i { width: 19px; height: 19px; color: var(--emerald); }
+
+/* Barra de herramientas de la tabla (título + buscador + botón agregar) */
+.table-toolbar { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+
+/* Buscador de usuarios */
+.search-wrap {
+    display: flex;
+    align-items: center;
+    background-color: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    padding: 0 0.85rem;
+    transition: all 0.2s ease;
+}
+
+.search-wrap:focus-within {
+    border-color: var(--emerald);
+    background-color: white;
+}
+
+.search-wrap i {
+    width: 17px;
+    height: 17px;
+    color: var(--slate-600);
+    flex-shrink: 0; 
+}
+
+.search-wrap input {
+    border: none;
+    background: transparent;
+    padding: 0.55rem 0.5rem;
+    font-size: 0.9rem;
+    min-width: 200px;
+    outline: none;
+    width: 100%;
+}
+
+/* Botones generales */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.6rem 1.1rem; border-radius: 8px; font-weight: 600; font-size: 0.88rem; border: none; cursor: pointer; }
+.btn i { width: 16px; height: 16px; }
+.btn-emerald { background-color: var(--emerald); color: white; }
+.btn-outline { background-color: white; color: var(--slate-600); border: 1px solid var(--slate-200); }
+.btn-danger { background-color: var(--red); color: white; }
+.btn-block { width: 100%; justify-content: center; }
+
+/* Tabla de abogados */
+table { width: 100%; border-collapse: collapse; }
+thead { background-color: var(--slate-100); }
+th { text-align: left; padding: 0.8rem 1.2rem; color: var(--slate-600); font-weight: 600; font-size: 0.86rem; }
+th.right, td.right { text-align: right; }
+td { padding: 1rem 1.2rem; border-top: 1px solid var(--slate-100); color: var(--slate-600); font-size: 0.92rem; }
+td.name-cell { color: var(--navy); font-weight: 500; }
+td code { background-color: var(--slate-100); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; }
+
+/* Pill de estado (Activo / Baja) */
+.status-pill { display: inline-block; padding: 0.3rem 0.85rem; border-radius: 999px; font-size: 0.82rem; font-weight: 600; border: none; cursor: pointer; }
+.status-pill.activo { background-color: var(--emerald-light); color: var(--emerald-dark); }
+.status-pill.baja { background-color: var(--slate-200); color: var(--slate-600); }
+
+/* Acciones de fila (editar / eliminar) */
+.row-actions { display: flex; justify-content: flex-end; gap: 4px; }
+.icon-btn { background: none; border: none; padding: 8px; border-radius: 8px; color: var(--slate-500); cursor: pointer; display: flex; }
+.icon-btn:hover { background-color: var(--slate-100); }
+.icon-btn.danger { color: var(--red); }
+.icon-btn.danger:hover { background-color: var(--red-light); color: var(--red-dark); }
+
+/* Estado vacío (sin abogados registrados) */
+.empty-state { text-align: center; padding: 4rem 1.5rem; }
+.empty-state p.title { color: var(--navy); font-weight: 600; font-size: 1.05rem; }
+.empty-state p.desc { color: var(--slate-500); margin-top: 0.4rem; max-width: 380px; margin: auto; }
+
+/* Modales: overlay (fondo oscuro) */
+.modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; backdrop-filter: blur(2px); }
+.modal-overlay.hidden { display: none; }
+
+/* Modales: contenedor base */
+.modal { background-color: white; border-radius: 16px; width: 100%; max-width: 420px; padding: 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); max-height: 90vh; overflow-y: auto; animation: slideIn 0.3s ease-out; }
+
+/* Animación de entrada del modal */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modales: encabezado (título + botón de cerrar) */
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.5rem 1.5rem 0.5rem 1.5rem; }
+
+.modal-title { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--navy); font-size: 1.1rem; flex: 1; }
+.modal-title i { width: 22px; height: 22px; color: var(--slate-700); flex-shrink: 0; }
+
+.modal-close { background: none; border: none; color: var(--slate-400); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s ease; margin: -4px -4px 0 0; }
+.modal-close:hover { background-color: var(--slate-100); color: var(--slate-600); }
+.modal-close i { width: 20px; height: 20px; }
+
+/* Modales: contenido */
+.modal-content { padding: 1.5rem; }
+
+/* Modales: icono circular (éxito / error) */
+.modal-icon-wrap { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; font-size: 2.2rem; flex-shrink: 0; }
+.modal-icon-wrap.success { background-color: var(--emerald-light); color: var(--emerald-dark); }
+.modal-icon-wrap.error { background-color: var(--red-light); color: var(--red-dark); }
+
+/* Modales: mensaje (título + descripción) */
+.modal-message { margin-bottom: 1.5rem; text-align: center; }
+.modal-message .title { color: var(--navy); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.6rem; }
+.modal-message .description { color: var(--slate-600); font-size: 0.95rem; line-height: 1.5; }
+
+/* Modales: pie con botones */
+.modal-footer { display: flex; justify-content: flex-end; gap: 0.6rem; padding: 1rem 1.5rem 1.5rem; flex-wrap: wrap; }
+.modal-footer.center { justify-content: center; }
+
+/* Modales: botones (primario, secundario, peligro) */
+.modal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.65rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s ease; min-height: 40px; }
+.modal-btn.full { width: 100%; }
+.modal-btn.primary { background-color: var(--emerald); color: white; }
+.modal-btn.primary:hover { background-color: var(--emerald-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+.modal-btn.secondary { background-color: white; color: var(--slate-600); border: 1.5px solid var(--slate-300); }
+.modal-btn.secondary:hover { background-color: var(--slate-50); border-color: var(--slate-400); color: var(--slate-700); }
+.modal-btn.danger { background-color: var(--red); color: white; }
+.modal-btn.danger:hover { background-color: var(--red-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); }
+
+/* Modal de confirmación (eliminar usuario) */
+.confirm-modal { max-width: 420px; }
+.confirm-modal .modal-content { text-align: left; }
+.confirm-modal .modal-message { text-align: left; margin-bottom: 1rem; }
+.confirm-modal .modal-message .title { color: var(--red); text-align: left; }
+.confirm-modal .modal-footer { justify-content: flex-end; }
+
+/* Modal de éxito (¡Operación exitosa!) */
+.success-modal { max-width: 420px; }
+.success-modal .modal-content { text-align: center; padding: 2rem 1.5rem 1.5rem; }
+
+/* Formularios de los modales (crear / editar abogado) */
+.field-group { margin-bottom: 0.85rem; }
+.field-group label { display: flex; align-items: center; gap: 6px; color: var(--slate-700); font-size: 0.9rem; font-weight: 500; margin-bottom: 0.35rem; }
+.field-group label i { width: 16px; height: 16px; color: var(--slate-700); }
+.field-group input, .field-group select { width: 100%; padding: 0.6rem 0.75rem; border-radius: 8px; border: 1px solid var(--slate-200); background-color: var(--slate-50); outline: none; font-family: inherit; }
+.field-group input:focus, .field-group select:focus { border-color: var(--emerald); background-color: white; }
+
+/* Errores de validación en campos */
+.field-group input.input-error { border-color: var(--red); background-color: var(--red-light); }
+.field-error { color: var(--red); font-size: 0.82rem; margin-top: 0.4rem; }
+
+/* Alerta dentro del modal (ej. ID duplicado) */
+.modal-alert { display: flex; align-items: flex-start; gap: 8px; background-color: var(--red-light); border: 1px solid #fecaca; color: var(--red-dark); padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.88rem; margin-top: 0.5rem; }
+
+/* Nota informativa del modal de creación */
+.create-note { color: var(--slate-500); font-size: 0.9rem; margin-top: 0.3rem; margin-bottom: 0.5rem; }
+.text-activo { color: var(--emerald); font-weight: 700; }

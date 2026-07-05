@@ -1,0 +1,149 @@
+/* Variables de color del sistema */
+:root {
+    --navy: #1a2b4b; --emerald: #10B981; --emerald-dark: #059669; --emerald-light: #d1fae5;
+    --blue: #3B82F6; --slate-50: #f8fafc; --slate-100: #f1f5f9; --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1; --slate-400: #94a3b8; --slate-500: #64748b; --slate-600: #475569;
+    --slate-700: #334155; --slate-900: #0f172a;
+}
+
+/* Reset y estilos base */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Inter', sans-serif; background: var(--slate-50); color: var(--slate-900); }
+button, textarea, select { font-family: inherit; }
+a { text-decoration: none; }
+
+/* Layout general del panel de administración */
+.admin-layout { display: flex; min-height: 100vh; }
+
+/* Sidebar (barra lateral de navegación) */
+.sidebar { width: 248px; flex-shrink: 0; background-color: var(--navy); color: white; display: flex; flex-direction: column; }
+.sidebar-header { padding: 1.4rem 1.5rem; }
+.sidebar-logo { display: flex; align-items: center; gap: 8px; }
+.sidebar-logo i { color: var(--emerald); width: 22px; height: 22px; }
+.sidebar-logo-text { display: flex; flex-direction: column; line-height: 1.2; }
+.sidebar-logo-text .name { font-weight: 700; font-size: 1.1rem; }
+.sidebar-logo-text .role { font-size: 0.72rem; color: var(--slate-400); }
+.sidebar-section { padding: 0 1rem; margin-top: 1.4rem; }
+.sidebar-section-title { font-size: 0.68rem; text-transform: uppercase; color: var(--slate-400); padding: 0 0.75rem; margin-bottom: 0.5rem; font-weight: 700; }
+.sidebar-nav { display: flex; flex-direction: column; gap: 2px; }
+.sidebar-nav-item { display: flex; align-items: center; gap: 10px; padding: 0.65rem 0.75rem; border-radius: 8px; color: var(--slate-300); font-size: 0.9rem; border: none; width: 100%; text-align: left; background: none; transition: .15s ease; cursor:pointer;}
+.sidebar-nav-item i { width: 18px; height: 18px; }
+.sidebar-nav-item:hover:not(.active):not(.disabled) { background-color: rgba(255,255,255,0.07); color: white; }
+.sidebar-nav-item.active { background-color: var(--emerald); color: white; font-weight: 600; }
+.sidebar-nav-item.disabled { opacity: 0.4; cursor: not-allowed; }
+.sidebar-footer { margin-top: auto; padding: 1rem 1.25rem; border-top: 1px solid rgba(255,255,255,0.08); }
+.sidebar-logout { display: flex; align-items: center; gap: 8px; color: #fca5a5; background: none; border: none; font-size: 0.9rem; padding: 0.5rem; border-radius: 8px; width: 100%; cursor: pointer;}
+
+/* Área principal y topbar (barra superior con usuario) */
+.main-area { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.topbar { background-color: white; border-bottom: 1px solid var(--slate-100); padding: 1.1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+.topbar-title h1 { font-size: 1.05rem; font-weight: 700; color: var(--navy); }
+.topbar-title p { font-size: 0.85rem; color: var(--slate-500); }
+.topbar-user { display: flex; align-items: center; gap: 10px; }
+.avatar { width: 38px; height: 38px; border-radius: 50%; background-color: var(--navy); color: white; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.82rem; }
+.topbar-user-info .name { font-size: 0.88rem; font-weight: 600; }
+.topbar-user-info .org { font-size: 0.78rem; color: var(--slate-500); }
+.content { padding: 1.75rem 2rem 3rem; flex: 1; }
+
+/* Tarjetas (cards) */
+.card { background-color: white; border-radius: 16px; border: 1px solid var(--slate-100); box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1.5rem; margin-bottom: 1.5rem; }
+.card-title { display: flex; align-items: center; gap: 8px; font-weight: 700; color: var(--navy); font-size: 1rem; margin-bottom: 1.1rem; }
+.card-title i { width: 19px; height: 19px; color: var(--emerald); }
+
+/* Pestañas tipo pill (Caché / Uso por Abogado / Documentos) */
+.tab-pills { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 1.25rem; }
+.tab-pill { display: flex; align-items: center; gap: 8px; padding: 0.55rem 1rem; border-radius: 8px; border: 1px solid var(--slate-200); background-color: white; color: var(--slate-700); font-size: 0.88rem; transition: .15s ease; cursor: pointer;}
+.tab-pill i { width: 16px; height: 16px; }
+.tab-pill.active { background-color: var(--navy); border-color: var(--navy); color: white; font-weight: 600; }
+
+/* Card "Caché Total del Despacho" (dona + barra de progreso) */
+.storage-flex { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; justify-content: center; }
+.donut-wrap { position: relative; width: 190px; height: 190px; flex-shrink: 0; }
+.donut-center { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; pointer-events: none; }
+.donut-center .pct { font-size: 1.7rem; font-weight: 700; color: var(--navy); }
+.donut-center .label { color: var(--slate-500); font-size: 0.88rem; }
+.storage-info { flex: 1; min-width: 220px; }
+.storage-info .row-label { display: flex; justify-content: space-between; color: var(--slate-600); margin-bottom: 0.4rem; }
+.storage-info .big-value { color: var(--navy); font-size: 1.6rem; font-weight: 700; margin: 0.2rem 0 0.6rem; }
+.progress-track { height: 8px; border-radius: 999px; background-color: var(--slate-200); overflow: hidden; margin-bottom: 0.7rem; }
+.progress-fill { height: 100%; background-color: var(--emerald); border-radius: 999px; }
+.storage-info .desc { color: var(--slate-500); font-size: 0.9rem; }
+
+/* Card "Documentos en el Sistema" (pastel + leyenda con barras) */
+.pie-flex { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+.pie-chart-wrap { width: 280px; height: 280px; flex-shrink: 0; }
+.pie-legend { min-width: 220px; }
+.legend-row { margin-bottom: 0.9rem; }
+.legend-row .top { display: flex; justify-content: space-between; margin-bottom: 0.35rem; }
+.legend-row .top .val { color: var(--navy); font-weight: 700; }
+.legend-bar { height: 8px; border-radius: 999px; background-color: var(--slate-100); overflow: hidden; }
+.legend-bar-fill { height: 100%; border-radius: 999px; }
+.pie-total { color: var(--navy); font-size: 1.4rem; font-weight: 700; margin-top: 0.6rem; }
+.pie-total-label { color: var(--slate-500); }
+
+/* Vistas del sistema (mostrar solo la pestaña activa) */
+.chart-box { height: 320px; }
+.sistema-view { display: none; }
+.sistema-view.active { display: block; }
+
+/* Card "Notificaciones del Despacho" */
+.notif-desc { color: var(--slate-600); margin-bottom: 0.8rem; }
+textarea.field-textarea { width: 100%; border-radius: 10px; border: 1px solid var(--slate-200); background-color: var(--slate-50); padding: 0.75rem; font-size: 0.92rem; resize: vertical; outline: none; margin-bottom: 0.9rem; }
+textarea.field-textarea:focus { border-color: var(--emerald); }
+.duration-row { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.9rem; flex-wrap: wrap; }
+.duration-row select { flex: 1; min-width: 160px; border-radius: 8px; border: 1px solid var(--slate-200); background-color: var(--slate-50); padding: 0.55rem 0.75rem; color: var(--slate-700); outline: none; }
+
+/* Botones generales */
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 0.6rem 1.1rem; border-radius: 8px; font-weight: 600; font-size: 0.88rem; border: none; cursor: pointer; }
+.btn-emerald { background-color: var(--emerald); color: white; }
+.btn-outline { background-color: white; color: var(--slate-600); border: 1px solid var(--slate-200); }
+.btn-block { width: 100%; justify-content: center; }
+.notif-success { color: var(--emerald-dark); margin-top: 0.8rem; font-size: 0.92rem; }
+
+/* Modal: overlay (fondo oscuro) */
+.modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; backdrop-filter: blur(2px); }
+.modal-overlay.hidden { display: none; }
+
+/* Modal: contenedor base */
+.modal { background-color: white; border-radius: 16px; width: 100%; max-width: 420px; padding: 0; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); max-height: 90vh; overflow-y: auto; animation: slideIn 0.3s ease-out; }
+
+/* Animación de entrada del modal */
+@keyframes slideIn {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Modal: encabezado (título + botón de cerrar) */
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; padding: 1.5rem 1.5rem 0.5rem 1.5rem; }
+
+.modal-title { display: flex; align-items: center; gap: 12px; font-weight: 700; color: var(--navy); font-size: 1.1rem; flex: 1; }
+.modal-title i { width: 22px; height: 22px; color: var(--slate-700); flex-shrink: 0; }
+
+.modal-close { background: none; border: none; color: var(--slate-400); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.2s ease; margin: -4px -4px 0 0; }
+.modal-close:hover { background-color: var(--slate-100); color: var(--slate-600); }
+.modal-close i { width: 20px; height: 20px; }
+
+/* Modal: contenido */
+.modal-content { padding: 1.5rem; text-align: center; }
+
+/* Modal: icono circular de éxito (verde) */
+.modal-icon-wrap { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1.2rem; font-size: 2.2rem; flex-shrink: 0; }
+.modal-icon-wrap.success { background-color: var(--emerald-light); color: var(--emerald-dark); }
+
+/* Modal: mensaje (título + descripción) */
+.modal-message { margin-bottom: 1.5rem; }
+.modal-message .title { color: var(--navy); font-weight: 700; font-size: 1.15rem; margin-bottom: 0.6rem; }
+.modal-message .description { color: var(--slate-600); font-size: 0.95rem; line-height: 1.5; }
+
+/* Modal: pie con botones */
+.modal-footer { display: flex; justify-content: center; gap: 0.8rem; padding: 1rem 1.5rem 1.5rem; }
+
+/* Modal: botones */
+.modal-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 0.65rem 1.4rem; border-radius: 8px; font-weight: 600; font-size: 0.9rem; border: none; cursor: pointer; transition: all 0.2s ease; min-height: 40px; }
+.modal-btn.full { width: 100%; }
+.modal-btn.primary { background-color: var(--emerald); color: white; }
+.modal-btn.primary:hover { background-color: var(--emerald-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3); }
+
+/* Modal de éxito (¡Operación exitosa!) */
+.success-modal { max-width: 420px; }
+.success-modal .modal-content { text-align: center; padding: 2rem 1.5rem 1.5rem; }
