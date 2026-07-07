@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LawPocket | Iniciar Sesión</title>
-    <!-- Fuente Inter, hoja de estilos propia y librería de iconos Lucide -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/Login.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -72,7 +71,7 @@
         const formError = document.getElementById('formError');
         const formErrorText = document.getElementById('formErrorText');
 
-        // Quita el estado de error de un campo (borde rojo, label rojo y mensaje)
+        // Quita el estado de error de un campo 
         function clearFieldError(input, label, errorEl) {
             input.classList.remove('input-error');
             label.classList.remove('error-label');
@@ -80,7 +79,7 @@
             errorEl.textContent = '';
         }
 
-        // Marca un campo con error (borde rojo, label rojo y mensaje visible)
+        // Marca un campo con error 
         function setFieldError(input, label, errorEl, message) {
             input.classList.add('input-error');
             label.classList.add('error-label');
@@ -101,7 +100,7 @@
             }
         });
 
-        // Usuarios de prueba (cada uno con su contraseña, rol, nombre y página destino)
+        // Usuarios de prueba 
         const USERS = {
             'ADMIN01': { password: '123', role: 'admin', name: 'González Velasco Santos Enoch', redirect: 'PanelAnalitico.html' },
             'ABG01':   { password: '123', role: 'abogado', name: 'Nucamendi Ruiz Leonardo', redirect: 'agenda.html' },
@@ -109,8 +108,7 @@
             'ABG03':   { password: '123', role: 'abogado', name: 'Abogado 3', redirect: 'agenda.html' },
         };
 
-        // Envío del formulario: valida campos, verifica credenciales
-        // y redirige según el rol del usuario
+        // Envío del formulario: valida campos, verifica credenciales y redirige según el rol del usuario
         form.addEventListener('submit', (e) => {
             e.preventDefault(); // Evitar que la página se recargue
 

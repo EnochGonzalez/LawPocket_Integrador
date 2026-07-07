@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket · Agenda de Audiencias</title>
+    <link rel="stylesheet" href="../CSS/AgendaAdmin.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+        <!-- ============================================================
+                        BARRA LATERAL (SIDEBAR)
+        ============================================================ -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Administración</p>
+                <a href="PanelAnalitico.html" class="nav-item">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Panel Analítico</span>
+                </a>
+                <a href="GestionUsuarios.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span>Gestión de Usuarios</span>
+                </a>
+                <a href="SistemaAlmacenamiento.html" class="nav-item">
+                    <i data-lucide="hard-drive"></i>
+                    <span>Sistema y Almacenamiento</span>
+                </a>
+
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAdmin.html" class="nav-item active">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAdmin.html" class="nav-item">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAdmin.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargas.html" class="nav-item">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuario.html" class="nav-item">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ============================================================
+                            CONTENIDO PRINCIPAL
+        ============================================================ -->
+        <div class="main">
+
+            <!-- ============================================================
+                            BARRA SUPERIOR (TOPBAR)
+            ============================================================ -->
+            <header class="topbar">
+                <div class="topbar-user">
+                    <div class="topbar-avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <span class="topbar-user-name" id="userName">González Velasco Santos Enoch</span>
+                        <span class="topbar-user-org">Corporativo Jurídico Fusión TGZ</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+
+                <!-- ============================================================
+                                ENCABEZADO DEL MÓDULO
+                ============================================================ -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Agenda de Audiencias</h1>
+                        <p class="page-subtitle">Navega por los meses y administra tus citas.</p>
+                    </div>
+                    <button id="btnNuevaCita" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        <span>Nueva Cita</span>
+                    </button>
+                </div>
+
+                <div class="agenda-grid">
+
+                    <!-- ============================================================
+                                        CALENDARIO MENSUAL
+                    ============================================================ -->
+                    <section class="card calendar-card">
+                        <div class="calendar-nav">
+                            <button id="btnMesAnterior" class="calendar-nav-btn" aria-label="Mes anterior">
+                                <i data-lucide="chevron-left"></i>
+                            </button>
+                            <p id="calendarTitle" class="calendar-title">Junio 2026</p>
+                            <button id="btnMesSiguiente" class="calendar-nav-btn" aria-label="Mes siguiente">
+                                <i data-lucide="chevron-right"></i>
+                            </button>
+                        </div>
+
+                        <div class="calendar-weekdays">
+                            <div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div>
+                            <div>Vie</div><div>Sáb</div><div>Dom</div>
+                        </div>
+
+                        <div id="calendarDays" class="calendar-days">
+                            <!-- Días generados dinámicamente por AgendaAdmin.js -->
+                        </div>
+                    </section>
+
+                    <!-- ============================================================
+                                     LISTADO DE CITAS DEL MES
+                    ============================================================ -->
+                    <section class="events-panel">
+                        <h2 id="eventsTitle" class="events-title">Citas de Junio</h2>
+                        <div id="eventsList" class="events-list">
+                            <!-- Tarjetas generadas dinámicamente por AgendaAdmin.js -->
+                        </div>
+                    </section>
+
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                        EVENTOS DEL DÍA
+    ============================================================ -->
+    <div id="drawerOverlay" class="drawer-overlay hidden"></div>
+    <aside id="dayDrawer" class="day-drawer hidden" aria-label="Eventos del día">
+        <div class="drawer-header">
+            <div>
+                <p class="drawer-eyebrow">Eventos del</p>
+                <p id="drawerDate" class="drawer-date">12 Junio 2026</p>
+            </div>
+            <button id="btnCerrarDrawer" class="drawer-close-btn" aria-label="Cerrar">
+                <i data-lucide="chevron-right"></i>
+            </button>
+        </div>
+        <div class="drawer-body">
+            <div class="timeline">
+                <div class="timeline-line"></div>
+                <div id="drawerEvents" class="timeline-items">
+                    <!-- Eventos generados dinámicamente por AgendaAdmin.js -->
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ============================================================
+             MODAL — NUEVA CITA / MODIFICAR CITA
+    ============================================================ -->
+    <div id="citaModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-form">
+            <button class="modal-close" data-close="cita" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="modal-form-header">
+                <h3 id="citaModalTitle" class="modal-form-title">
+                    <i data-lucide="calendar-plus"></i>
+                    <span>Nueva Cita</span>
+                </h3>
+                <p class="modal-form-subtitle">Registra los datos de la audiencia o cita.</p>
+            </div>
+
+            <div class="modal-form-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputFecha">
+                            <i data-lucide="calendar"></i>
+                            Fecha
+                        </label>
+                        <input type="date" id="inputFecha" class="form-input">
+                        <p id="errorFecha" class="field-error hidden">La fecha es obligatoria.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="inputHora">
+                            <i data-lucide="clock"></i>
+                            Hora
+                        </label>
+                        <input type="time" id="inputHora" class="form-input">
+                        <p id="errorHora" class="field-error hidden">La hora es obligatoria.</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputTitulo">
+                        <i data-lucide="pencil"></i>
+                        Título
+                    </label>
+                    <input type="text" id="inputTitulo" class="form-input"
+                           placeholder="Ej. Audiencia inicial · EXP-2026-120">
+                    <p id="errorTitulo" class="field-error hidden">El título es obligatorio.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputDescripcion">
+                        <i data-lucide="file-text"></i>
+                        Descripción
+                    </label>
+                    <textarea id="inputDescripcion" class="form-input" rows="3"
+                              placeholder="Juzgado, cliente, notas..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputMateria">
+                        <i data-lucide="tag"></i>
+                        Categoría del Caso
+                    </label>
+                    <div class="select-wrapper">
+                        <span id="materiaDot" class="materia-dot"></span>
+                        <select id="inputMateria" class="form-input form-select">
+                            <option value="Laboral">Laboral</option>
+                            <option value="Familiar">Familiar</option>
+                            <option value="Penal">Penal</option>
+                            <option value="Civil" selected>Civil</option>
+                            <option value="Corporativo">Corporativo</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </div>
+                </div>
+
+                <div id="collisionError" class="collision-error hidden">
+                    <i data-lucide="alert-triangle"></i>
+                    <p>Error: No se puede registrar este evento porque ya existe otra cita programada para la misma fecha y hora.</p>
+                </div>
+            </div>
+
+            <div class="modal-form-footer">
+                <button class="btn btn-outline" data-close="cita">Cancelar</button>
+                <button id="btnGuardarCita" class="btn btn-primary">Guardar cita</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                MODAL — CONFIRMACIÓN DE ELIMINACIÓN
+    ============================================================ -->
+    <div id="deleteModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-confirm">
+            <button class="modal-close" data-close="delete" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <h3 class="modal-confirm-title">¿Cancelar esta cita?</h3>
+            <p class="modal-confirm-text">La cita será eliminada permanentemente de la agenda.</p>
+            <div class="modal-confirm-actions">
+                <button class="btn btn-outline" data-close="delete">Cancelar</button>
+                <button id="btnConfirmarEliminar" class="btn btn-danger">Eliminar cita</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                 MODAL — OPERACIÓN EXITOSA
+    ============================================================ -->
+    <div id="successModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-success">
+            <button class="modal-close" data-close="success" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-success-icon">
+                <i data-lucide="check-circle-2"></i>
+            </div>
+            <h3 class="modal-success-title">¡Operación exitosa!</h3>
+            <p id="successMessage" class="modal-success-text">Cita registrada exitosamente.</p>
+            <button class="btn btn-success-full" data-close="success">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                    SCRIPT DEL MÓDULO
+    ============================================================ -->
+    <script src="../JS/AgendaAdmin.js"></script>
+</body>
+</html>

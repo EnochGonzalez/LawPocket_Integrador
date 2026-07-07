@@ -1,0 +1,990 @@
+/* ============================================================
+   AGENDA ADMIN — HOJA DE ESTILOS
+   Módulo: Agenda de Audiencias (Herramientas de Trabajo)
+   Paleta: Navy #1a2b4b · Esmeralda #10B981 · Grises slate
+============================================================ */
+
+/* ============================================================
+   VARIABLES Y RESET BÁSICO
+============================================================ */
+:root {
+    --navy: #1a2b4b;
+    --navy-dark: #14213d;
+    --emerald: #10B981;
+    --emerald-dark: #0ea271;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --red-700: #b91c1c;
+    --radius: 12px;
+    --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-modal: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", "Inter", system-ui, -apple-system, sans-serif;
+}
+
+body {
+    background-color: var(--slate-100);
+    color: var(--navy);
+    font-size: 14px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   ESTRUCTURA GENERAL (LAYOUT)
+============================================================ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.content {
+    padding: 28px 36px 48px;
+}
+
+/* ============================================================
+   BARRA LATERAL (SIDEBAR)
+============================================================ */
+.sidebar {
+    width: 240px;
+    flex-shrink: 0;
+    background-color: var(--navy-dark);
+    color: #e2e8f0;
+    display: flex;
+    flex-direction: column;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+}
+
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 18px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo-icon {
+    width: 26px;
+    height: 26px;
+    color: var(--emerald);
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.15;
+}
+
+.logo-title {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.logo-subtitle {
+    font-size: 0.75rem;
+    color: var(--slate-300);
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 14px 10px;
+    overflow-y: auto;
+}
+
+.nav-section-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #7d8db1;
+    padding: 14px 10px 6px;
+    font-weight: 600;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    color: #cbd5e1;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.nav-item i,
+.nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.nav-item:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+.nav-item.active {
+    background-color: rgba(16, 185, 129, 0.15);
+    color: #ffffff;
+    border-left: 3px solid var(--emerald);
+    padding-left: 9px;
+}
+
+.sidebar-footer {
+    padding: 12px 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ============================================================
+   BARRA SUPERIOR (TOPBAR)
+============================================================ */
+.topbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 12px 36px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--navy-dark);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.topbar-user-name {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.85rem;
+}
+
+.topbar-user-org {
+    color: var(--slate-500);
+    font-size: 0.78rem;
+}
+
+/* ============================================================
+   ENCABEZADO DEL MÓDULO
+============================================================ */
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.page-subtitle {
+    color: var(--slate-500);
+    margin-top: 2px;
+}
+
+/* ============================================================
+   BOTONES
+============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.btn i,
+.btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-primary {
+    background-color: var(--emerald);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--emerald-dark);
+}
+
+.btn-outline {
+    background-color: #ffffff;
+    color: var(--navy);
+    border: 1px solid var(--slate-300);
+}
+
+.btn-outline:hover {
+    background-color: var(--slate-100);
+}
+
+.btn-danger {
+    background-color: var(--red-600);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: var(--red-700);
+}
+
+.btn-success-full {
+    width: 100%;
+    background-color: var(--emerald);
+    color: #ffffff;
+    padding: 12px;
+}
+
+.btn-success-full:hover {
+    background-color: var(--emerald-dark);
+}
+
+/* ============================================================
+   CUADRÍCULA PRINCIPAL DEL MÓDULO
+   Calendario (2/3) + Listado de citas (1/3)
+============================================================ */
+.agenda-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--slate-200);
+}
+
+/* ============================================================
+   CALENDARIO — NAVEGACIÓN Y CUADRÍCULA
+============================================================ */
+.calendar-card {
+    padding: 24px;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.calendar-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--navy);
+}
+
+.calendar-nav-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.calendar-nav-btn:hover {
+    background-color: var(--slate-100);
+}
+
+.calendar-nav-btn i,
+.calendar-nav-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.calendar-weekdays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    text-align: center;
+    color: var(--slate-500);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.calendar-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+}
+
+/* --- Celdas de día --- */
+.calendar-day {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    border-radius: 10px;
+    border: 1px solid var(--slate-200);
+    background-color: #ffffff;
+    color: var(--navy);
+    font-size: 1.05rem;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+}
+
+.calendar-day:hover {
+    filter: brightness(0.95);
+}
+
+/* Día con 1 evento (azul) */
+.calendar-day.load-1 {
+    background-color: #DBEAFE;
+    border-color: #3b82f6;
+    color: #2563eb;
+    font-weight: 700;
+}
+
+/* Día con 2 eventos (ámbar) */
+.calendar-day.load-2 {
+    background-color: #FEF3C7;
+    border-color: #f59e0b;
+    color: #92400E;
+    font-weight: 700;
+}
+
+/* Día con 3 o más eventos (rojo) */
+.calendar-day.load-3 {
+    background-color: #FEE2E2;
+    border-color: #ef4444;
+    color: #991b1b;
+    font-weight: 700;
+}
+
+/* Insignia de conteo de eventos (+2, +3...) */
+.day-badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    border-radius: 999px;
+    padding: 1px 6px;
+    font-size: 10px;
+    line-height: 1.4;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.day-badge.badge-amber { background-color: #D97706; }
+.day-badge.badge-red   { background-color: #B91C1C; }
+
+/* ============================================================
+   PANEL DE CITAS DEL MES
+============================================================ */
+.events-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 14px;
+}
+
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.event-card {
+    display: flex;
+    overflow: hidden;
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    border: 1px solid var(--slate-200);
+    box-shadow: var(--shadow-card);
+}
+
+.event-color-bar {
+    width: 6px;
+    flex-shrink: 0;
+}
+
+.event-body {
+    flex: 1;
+    padding: 14px 16px;
+    min-width: 0;
+}
+
+.event-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.event-title {
+    font-weight: 600;
+    color: var(--navy);
+    flex: 1;
+}
+
+.event-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: var(--slate-600);
+    transition: background-color 0.15s ease;
+}
+
+.icon-btn i,
+.icon-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+.icon-btn:hover {
+    background-color: var(--slate-100);
+}
+
+.icon-btn.icon-btn-danger {
+    color: var(--red-500);
+}
+
+.icon-btn.icon-btn-danger:hover {
+    background-color: #fef2f2;
+}
+
+.event-desc {
+    color: var(--slate-600);
+    margin-top: 4px;
+}
+
+.event-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: 12px;
+    color: var(--slate-500);
+    font-size: 0.82rem;
+}
+
+.event-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.event-meta i,
+.event-meta svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Estado vacío del listado */
+.events-empty {
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    border: 1px solid var(--slate-200);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+    text-align: center;
+    color: var(--slate-500);
+}
+
+/* ============================================================
+   DRAWER LATERAL — EVENTOS DEL DÍA
+============================================================ */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 40;
+}
+
+.day-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 384px;
+    max-width: 100%;
+    background-color: #ffffff;
+    box-shadow: -8px 0 30px rgba(15, 23, 42, 0.25);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+}
+
+.drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--slate-200);
+}
+
+.drawer-eyebrow {
+    color: var(--slate-500);
+    font-size: 0.82rem;
+}
+
+.drawer-date {
+    color: var(--navy);
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.drawer-close-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    color: var(--navy);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.drawer-close-btn:hover {
+    background-color: var(--slate-100);
+}
+
+.drawer-close-btn i,
+.drawer-close-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.drawer-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* --- Línea de tiempo --- */
+.timeline {
+    position: relative;
+    padding-left: 24px;
+}
+
+.timeline-line {
+    position: absolute;
+    left: 8px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background-color: var(--slate-300);
+}
+
+.timeline-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.timeline-item {
+    position: relative;
+}
+
+.timeline-dot {
+    position: absolute;
+    left: -22px;
+    top: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    box-shadow: 0 0 0 2px var(--slate-300);
+}
+
+.timeline-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.timeline-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--slate-500);
+    font-size: 0.82rem;
+}
+
+.timeline-time i,
+.timeline-time svg {
+    width: 14px;
+    height: 14px;
+}
+
+.timeline-title {
+    color: var(--navy);
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.timeline-desc {
+    color: var(--slate-600);
+    margin-top: 2px;
+}
+
+/* Insignia de categoría (materia) */
+.materia-badge {
+    display: inline-block;
+    margin-top: 6px;
+    border-radius: 999px;
+    padding: 2px 8px;
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.timeline-empty {
+    color: var(--slate-500);
+}
+
+/* ============================================================
+   SISTEMA DE MODALES — BASE
+============================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--slate-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.modal-close:hover {
+    background-color: var(--slate-100);
+}
+
+.modal-close i,
+.modal-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================================
+   MODAL DE FORMULARIO (NUEVA / MODIFICAR CITA)
+============================================================ */
+.modal-form {
+    max-width: 430px;
+    padding: 22px 24px;
+}
+
+.modal-form-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--navy);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-form-title i,
+.modal-form-title svg {
+    width: 20px;
+    height: 20px;
+}
+
+.modal-form-subtitle {
+    color: var(--slate-500);
+    margin-top: 4px;
+    font-size: 0.85rem;
+}
+
+.modal-form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px 0 6px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--slate-700);
+    font-weight: 500;
+    margin-bottom: 6px;
+}
+
+.form-group label i,
+.form-group label svg {
+    width: 16px;
+    height: 16px;
+    color: var(--slate-700);
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    background-color: var(--slate-50);
+    color: var(--navy);
+    font-size: 0.88rem;
+    color-scheme: light;
+}
+
+.form-input:focus {
+    outline: 2px solid var(--emerald);
+    outline-offset: 0;
+    border-color: transparent;
+}
+
+textarea.form-input {
+    resize: vertical;
+}
+
+/* Mensajes de error por campo */
+.field-error {
+    color: var(--red-600);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* --- Select de categoría con punto de color --- */
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.materia-dot {
+    position: absolute;
+    left: 12px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #1D4ED8; /* Civil por defecto */
+    pointer-events: none;
+}
+
+.form-select {
+    appearance: none;
+    padding-left: 30px;
+    padding-right: 34px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.select-chevron {
+    position: absolute;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    color: var(--slate-500);
+    pointer-events: none;
+}
+
+/* Mensaje de colisión de horario */
+.collision-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+}
+
+.collision-error i,
+.collision-error svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.modal-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 14px;
+}
+
+/* ============================================================
+   MODAL DE CONFIRMACIÓN (ELIMINAR CITA)
+============================================================ */
+.modal-confirm {
+    max-width: 430px;
+    padding: 22px 24px;
+}
+
+.modal-confirm-title {
+    color: var(--red-600);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-confirm-text {
+    color: var(--slate-600);
+    margin-top: 6px;
+}
+
+.modal-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ============================================================
+   MODAL DE ÉXITO
+============================================================ */
+.modal-success {
+    max-width: 430px;
+    padding: 30px 24px 24px;
+    text-align: center;
+}
+
+.modal-success-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background-color: #d1fae5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--emerald);
+}
+
+.modal-success-icon i,
+.modal-success-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.modal-success-title {
+    color: var(--navy);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.modal-success-text {
+    color: var(--slate-500);
+    margin: 8px 0 18px;
+}
+
+/* ============================================================
+   DISEÑO RESPONSIVO
+============================================================ */
+@media (max-width: 1024px) {
+    .agenda-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .content {
+        padding: 20px 16px 40px;
+    }
+
+    .topbar {
+        padding: 12px 16px;
+    }
+
+    .day-drawer {
+        width: 100%;
+    }
+}

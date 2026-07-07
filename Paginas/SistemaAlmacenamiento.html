@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LawPocket | Sistema y Almacenamiento</title>
-    <!-- Fuente Inter, hoja de estilos propia, iconos Lucide y librería de gráficas Chart.js -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../CSS/SistemaAlmacenamiento.css">
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -13,38 +12,59 @@
 <body>
     <div class="admin-layout">
 
-        <!-- ================= SIDEBAR (barra lateral de navegación) ================= -->
-        <aside class="sidebar" id="sidebar">
-            <!-- Logo LawPocket Admin -->
-            <div class="sidebar-header">
-                <div class="sidebar-logo">
-                    <i data-lucide="scale"></i>
-                    <div class="sidebar-logo-text"><span class="name">LawPocket</span><span class="role">Admin</span></div>
+        <!-- ================= SIDEBAR ================= -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Admin</span>
                 </div>
             </div>
-            <!-- Sección: Administración (páginas del panel) -->
-            <div class="sidebar-section">
-                <p class="sidebar-section-title">Administración</p>
-                <nav class="sidebar-nav">
-                    <a href="PanelAnalitico.html" class="sidebar-nav-item"><i data-lucide="bar-chart-3"></i> Panel Analítico</a>
-                    <a href="GestionUsuarios.html" class="sidebar-nav-item"><i data-lucide="users"></i> Gestión de Usuarios</a>
-                    <a href="SistemaAlmacenamiento.html" class="sidebar-nav-item active"><i data-lucide="archive"></i> Sistema y Almacenamiento</a>
-                </nav>
-            </div>
-            <!-- Sección: Herramientas de trabajo (deshabilitadas por ahora) -->
-            <div class="sidebar-section">
-                <p class="sidebar-section-title">Herramientas de trabajo</p>
-                <nav class="sidebar-nav">
-                    <button class="sidebar-nav-item disabled"><i data-lucide="calendar-days"></i> Agenda</button>
-                    <button class="sidebar-nav-item disabled"><i data-lucide="folder-lock"></i> Expedientes</button>
-                    <button class="sidebar-nav-item disabled"><i data-lucide="book-open"></i> Biblioteca Digital</button>
-                    <button class="sidebar-nav-item disabled"><i data-lucide="download"></i> Mis Descargas</button>
-                    <button class="sidebar-nav-item disabled"><i data-lucide="file-text"></i> Manuales de Usuario</button>
-                </nav>
-            </div>
-            <!-- Botón de cerrar sesión -->
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Administración</p>
+                <a href="PanelAnalitico.html" class="nav-item">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Panel Analítico</span>
+                </a>
+                <a href="GestionUsuarios.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span>Gestión de Usuarios</span>
+                </a>
+                <a href="SistemaAlmacenamiento.html" class="nav-item active">
+                    <i data-lucide="hard-drive"></i>
+                    <span>Sistema y Almacenamiento</span>
+                </a>
+
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAdmin.html" class="nav-item">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAdmin.html" class="nav-item">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAdmin.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargas.html" class="nav-item">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuario.html" class="nav-item">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
             <div class="sidebar-footer">
-                <button class="sidebar-logout" id="logoutBtn"><i data-lucide="log-out"></i> Cerrar sesión</button>
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
             </div>
         </aside>
 

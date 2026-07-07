@@ -18,7 +18,7 @@ if (window.lucide) lucide.createIcons();
 document.getElementById('logoutBtn').addEventListener('click', () => {
     sessionStorage.removeItem('lawpocket_role');
     sessionStorage.removeItem('lawpocket_name');
-    window.location.href = 'login.html';
+    window.location.href = 'Login.html';
 });
 
 // Paleta de colores para las gráficas (misma que las variables del CSS)
