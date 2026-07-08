@@ -1,6 +1,6 @@
-// ============================================================
-// SistemaAlmacenamiento.js — Lógica de "Sistema y Almacenamiento"
-// ============================================================
+// ===================================================================
+// SistemaAlmacenamientoAdmin.js — Lógica de "Sistema y Almacenamiento"
+// ===================================================================
 
 // Inicializar los iconos de la librería Lucide
 if (window.lucide) lucide.createIcons();

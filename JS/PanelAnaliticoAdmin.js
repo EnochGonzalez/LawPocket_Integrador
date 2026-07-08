@@ -1,6 +1,6 @@
-// ============================================================
-// PanelAnalitico.js — Lógica de la página "Panel Analítico"
-// ============================================================
+// ===============================================================
+// PanelAnaliticoAdmin.js — Lógica de la página "Panel Analítico"
+// ===============================================================
 
 // Inicializar los iconos de la librería Lucide
 if (window.lucide) lucide.createIcons();

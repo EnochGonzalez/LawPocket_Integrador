@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LawPocket | Mis Descargas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
+    <link rel="stylesheet" href="../CSS/MisDescargasAdmin.css">
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+        <!-- ============================================================
+                                BARRA LATERAL
+        ============================================================ -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Admin</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Administración</p>
+                <a href="PanelAnaliticoAdmin.html" class="nav-item">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Panel Analítico</span>
+                </a>
+                <a href="GestionUsuariosAdmin.html" class="nav-item">
+                    <i data-lucide="users"></i>
+                    <span>Gestión de Usuarios</span>
+                </a>
+                <a href="SistemaAlmacenamientoAdmin.html" class="nav-item">
+                    <i data-lucide="hard-drive"></i>
+                    <span>Sistema y Almacenamiento</span>
+                </a>
+
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAdmin.html" class="nav-item">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAdmin.html" class="nav-item">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAdmin.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargasAdmin.html" class="nav-item active">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuarioAdmin.html" class="nav-item">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ============================================================
+                            CONTENIDO PRINCIPAL
+        ============================================================ -->
+        <div class="main">
+
+            <!-- ----- Barra superior (usuario) ----- -->
+            <header class="topbar">
+                <div class="topbar-user">
+                    <div class="topbar-avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <span class="topbar-user-name" id="userName">González Velasco Santos Enoch</span>
+                        <span class="topbar-user-org">Corporativo Jurídico Fusión TGZ</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+
+                <!-- ----- Encabezado del módulo ----- -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Mis Descargas</h1>
+                        <p class="page-subtitle">Archivos disponibles para usar sin conexión.</p>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                        BUSCADOR / FILTRO DE DESCARGAS
+                ============================================================ -->
+                <div id="searchWrapper" class="search-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="inputFiltro" class="search-input"
+                           placeholder="Filtrar descargas...">
+                </div>
+
+                <!-- ============================================================
+                        BANNER OFFLINE (contador de archivos)
+                ============================================================ -->
+                <div id="offlineBanner" class="offline-banner">
+                    <i data-lucide="wifi-off"></i>
+                    <p>Tienes <strong id="contadorDescargas">0</strong> archivos listos para consultar offline.</p>
+                </div>
+
+                <!-- ============================================================
+                        LISTA DE DESCARGAS
+                ============================================================ -->
+                <section id="listaCard" class="card card-list">
+                    <div id="listaDescargas"><!-- Filas generadas por JS --></div>
+                    <p id="sinResultados" class="no-results hidden">Sin resultados</p>
+                </section>
+
+                <!-- ============================================================
+                        ESTADO VACÍO (sin archivos descargados)
+                ============================================================ -->
+                <section id="emptyCard" class="card empty-card hidden">
+                    <i data-lucide="download-cloud" class="empty-icon"></i>
+                    <p class="empty-title">No tienes archivos descargados</p>
+                    <p class="empty-desc">
+                        Los archivos que guardes para uso offline aparecerán aquí
+                        y estarán disponibles incluso sin conexión.
+                    </p>
+                </section>
+
+            </main>
+        </div><!-- /.main -->
+    </div><!-- /.layout -->
+
+    <!-- ============================================================
+                 MODAL — CONFIRMAR ELIMINACIÓN
+    ============================================================ -->
+    <div id="deleteModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-confirm">
+            <button class="modal-close" data-close="delete" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <h3 class="modal-confirm-title">¿Eliminar descarga?</h3>
+            <p class="modal-confirm-text">El archivo será removido de tu lista de descargas offline.</p>
+            <div class="modal-confirm-actions">
+                <button class="btn btn-outline" data-close="delete">Cancelar</button>
+                <button id="btnConfirmarEliminar" class="btn btn-danger">Eliminar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                 MODAL — OPERACIÓN EXITOSA
+    ============================================================ -->
+    <div id="successModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-success">
+            <button class="modal-close" data-close="success" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-success-icon">
+                <i data-lucide="check-circle-2"></i>
+            </div>
+            <h3 class="modal-success-title">¡Operación exitosa!</h3>
+            <p id="successMessage" class="modal-success-text">Archivo eliminado correctamente.</p>
+            <button class="btn btn-success-full" data-close="success">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                    SCRIPT DEL MÓDULO
+    ============================================================ -->
+    <script src="../JS/MisDescargasAdmin.js"></script>
+</body>
+</html>

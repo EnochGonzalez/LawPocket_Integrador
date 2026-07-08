@@ -1,6 +1,6 @@
-// ============================================================
-// GestionUsuarios.js — Lógica de la página "Gestión de Usuarios"
-// ============================================================
+// ===================================================================
+// GestionUsuariosAdmin.js — Lógica de la página "Gestión de Usuarios"
+// ===================================================================
 
 // Inicializar los iconos de la librería Lucide
 if (window.lucide) lucide.createIcons();

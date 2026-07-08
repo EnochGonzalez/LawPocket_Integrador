@@ -1,0 +1,411 @@
+:root {
+    --navy: #1a2b4b;
+    --navy-dark: #14213d;
+    --emerald: #10B981;
+    --emerald-dark: #0ea271;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --radius: 12px;
+    --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-card-hover: 0 10px 25px rgba(15, 23, 42, 0.12);
+    --shadow-modal: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--slate-100);
+    color: var(--navy);
+    font-size: 14px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   ESTRUCTURA GENERAL (LAYOUT)
+============================================================ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.content {
+    padding: 28px 36px 48px;
+}
+
+/* ============================================================
+   BARRA SUPERIOR (TOPBAR)
+============================================================ */
+.topbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 12px 36px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--navy-dark);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.topbar-user-name {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.85rem;
+}
+
+.topbar-user-org {
+    color: var(--slate-500);
+    font-size: 0.78rem;
+}
+
+/* ============================================================
+   ENCABEZADO DEL MÓDULO
+============================================================ */
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.page-subtitle {
+    color: var(--slate-500);
+    margin-top: 2px;
+}
+
+/* ============================================================
+   TARJETAS BASE
+============================================================ */
+.card {
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 24px;
+}
+
+/* ============================================================
+   CUADRÍCULA DE MANUALES
+============================================================ */
+.manuals-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.manual-card {
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: box-shadow 0.2s ease;
+}
+
+.manual-card:hover {
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* Encabezado de la tarjeta: icono + título + descripción */
+.manual-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.manual-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 10px;
+    background-color: rgba(16, 185, 129, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.manual-icon i,
+.manual-icon svg {
+    width: 24px;
+    height: 24px;
+    color: var(--emerald);
+}
+
+.manual-title {
+    color: var(--navy);
+    font-weight: 600;
+    line-height: 1.25;
+}
+
+.manual-subtitle {
+    color: var(--slate-500);
+    margin-top: 4px;
+}
+
+/* Metadatos: tamaño y fecha de actualización */
+.manual-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--slate-500);
+    margin-bottom: 16px;
+}
+
+/* Acciones: Visualizar / Descargar */
+.manual-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+}
+
+.manual-actions .btn {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ============================================================
+   ESTADO VACÍO (sin manuales publicados)
+============================================================ */
+.empty-card {
+    text-align: center;
+    padding: 64px 24px;
+    color: var(--slate-500);
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--slate-300);
+    margin-bottom: 16px;
+}
+
+.empty-title {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+
+.empty-desc {
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+/* ============================================================
+   BOTONES
+============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.btn i,
+.btn svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+}
+
+.btn-primary {
+    background-color: var(--emerald);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--emerald-dark);
+}
+
+.btn-outline {
+    background-color: #ffffff;
+    color: var(--navy);
+    border: 1px solid var(--slate-300);
+}
+
+.btn-outline:hover {
+    background-color: var(--slate-100);
+}
+
+.btn-success-full {
+    width: 100%;
+    background-color: var(--emerald);
+    color: #ffffff;
+    padding: 12px;
+}
+
+.btn-success-full:hover {
+    background-color: var(--emerald-dark);
+}
+
+/* ============================================================
+   SISTEMA DE MODALES — BASE
+============================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+    margin: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--slate-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.modal-close:hover {
+    background-color: var(--slate-100);
+}
+
+.modal-close i,
+.modal-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================================
+   MODAL DE ÉXITO (DESCARGA OFFLINE)
+============================================================ */
+.modal-success {
+    max-width: 430px;
+    padding: 30px 24px 24px;
+    text-align: center;
+}
+
+.modal-success-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background-color: #d1fae5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--emerald);
+}
+
+.modal-success-icon i,
+.modal-success-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.modal-success-title {
+    color: var(--navy);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.modal-success-text {
+    color: var(--slate-500);
+    margin: 8px 0 18px;
+}
+
+.modal-success-text strong {
+    color: var(--slate-700);
+}
+
+/* ============================================================
+   DISEÑO RESPONSIVO
+============================================================ */
+@media (max-width: 1100px) {
+    .manuals-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 900px) {
+    .content {
+        padding: 20px 16px;
+    }
+}
+
+@media (max-width: 640px) {
+    .manuals-grid {
+        grid-template-columns: 1fr;
+    }
+}
