@@ -1,0 +1,34 @@
+/* ============================================================
+   Fuente Inter servida localmente (reemplaza a Google Fonts)
+   Necesario para que la PWA funcione sin conexión: si la fuente
+   viniera de internet, al estar offline el texto cambiaría de
+   tipografía. Los archivos .woff2 viven junto a este CSS.
+============================================================ */
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('inter-latin-400-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url('inter-latin-500-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 600;
+    font-display: swap;
+    src: url('inter-latin-600-normal.woff2') format('woff2');
+}
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src: url('inter-latin-700-normal.woff2') format('woff2');
+}

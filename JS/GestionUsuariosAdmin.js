@@ -43,14 +43,44 @@ function showSuccess(message) {
 }
 
 // ------------------------------------------------------------
-// Datos de usuarios (lista inicial de prueba) y estado de la página
+// Datos de usuarios y estado de la página
+// La lista vive en sessionStorage bajo "lawpocket_usuarios" para
+// que otros módulos (p. ej. la gráfica "Uso por Abogado" de
+// Sistema y Almacenamiento) reflejen las altas, ediciones y
+// bajas hechas aquí. Si no existe aún, se siembra con los
+// datos demo del diseño.
 // ------------------------------------------------------------
-let users = [
-    { id: 1, nombre: 'González Velasco Santos Enoch', userId: 'ADMIN01', telefono: '961 123 4567', rol: 'Socio', activo: true },
-    { id: 2, nombre: 'Nucamendi Ruiz Leonardo', userId: 'ABG01', telefono: '961 234 5678', rol: 'Abogado', activo: true },
-    { id: 3, nombre: 'Rodriguez Cruz Pablo Isaias', userId: 'ABG02', telefono: '961 345 6789', rol: 'Abogado', activo: true },
-    { id: 4, nombre: 'Abogado de Prueba', userId: 'ABG03', telefono: '961 456 7890', rol: 'Abogado', activo: true },
+const USUARIOS_KEY = 'lawpocket_usuarios';
+
+const USUARIOS_DEMO = [
+    { id: 1, nombre: 'González Velasco Santos Enoch', userId: 'ADMIN01', password: 'admin2026', telefono: '961 123 4567', rol: 'Socio', activo: true },
+    { id: 2, nombre: 'Nucamendi Ruiz Leonardo', userId: 'ABG01', password: 'leonardo01', telefono: '961 234 5678', rol: 'Abogado', activo: true },
+    { id: 3, nombre: 'Rodriguez Cruz Pablo Isaias', userId: 'ABG02', password: 'pablo02', telefono: '961 345 6789', rol: 'Abogado', activo: true },
+    { id: 4, nombre: 'González Pérez Santos Enoch', userId: 'ABG03', password: 'santos03', telefono: '961 456 7890', rol: 'Abogado', activo: true },
 ];
+
+// Lee la lista de usuarios del almacén compartido (o siembra la demo)
+function obtenerUsuarios() {
+    try {
+        const raw = sessionStorage.getItem(USUARIOS_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {
+        console.warn('No se pudo leer la lista de usuarios:', e);
+    }
+    guardarUsuarios(USUARIOS_DEMO);
+    return USUARIOS_DEMO.slice();
+}
+
+// Guarda la lista de usuarios en el almacén compartido
+function guardarUsuarios(lista) {
+    try {
+        sessionStorage.setItem(USUARIOS_KEY, JSON.stringify(lista));
+    } catch (e) {
+        console.warn('No se pudo guardar la lista de usuarios:', e);
+    }
+}
+
+let users = obtenerUsuarios();
 let searchTerm = '';      // Texto actual del buscador
 let deleteTargetId = null; // Id del usuario que se va a eliminar (pendiente de confirmar)
 
@@ -156,6 +186,7 @@ function attachRowEvents() {
         btn.addEventListener('click', () => {
             const id = Number(btn.dataset.toggle);
             users = users.map((u) => (u.id === id ? { ...u, activo: !u.activo } : u));
+            guardarUsuarios(users);
             renderUsersTable();
         });
     });
@@ -239,7 +270,8 @@ document.getElementById('saveCreateBtn').addEventListener('click', () => {
 
     // Todo correcto: agregar el usuario (siempre inicia como Activo)
     const nextId = users.length ? Math.max(...users.map((u) => u.id)) + 1 : 1;
-    users.push({ id: nextId, nombre, userId: userId.toUpperCase(), telefono, rol, activo: true });
+    users.push({ id: nextId, nombre, userId: userId.toUpperCase(), password, telefono, rol, activo: true });
+    guardarUsuarios(users);
     renderUsersTable();
     closeModal('createModal');
     showSuccess(`${rol} agregado exitosamente.`);
@@ -251,7 +283,7 @@ document.getElementById('saveCreateBtn').addEventListener('click', () => {
 
 // Limpia los errores de validación del formulario de edición
 function clearEditErrors() {
-    ['nombre', 'userId', 'telefono'].forEach((f) => {
+    ['nombre', 'userId', 'password', 'telefono'].forEach((f) => {
         document.getElementById(`edit-${f}`).classList.remove('input-error');
         const err = document.getElementById(`err-edit-${f}`);
         if (err) err.style.display = 'none';
@@ -267,6 +299,8 @@ function openEditModal(id) {
     document.getElementById('edit-id').value = u.id;
     document.getElementById('edit-nombre').value = u.nombre;
     document.getElementById('edit-userId').value = u.userId;
+    document.getElementById('edit-password').value = u.password || '';
+    setEditPasswordVisible(false); // siempre inicia oculta
     document.getElementById('edit-telefono').value = u.telefono;
     document.getElementById('edit-rol').value = u.rol;
     document.getElementById('edit-activo').value = u.activo ? 'activo' : 'baja';
@@ -281,6 +315,7 @@ document.getElementById('saveEditBtn').addEventListener('click', () => {
     const id = Number(document.getElementById('edit-id').value);
     const nombre = document.getElementById('edit-nombre').value.trim();
     const userId = document.getElementById('edit-userId').value.trim();
+    const password = document.getElementById('edit-password').value.trim();
     const telefono = document.getElementById('edit-telefono').value.trim();
     const rol = document.getElementById('edit-rol').value;
     const activo = document.getElementById('edit-activo').value === 'activo';
@@ -302,6 +337,7 @@ document.getElementById('saveEditBtn').addEventListener('click', () => {
     // Validaciones de campos obligatorios
     if (!nombre) setErr('nombre', 'El nombre es obligatorio.');
     if (!userId) setErr('userId', 'El ID de usuario es obligatorio.');
+    if (!password) setErr('password', 'La contraseña es obligatoria.');
     if (!telefono) setErr('telefono', 'El teléfono es obligatorio.');
     if (hasError) return;
 
@@ -320,10 +356,29 @@ document.getElementById('saveEditBtn').addEventListener('click', () => {
     }
 
     // Actualizar el usuario y refrescar la tabla
-    users = users.map((u) => (u.id === id ? { ...u, nombre, userId: userId.toUpperCase(), telefono, rol, activo } : u));
+    users = users.map((u) => (u.id === id ? { ...u, nombre, userId: userId.toUpperCase(), password, telefono, rol, activo } : u));
+    guardarUsuarios(users);
     renderUsersTable();
     closeModal('editModal');
     showSuccess(`Usuario actualizado exitosamente.`);
+});
+
+// ------------------------------------------------------------
+// Botón "ojo" del campo de contraseña (modal de edición)
+// Permite ver la contraseña actual para facilitar su
+// recuperación, o volver a ocultarla
+// ------------------------------------------------------------
+function setEditPasswordVisible(visible) {
+    const input = document.getElementById('edit-password');
+    const toggle = document.getElementById('toggleEditPassword');
+    input.type = visible ? 'text' : 'password';
+    toggle.innerHTML = `<i data-lucide="${visible ? 'eye-off' : 'eye'}"></i>`;
+    if (window.lucide) lucide.createIcons();
+}
+
+document.getElementById('toggleEditPassword').addEventListener('click', () => {
+    const input = document.getElementById('edit-password');
+    setEditPasswordVisible(input.type === 'password');
 });
 
 // ------------------------------------------------------------
@@ -335,6 +390,7 @@ document.getElementById('cancelDeleteBtn').addEventListener('click', () => { del
 // Confirmar: elimina definitivamente al usuario de la lista
 document.getElementById('confirmDeleteBtn').addEventListener('click', () => {
     users = users.filter((x) => x.id !== deleteTargetId);
+    guardarUsuarios(users);
     deleteTargetId = null;
     closeModal('confirmModal');
     renderUsersTable();

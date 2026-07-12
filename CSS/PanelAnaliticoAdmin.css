@@ -75,22 +75,19 @@ a { text-decoration: none; }
 .split-stats .stat-item.perdidos .value { color: var(--red); }
 .split-stats .stat-item.total .value { color: var(--navy); }
 
-/* Card "Origen de Clientes" (gráfica de pastel centrada) */
-.pie-flex {
-    display: flex;
-    gap: 2.5rem;
-    align-items: center;
-    flex-wrap: wrap;
-    justify-content: center;
-    width: 100%;
-}
-.pie-chart-wrap {
-    width: 100%;
-    max-width: 400px;
-    height: 350px;
-    margin: 0 auto;
-    position: relative;
-}
+/* Card "Origen de Clientes" (pastel + leyenda con barras al lado
+   derecho, mismo estilo que la gráfica "Documentos en el Sistema"
+   del módulo Sistema y Almacenamiento; el conjunto queda centrado) */
+.pie-flex { display: flex; gap: 2.5rem; align-items: center; flex-wrap: wrap; justify-content: center; }
+.pie-chart-wrap { width: 280px; height: 280px; flex-shrink: 0; position: relative; }
+.pie-legend { min-width: 220px; }
+.legend-row { margin-bottom: 0.9rem; }
+.legend-row .top { display: flex; justify-content: space-between; margin-bottom: 0.35rem; }
+.legend-row .top .val { color: var(--navy); font-weight: 700; }
+.legend-bar { height: 8px; border-radius: 999px; background-color: var(--slate-100); overflow: hidden; }
+.legend-bar-fill { height: 100%; border-radius: 999px; }
+.pie-total { color: var(--navy); font-size: 1.4rem; font-weight: 700; margin-top: 0.6rem; }
+.pie-total-label { color: var(--slate-500); }
 
 /* Cards "Tipos de Casos" y "Éxito Mensual" (caja centrada para gráficas) */
 .chart-box {

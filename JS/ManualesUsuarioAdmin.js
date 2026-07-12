@@ -86,14 +86,52 @@ function fechaHoy() {
     return dia + " " + meses[hoy.getMonth()] + " " + hoy.getFullYear();
 }
 
-/* Agrega el manual descargado a "Mis Descargas" (sin duplicar) */
+/* ------------------------------------------------------------
+   Ventana emergente de aviso para descargas (se crea una sola
+   vez por página y se reutiliza; no requiere cambios en el HTML)
+------------------------------------------------------------ */
+function mostrarAvisoDescarga(titulo, mensaje) {
+    let overlay = document.getElementById("avisoDescargaOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "avisoDescargaOverlay";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.innerHTML =
+            '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
+                '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
+                '<h3 id="avisoDescargaTitulo" style="margin:0 0 .5rem;color:#1a2b4b;font-size:1.05rem;"></h3>' +
+                '<p id="avisoDescargaTexto" style="margin:0 0 1.1rem;color:#475569;font-size:.92rem;line-height:1.5;"></p>' +
+                '<button id="avisoDescargaCerrar" style="background:#1a2b4b;color:#fff;border:none;border-radius:8px;padding:.6rem 1.4rem;font-weight:600;cursor:pointer;">Aceptar</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.style.display = "none"; });
+        overlay.querySelector("#avisoDescargaCerrar").addEventListener("click", () => { overlay.style.display = "none"; });
+    }
+    overlay.querySelector("#avisoDescargaTitulo").textContent = titulo;
+    overlay.querySelector("#avisoDescargaTexto").textContent = mensaje;
+    overlay.style.display = "flex";
+}
+
+/* Agrega el manual descargado a "Mis Descargas".
+   Devuelve el nombre del archivo si se registró, o null si ya
+   estaba descargado (en ese caso muestra el aviso emergente y
+   no se permite volver a descargar). */
 function registrarDescarga(manual) {
     const nombreArchivo = manual.title + ".pdf";
     const descargas = obtenerDescargas();
-    if (!descargas.some((d) => d.name === nombreArchivo)) {
-        descargas.unshift({ name: nombreArchivo, size: manual.size, date: fechaHoy() });
-        guardarDescargas(descargas);
+    const existente = descargas.find((d) => d.name === nombreArchivo);
+    if (existente) {
+        if (existente.desactualizado) {
+            mostrarAvisoDescarga("Documento actualizado",
+                '"' + nombreArchivo + '" se actualizó después de tu descarga. Elimina la descarga en "Mis Descargas" y vuelve a descargarlo para reinstalarlo con la actualización.');
+        } else {
+            mostrarAvisoDescarga("Descarga duplicada",
+                '"' + nombreArchivo + '" ya está descargado para consulta offline. No es posible volver a realizar esta acción.');
+        }
+        return null;
     }
+    descargas.unshift({ name: nombreArchivo, size: manual.size, date: fechaHoy() });
+    guardarDescargas(descargas);
     return nombreArchivo;
 }
 
@@ -160,7 +198,7 @@ function renderManuales() {
         btnDescargar.innerHTML = '<i data-lucide="download"></i> Descargar';
         btnDescargar.addEventListener("click", () => {
             const nombreArchivo = registrarDescarga(manual);
-            abrirModalDescarga(nombreArchivo);
+            if (nombreArchivo) abrirModalDescarga(nombreArchivo);
         });
 
         acciones.appendChild(btnVer);

@@ -10,6 +10,18 @@
 
    Cualquier cambio de diseño del sidebar se hace SOLO aquí.
 ============================================================ */
+
+html {
+    color-scheme: only light;
+}
+
+input,
+select,
+textarea,
+button {
+    color-scheme: only light;
+}
+
 .sidebar {
     width: 240px;
     flex-shrink: 0;

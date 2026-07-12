@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <title>LawPocket · Mis Expedientes</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
     <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
     <link rel="stylesheet" href="../CSS/ExpedientesAdmin.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="../lib/lucide.min.js"></script>
 </head>
 <body>
 
@@ -115,12 +120,9 @@
                                placeholder="Buscar por ID o nombre del cliente...">
                     </div>
                     <div class="select-wrapper filter-abogado">
+                        <!-- Las opciones se llenan desde JS (incluye al admin como abogado) -->
                         <select id="filterAbogado" class="form-input form-select">
                             <option value="todos" selected>Filtrar por Abogado</option>
-                            <option value="Lic. Leonardo Nucamendi">Lic. Leonardo Nucamendi</option>
-                            <option value="Lic. Santos Enoch González">Lic. Santos Enoch González</option>
-                            <option value="Lic. Pablo Rodriguez">Lic. Pablo Rodriguez</option>
-                            <option value="Lic. Carlos Vega">Lic. Carlos Vega</option>
                         </select>
                         <i data-lucide="chevron-down" class="select-chevron"></i>
                     </div>
@@ -235,7 +237,6 @@
                     <div class="select-wrapper">
                         <select id="editOrigen" class="form-input form-select">
                             <option value="Redes Sociales">Redes Sociales</option>
-                            <option value="Publicidad">Publicidad</option>
                             <option value="Recomendación">Recomendación</option>
                             <option value="Sitio Web">Sitio Web</option>
                             <option value="Referidos">Referidos</option>
@@ -259,12 +260,8 @@
                 <div class="form-group">
                     <label for="editAsignado">Asignado a</label>
                     <div class="select-wrapper">
-                        <select id="editAsignado" class="form-input form-select">
-                            <option value="Lic. Leonardo Nucamendi">Lic. Leonardo Nucamendi</option>
-                            <option value="Lic. Santos Enoch González">Lic. Santos Enoch González</option>
-                            <option value="Lic. Pablo Rodriguez">Lic. Pablo Rodriguez</option>
-                            <option value="Lic. Carlos Vega">Lic. Carlos Vega</option>
-                        </select>
+                        <!-- Las opciones se llenan desde JS (incluye al admin como abogado) -->
+                        <select id="editAsignado" class="form-input form-select"></select>
                         <i data-lucide="chevron-down" class="select-chevron"></i>
                     </div>
                 </div>
@@ -334,7 +331,6 @@
                     <div class="select-wrapper">
                         <select id="newOrigen" class="form-input form-select">
                             <option value="Redes Sociales" selected>Redes Sociales</option>
-                            <option value="Publicidad">Publicidad</option>
                             <option value="Recomendación">Recomendación</option>
                             <option value="Sitio Web">Sitio Web</option>
                             <option value="Referidos">Referidos</option>
@@ -350,12 +346,8 @@
                 <div class="form-group">
                     <label for="newAsignado">Asignar a Abogado</label>
                     <div class="select-wrapper">
-                        <select id="newAsignado" class="form-input form-select">
-                            <option value="Lic. Leonardo Nucamendi" selected>Lic. Leonardo Nucamendi</option>
-                            <option value="Lic. Santos Enoch González">Lic. Santos Enoch González</option>
-                            <option value="Lic. Pablo Rodriguez">Lic. Pablo Rodriguez</option>
-                            <option value="Lic. Carlos Vega">Lic. Carlos Vega</option>
-                        </select>
+                        <!-- Las opciones se llenan desde JS (incluye al admin como abogado) -->
+                        <select id="newAsignado" class="form-input form-select"></select>
                         <i data-lucide="chevron-down" class="select-chevron"></i>
                     </div>
                 </div>
@@ -431,5 +423,7 @@
                   SCRIPT DEL MÓDULO
     ============================================================ -->
     <script src="../JS/ExpedientesAdmin.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
 </body>
 </html>

@@ -4,12 +4,23 @@
 
 const MAX_PDF_SIZE = 20 * 1024 * 1024; // Límite de 20MB para el PDF
 
+/* El administrador también funge como abogado: se obtiene de la
+   sesión activa y se agrega automáticamente a todas las listas de
+   asignación, sin necesidad de registrarlo como un abogado nuevo. */
+const ADMIN_NAME = "Lic. " + (sessionStorage.getItem("lawpocket_name") || "González Velasco Santos Enoch");
+
+/* Plantilla del despacho: los mismos 4 miembros que aparecen en
+   "Gestión de Usuarios" (3 abogados + el admin, que también funge
+   como abogado). Si se agrega un abogado nuevo debe registrarse
+   también en Gestión de Usuarios. */
 const ABOGADOS = [
-    "Lic. Leonardo Nucamendi",
-    "Lic. Santos Enoch González",
-    "Lic. Pablo Rodriguez",
-    "Lic. Carlos Vega"
+    "Lic. Nucamendi Ruiz Leonardo",
+    "Lic. Rodriguez Cruz Pablo Isaias",
+    "Lic. González Pérez Santos Enoch"
 ];
+
+// Lista completa de asignables: el admin primero + los abogados
+const ASIGNABLES = [ADMIN_NAME, ...ABOGADOS];
 
 // Colores disponibles para los avatares de abogados
 const AVATAR_COLORS = ["#1a2b4b", "#047857", "#1D4ED8", "#9333EA"];
@@ -30,7 +41,7 @@ let rows = [
     { id: "EXP-2026-118", cliente: "María Hernández Soto",     fecha: "2026-05-12", tipoCaso: "Civil",     estatus: "En Proceso",          origen: "Referidos",      asignado: ABOGADOS[0], pdfFile: "nuevo_documento_cargado.pdf" },
     { id: "EXP-2026-117", cliente: "Grupo Ferretero del Sur",  fecha: "2026-05-08", tipoCaso: "Mercantil", estatus: "En Proceso",          origen: "Sitio Web",      asignado: ABOGADOS[1], pdfFile: "nuevo_documento_cargado.pdf" },
     { id: "EXP-2026-115", cliente: "Carlos Mendoza Ruiz",      fecha: "2026-04-22", tipoCaso: "Penal",     estatus: "Concluido - Ganado",  origen: "Recomendación",  asignado: ABOGADOS[2], pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-114", cliente: "Distribuidora La Roca SA", fecha: "2026-04-18", tipoCaso: "Mercantil", estatus: "Concluido - Perdido", origen: "Publicidad",     asignado: ABOGADOS[3], pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-114", cliente: "Distribuidora La Roca SA", fecha: "2026-04-18", tipoCaso: "Mercantil", estatus: "Concluido - Perdido", origen: "Publicidad",     asignado: ADMIN_NAME,   pdfFile: "nuevo_documento_cargado.pdf" },
     { id: "EXP-2026-113", cliente: "Ana Lucía Robles",         fecha: "2026-04-10", tipoCaso: "Familiar",  estatus: "En Proceso",          origen: "Redes Sociales", asignado: ABOGADOS[0], pdfFile: "nuevo_documento_cargado.pdf" },
     { id: "EXP-2026-112", cliente: "José Antonio Pérez",       fecha: "2026-03-28", tipoCaso: "Laboral",   estatus: "Concluido - Ganado",  origen: "Referidos",      asignado: ABOGADOS[1], pdfFile: "nuevo_documento_cargado.pdf" }
 ];
@@ -133,6 +144,21 @@ function formatFecha(iso) {
 // Fecha actual en formato ISO para el campo de alta
 function todayISO() {
     return new Date().toISOString().slice(0, 10);
+}
+
+/* Llena los tres selects de abogados (filtro, edición y alta)
+   con la lista de asignables. El admin aparece etiquetado como
+   "(Administrador)" pero su value es su nombre real, para que
+   el filtrado por expediente asignado funcione igual. */
+function populateAbogadoSelects() {
+    const options = ASIGNABLES.map(name =>
+        '<option value="' + escapeHTML(name) + '">' +
+            escapeHTML(name) + (name === ADMIN_NAME ? " (Administrador)" : "") +
+        '</option>'
+    ).join("");
+    filterAbogado.innerHTML = '<option value="todos" selected>Filtrar por Abogado</option>' + options;
+    editAsignado.innerHTML = options;
+    newAsignado.innerHTML = options;
 }
 
 // Expedientes visibles según búsqueda y filtro de abogado
@@ -347,6 +373,13 @@ function saveEdit() {
     }
     if (hasErrors) return;
 
+    // Si el expediente ya estaba descargado, su copia offline queda
+    // desactualizada: se marca para avisar en "Mis Descargas"
+    const rowAnterior = rows.find(r => r.id === editingId);
+    if (rowAnterior) {
+        marcarDescargaDesactualizada(rowAnterior.id + " · " + rowAnterior.cliente + ".pdf");
+    }
+
     rows = rows.map(r => {
         if (r.id === editingId) {
             return { ...r,
@@ -381,7 +414,7 @@ function openCreateModal() {
     newFecha.value = todayISO();
     newTipo.value = "Civil";
     newOrigen.value = "Redes Sociales";
-    newAsignado.value = ABOGADOS[0];
+    newAsignado.value = ASIGNABLES[0];
 
     createModalOverlay.classList.remove("hidden");
 }
@@ -458,6 +491,14 @@ function closeDeleteModal() {
 function confirmDelete() {
     if (deleteTargetId === null) return;
 
+    // Si el expediente estaba descargado, su copia offline queda
+    // huérfana: se marca para avisar en "Mis Descargas" que el
+    // original fue eliminado (la copia se puede seguir viendo)
+    const rowEliminada = rows.find(r => r.id === deleteTargetId);
+    if (rowEliminada) {
+        marcarDescargaEliminada(rowEliminada.id + " · " + rowEliminada.cliente + ".pdf");
+    }
+
     rows = rows.filter(r => r.id !== deleteTargetId);
     deleteTargetId = null;
     closeDeleteModal();
@@ -466,12 +507,144 @@ function confirmDelete() {
 }
 
 /* ============================================================
+   MIS DESCARGAS — ALMACÉN COMPARTIDO (sessionStorage)
+   Mismo almacén que usan "Mis Descargas" y "Manuales de Usuario":
+   toda descarga se registra aquí para aparecer en esa sección.
+============================================================ */
+const DESCARGAS_KEY = "lawpocket_descargas";
+
+const DESCARGAS_DEMO = [
+    { name: "EXP-2026-118 · María Hernández.pdf", size: "2.4 MB", date: "10 Jun 2026" },
+    { name: "Código Penal Federal.pdf", size: "8.1 MB", date: "08 Jun 2026" },
+    { name: "EXP-2026-117 · Grupo Ferretero.pdf", size: "1.7 MB", date: "05 Jun 2026" },
+    { name: "Ley Federal del Trabajo.pdf", size: "5.3 MB", date: "01 Jun 2026" },
+];
+
+function obtenerDescargas() {
+    try {
+        const raw = sessionStorage.getItem(DESCARGAS_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {
+        console.warn("No se pudo leer la lista de descargas:", e);
+    }
+    guardarDescargas(DESCARGAS_DEMO);
+    return DESCARGAS_DEMO.slice();
+}
+
+function guardarDescargas(lista) {
+    try {
+        sessionStorage.setItem(DESCARGAS_KEY, JSON.stringify(lista));
+    } catch (e) {
+        console.warn("No se pudo guardar la lista de descargas:", e);
+    }
+}
+
+/* Fecha de hoy con el formato de "Mis Descargas", p. ej. "09 Jul 2026" */
+function fechaHoy() {
+    const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const hoy = new Date();
+    return String(hoy.getDate()).padStart(2, "0") + " " + meses[hoy.getMonth()] + " " + hoy.getFullYear();
+}
+
+/* Tamaño simulado y estable a partir del nombre (demo sin backend) */
+function tamanoSimulado(nombre) {
+    let h = 0;
+    for (const c of nombre) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return ((h % 70 + 12) / 10).toFixed(1) + " MB";
+}
+
+/* ------------------------------------------------------------
+   Ventana emergente de aviso para descargas (se crea una sola
+   vez por página y se reutiliza; no requiere cambios en el HTML)
+------------------------------------------------------------ */
+function mostrarAvisoDescarga(titulo, mensaje) {
+    let overlay = document.getElementById("avisoDescargaOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "avisoDescargaOverlay";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.innerHTML =
+            '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
+                '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
+                '<h3 id="avisoDescargaTitulo" style="margin:0 0 .5rem;color:#1a2b4b;font-size:1.05rem;"></h3>' +
+                '<p id="avisoDescargaTexto" style="margin:0 0 1.1rem;color:#475569;font-size:.92rem;line-height:1.5;"></p>' +
+                '<button id="avisoDescargaCerrar" style="background:#1a2b4b;color:#fff;border:none;border-radius:8px;padding:.6rem 1.4rem;font-weight:600;cursor:pointer;">Aceptar</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.style.display = "none"; });
+        overlay.querySelector("#avisoDescargaCerrar").addEventListener("click", () => { overlay.style.display = "none"; });
+    }
+    overlay.querySelector("#avisoDescargaTitulo").textContent = titulo;
+    overlay.querySelector("#avisoDescargaTexto").textContent = mensaje;
+    overlay.style.display = "flex";
+}
+
+/* Intenta registrar la descarga en "Mis Descargas".
+   Devuelve false si el archivo ya estaba descargado: en ese caso
+   muestra el aviso emergente y NO se repite la descarga. */
+function intentarDescarga(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const existente = descargas.find((d) => d.name === nombreArchivo);
+    if (existente) {
+        // El documento original había sido eliminado y ahora vuelve a
+        // descargarse: se reactiva la descarga con la fecha actual
+        if (existente.eliminado) {
+            delete existente.eliminado;
+            delete existente.desactualizado;
+            existente.date = fechaHoy();
+            guardarDescargas(descargas);
+            return true;
+        }
+        if (existente.desactualizado) {
+            mostrarAvisoDescarga("Documento actualizado",
+                '"' + nombreArchivo + '" se actualizó después de tu descarga. Elimina la descarga en "Mis Descargas" y vuelve a descargarlo para reinstalarlo con la actualización.');
+        } else {
+            mostrarAvisoDescarga("Descarga duplicada",
+                '"' + nombreArchivo + '" ya está descargado para consulta offline. No es posible volver a realizar esta acción.');
+        }
+        return false;
+    }
+    descargas.unshift({ name: nombreArchivo, size: tamanoSimulado(nombreArchivo), date: fechaHoy() });
+    guardarDescargas(descargas);
+    return true;
+}
+
+/* Marca la descarga de un documento como desactualizada (cuando el
+   documento fuente se edita después de haberse descargado) */
+function marcarDescargaDesactualizada(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const d = descargas.find((x) => x.name === nombreArchivo);
+    if (d && !d.desactualizado) {
+        d.desactualizado = true;
+        guardarDescargas(descargas);
+    }
+}
+
+/* Marca la descarga de un documento como eliminada (cuando el
+   documento fuente se borra del sistema después de descargarse).
+   La copia offline sigue disponible; "Mis Descargas" solo avisa
+   al usuario que el original ya no existe. */
+function marcarDescargaEliminada(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const d = descargas.find((x) => x.name === nombreArchivo);
+    if (d && !d.eliminado) {
+        d.eliminado = true;
+        guardarDescargas(descargas);
+    }
+}
+
+/* ============================================================
    MODAL DE DESCARGA OFFLINE
+   Al descargar, el expediente se registra en "Mis Descargas".
 ============================================================ */
 function openDownloadModal(id) {
     const row = rows.find(r => r.id === id);
     if (!row) return;
-    downloadFileName.textContent = row.id + " · " + row.cliente + ".pdf";
+    const nombreArchivo = row.id + " · " + row.cliente + ".pdf";
+    // Si ya estaba descargado (o quedó desactualizado) se muestra
+    // el aviso emergente y NO se permite volver a descargar
+    if (!intentarDescarga(nombreArchivo)) return;
+    downloadFileName.textContent = nombreArchivo;
     downloadModalOverlay.classList.remove("hidden");
     renderIcons();
 }
@@ -497,6 +670,9 @@ function closeSuccessModal() {
    INICIALIZACIÓN
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
+    // --- Llenar los selects de abogados (incluye al admin) ---
+    populateAbogadoSelects();
+
     // --- Búsqueda y filtro ---
     inputBuscar.addEventListener("input", renderTable);
     filterAbogado.addEventListener("change", renderTable);

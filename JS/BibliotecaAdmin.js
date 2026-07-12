@@ -3,18 +3,29 @@
 // ============================================================
 
 const LIBROS_INICIALES = [
-  { titulo: "Código Penal Federal",    autor: "Edición 2026",     color: "#7F1D1D", categoria: "Códigos Penales" },
-  { titulo: "Código Penal de Chiapas", autor: "Edición 2025",     color: "#991B1B", categoria: "Códigos Penales" },
-  { titulo: "Código Civil Federal",    autor: "Compilación 2026", color: "#1E3A8A", categoria: "Código Civil" },
-  { titulo: "Código Civil de Chiapas", autor: "Edición 2025",     color: "#1E40AF", categoria: "Código Civil" },
-  { titulo: "Ley Estatal de Trabajo",  autor: "Chiapas · 2025",   color: "#065F46", categoria: "Leyes Estatales" },
-  { titulo: "Ley de Tránsito Estatal", autor: "Chiapas · 2026",   color: "#047857", categoria: "Leyes Estatales" },
-  { titulo: "Código de Comercio",      autor: "Compilación 2026", color: "#78350F", categoria: "Doctrina/Libros" },
-  { titulo: "Teoría del Derecho Penal", autor: "García Máynez",   color: "#92400E", categoria: "Doctrina/Libros" },
+  { titulo: "Código Penal Federal",    autor: "Edición 2026",     categoria: "Códigos Penales" },
+  { titulo: "Código Penal de Chiapas", autor: "Edición 2025",     categoria: "Códigos Penales" },
+  { titulo: "Código Civil Federal",    autor: "Compilación 2026", categoria: "Código Civil" },
+  { titulo: "Código Civil de Chiapas", autor: "Edición 2025",     categoria: "Código Civil" },
+  { titulo: "Ley Estatal de Trabajo",  autor: "Chiapas · 2025",   categoria: "Leyes Estatales" },
+  { titulo: "Ley de Tránsito Estatal", autor: "Chiapas · 2026",   categoria: "Leyes Estatales" },
+  { titulo: "Código de Comercio",      autor: "Compilación 2026", categoria: "Doctrina/Libros" },
+  { titulo: "Teoría del Derecho Penal", autor: "García Máynez",   categoria: "Doctrina/Libros" },
 ];
 
-/* Colores asignados a los libros personales que agregue el usuario */
-const COLORES_PERSONALES = ["#4338CA", "#0E7490", "#9333EA", "#BE185D"];
+/* Color de etiqueta por categoría: cada categoría tiene su propio
+   color ÚNICO dentro de la Biblioteca (no se repiten entre sí).
+   El color del libro se deriva SIEMPRE de su categoría. */
+const CATEGORIA_COLORES = {
+  "Códigos Penales": "#DC2626", // Rojo
+  "Código Civil":    "#1D4ED8", // Azul
+  "Leyes Estatales": "#047857", // Verde
+  "Doctrina/Libros": "#D97706", // Ámbar
+};
+
+function colorCategoria(categoria) {
+  return CATEGORIA_COLORES[categoria] || "#475569";
+}
 
 let libros = LIBROS_INICIALES.map((l) => ({ ...l }));
 let categoriaActiva = "Todos";
@@ -110,6 +121,134 @@ function escaparHTML(texto) {
 }
 
 /* ============================================================
+   MIS DESCARGAS — ALMACÉN COMPARTIDO (sessionStorage)
+   Mismo almacén que usan "Mis Descargas" y "Manuales de Usuario":
+   toda descarga se registra aquí para aparecer en esa sección.
+============================================================ */
+const DESCARGAS_KEY = "lawpocket_descargas";
+
+const DESCARGAS_DEMO = [
+    { name: "EXP-2026-118 · María Hernández.pdf", size: "2.4 MB", date: "10 Jun 2026" },
+    { name: "Código Penal Federal.pdf", size: "8.1 MB", date: "08 Jun 2026" },
+    { name: "EXP-2026-117 · Grupo Ferretero.pdf", size: "1.7 MB", date: "05 Jun 2026" },
+    { name: "Ley Federal del Trabajo.pdf", size: "5.3 MB", date: "01 Jun 2026" },
+];
+
+function obtenerDescargas() {
+    try {
+        const raw = sessionStorage.getItem(DESCARGAS_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {
+        console.warn("No se pudo leer la lista de descargas:", e);
+    }
+    guardarDescargas(DESCARGAS_DEMO);
+    return DESCARGAS_DEMO.slice();
+}
+
+function guardarDescargas(lista) {
+    try {
+        sessionStorage.setItem(DESCARGAS_KEY, JSON.stringify(lista));
+    } catch (e) {
+        console.warn("No se pudo guardar la lista de descargas:", e);
+    }
+}
+
+/* Fecha de hoy con el formato de "Mis Descargas", p. ej. "09 Jul 2026" */
+function fechaHoy() {
+    const meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"];
+    const hoy = new Date();
+    return String(hoy.getDate()).padStart(2, "0") + " " + meses[hoy.getMonth()] + " " + hoy.getFullYear();
+}
+
+/* Tamaño simulado y estable a partir del nombre (demo sin backend) */
+function tamanoSimulado(nombre) {
+    let h = 0;
+    for (const c of nombre) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    return ((h % 70 + 12) / 10).toFixed(1) + " MB";
+}
+
+/* ------------------------------------------------------------
+   Ventana emergente de aviso para descargas (se crea una sola
+   vez por página y se reutiliza; no requiere cambios en el HTML)
+------------------------------------------------------------ */
+function mostrarAvisoDescarga(titulo, mensaje) {
+    let overlay = document.getElementById("avisoDescargaOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "avisoDescargaOverlay";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.innerHTML =
+            '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
+                '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
+                '<h3 id="avisoDescargaTitulo" style="margin:0 0 .5rem;color:#1a2b4b;font-size:1.05rem;"></h3>' +
+                '<p id="avisoDescargaTexto" style="margin:0 0 1.1rem;color:#475569;font-size:.92rem;line-height:1.5;"></p>' +
+                '<button id="avisoDescargaCerrar" style="background:#1a2b4b;color:#fff;border:none;border-radius:8px;padding:.6rem 1.4rem;font-weight:600;cursor:pointer;">Aceptar</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.style.display = "none"; });
+        overlay.querySelector("#avisoDescargaCerrar").addEventListener("click", () => { overlay.style.display = "none"; });
+    }
+    overlay.querySelector("#avisoDescargaTitulo").textContent = titulo;
+    overlay.querySelector("#avisoDescargaTexto").textContent = mensaje;
+    overlay.style.display = "flex";
+}
+
+/* Intenta registrar la descarga en "Mis Descargas".
+   Devuelve false si el archivo ya estaba descargado: en ese caso
+   muestra el aviso emergente y NO se repite la descarga. */
+function intentarDescarga(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const existente = descargas.find((d) => d.name === nombreArchivo);
+    if (existente) {
+        // El documento original había sido eliminado y ahora vuelve a
+        // descargarse: se reactiva la descarga con la fecha actual
+        if (existente.eliminado) {
+            delete existente.eliminado;
+            delete existente.desactualizado;
+            existente.date = fechaHoy();
+            guardarDescargas(descargas);
+            return true;
+        }
+        if (existente.desactualizado) {
+            mostrarAvisoDescarga("Documento actualizado",
+                '"' + nombreArchivo + '" se actualizó después de tu descarga. Elimina la descarga en "Mis Descargas" y vuelve a descargarlo para reinstalarlo con la actualización.');
+        } else {
+            mostrarAvisoDescarga("Descarga duplicada",
+                '"' + nombreArchivo + '" ya está descargado para consulta offline. No es posible volver a realizar esta acción.');
+        }
+        return false;
+    }
+    descargas.unshift({ name: nombreArchivo, size: tamanoSimulado(nombreArchivo), date: fechaHoy() });
+    guardarDescargas(descargas);
+    return true;
+}
+
+/* Marca la descarga de un documento como desactualizada (cuando el
+   documento fuente se edita después de haberse descargado) */
+function marcarDescargaDesactualizada(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const d = descargas.find((x) => x.name === nombreArchivo);
+    if (d && !d.desactualizado) {
+        d.desactualizado = true;
+        guardarDescargas(descargas);
+    }
+}
+
+/* Marca la descarga de un documento como eliminada (cuando el
+   documento fuente se borra del sistema después de descargarse).
+   La copia offline sigue disponible; "Mis Descargas" solo avisa
+   al usuario que el original ya no existe. */
+function marcarDescargaEliminada(nombreArchivo) {
+    const descargas = obtenerDescargas();
+    const d = descargas.find((x) => x.name === nombreArchivo);
+    if (d && !d.eliminado) {
+        d.eliminado = true;
+        guardarDescargas(descargas);
+    }
+}
+
+
+/* ============================================================
    VALIDACIÓN DE DUPLICADOS
    ============================================================ */
 
@@ -145,10 +284,11 @@ function renderizarLibros() {
     .map((libro) => {
       const tituloSeguro = escaparHTML(libro.titulo);
       const autorSeguro = escaparHTML(libro.autor);
+      const colorLibro = colorCategoria(libro.categoria);
       return `
       <article class="book-card">
         <div class="book-cover"
-             style="background: linear-gradient(160deg, ${libro.color} 0%, ${libro.color}cc 60%, ${libro.color}99 100%);">
+             style="background: linear-gradient(160deg, ${colorLibro} 0%, ${colorLibro}cc 60%, ${colorLibro}99 100%);">
           <div class="book-spine"></div>
           <i data-lucide="book-open" class="book-cover-icon"></i>
           <button class="book-edit-btn" data-accion="editar" data-titulo="${tituloSeguro}" title="Editar libro" aria-label="Editar libro">
@@ -207,7 +347,11 @@ booksGrid.addEventListener("click", (e) => {
     const libro = libros.find((l) => l.titulo === titulo);
     if (libro) abrirEdicion(libro);
   } else if (accion === "descargar") {
-    nombreArchivoDescarga.textContent = `${titulo}.pdf`;
+    /* La descarga se registra en "Mis Descargas"; si el libro ya
+       estaba descargado se muestra un aviso y no se repite */
+    const nombreArchivo = `${titulo}.pdf`;
+    if (!intentarDescarga(nombreArchivo)) return;
+    nombreArchivoDescarga.textContent = nombreArchivo;
     abrirModal(modalDescarga);
   } else if (accion === "eliminar") {
     libroAEliminar = titulo;
@@ -357,16 +501,17 @@ function guardarLibro() {
   /* Función que aplica el guardado (se difiere si hay aviso de copyright) */
   const confirmarGuardado = () => {
     if (tituloEnEdicion === null) {
-      const color = COLORES_PERSONALES[libros.length % COLORES_PERSONALES.length];
       libros.push({
         titulo: titulo.trim(),
         autor: autor.trim() || "Libro personal",
         categoria,
-        color,
         pdfNombre: pdfSeleccionado,
       });
       mostrarExito("Libro agregado exitosamente.");
     } else {
+      /* Si el libro ya estaba descargado, su copia offline queda
+         desactualizada: se marca para avisar en "Mis Descargas" */
+      marcarDescargaDesactualizada(tituloEnEdicion + ".pdf");
       libros = libros.map((l) =>
         l.titulo === tituloEnEdicion
           ? { ...l, titulo: titulo.trim(), autor: autor.trim(), categoria, pdfNombre: pdfSeleccionado }
@@ -414,6 +559,10 @@ btnAceptarCopyright.addEventListener("click", () => {
    ============================================================ */
 btnConfirmarEliminar.addEventListener("click", () => {
   if (!libroAEliminar) return;
+  /* Si el libro estaba descargado, su copia offline queda huérfana:
+     se marca para avisar en "Mis Descargas" que el original fue
+     eliminado (la copia se puede seguir viendo) */
+  marcarDescargaEliminada(libroAEliminar + ".pdf");
   libros = libros.filter((l) => l.titulo !== libroAEliminar);
   libroAEliminar = null;
   cerrarModal(modalEliminar);

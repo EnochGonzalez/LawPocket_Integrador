@@ -24,6 +24,12 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
 // Paleta de colores para las gráficas (misma que las variables del CSS)
 const NAVY = '#1a2b4b'; const EMERALD = '#10B981'; const RED = '#ef4444'; const BLUE = '#3B82F6'; const SLATE_200 = '#e2e8f0';
 
+// Genera el título de un eje (X o Y) para las gráficas
+// de Chart.js, indicando qué representa cada eje
+function axisTitle(text) {
+    return { display: true, text, color: '#64748b', font: { size: 12, weight: '600' } };
+}
+
 // ------------------------------------------------------------
 // Gráfica de dona "Almacenamiento Disponible (Offline)"
 // Se dibuja siempre al cargar la página (62% usado / 38% libre)
@@ -70,11 +76,13 @@ function renderAnaliticoChart(key) {
                 labels: ['Ganados', 'Perdidos'],
                 datasets: [{ data: [64, 18], backgroundColor: [EMERALD, RED], borderRadius: 6, barThickness: 40 }]
             },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 80 }, y: { grid: { display: false } } } }
+            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 80, title: axisTitle('Cantidad de casos') }, y: { grid: { display: false }, title: axisTitle('Resultado') } } }
         });
     }
 
-    // Pastel: Origen de Clientes
+    // Pastel: Origen de Clientes (la leyenda con barras y el total
+    // se muestran en el HTML, al lado derecho de la gráfica, con el
+    // mismo estilo que "Documentos en el Sistema"; por eso legend: false)
     if (key === 'origen') {
         new Chart(document.getElementById('chartOrigen'), {
             type: 'pie',
@@ -82,7 +90,7 @@ function renderAnaliticoChart(key) {
                 labels: ['Referidos', 'Sitio Web', 'Redes Sociales', 'Recomendación'],
                 datasets: [{ data: [42, 28, 18, 12], backgroundColor: [NAVY, EMERALD, BLUE, '#f59e0b'], borderWidth: 2, borderColor: '#fff' }]
             },
-            options: { plugins: { legend: { position: 'bottom' } } }
+            options: { plugins: { legend: { display: false } } }
         });
     }
 
@@ -91,7 +99,7 @@ function renderAnaliticoChart(key) {
         new Chart(document.getElementById('chartTipos'), {
             type: 'bar',
             data: { labels: ['Civil', 'Penal', 'Laboral', 'Mercantil', 'Familiar'], datasets: [{ data: [24, 17, 30, 12, 21], backgroundColor: NAVY, borderRadius: 6, barThickness: 46 }] },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 32 }, x: { grid: { display: false } } } }
+            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 32, title: axisTitle('Cantidad') }, x: { grid: { display: false }, title: axisTitle('Tipo de caso') } } }
         });
     }
 
@@ -103,7 +111,7 @@ function renderAnaliticoChart(key) {
                 labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                 datasets: [{ label: 'efectividad', data: [72, 76, 74, 80, 85, 83], borderColor: EMERALD, backgroundColor: EMERALD, tension: 0.35 }]
             },
-            options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: 100 }, x: { grid: { display: false } } } }
+            options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: 100, title: axisTitle('Efectividad (%)') }, x: { grid: { display: false }, title: axisTitle('Mes') } } }
         });
     }
 }

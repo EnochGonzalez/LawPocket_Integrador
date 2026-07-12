@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <title>LawPocket | Panel Analítico</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
     <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
     <link rel="stylesheet" href="../CSS/PanelAnaliticoAdmin.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="../lib/lucide.min.js"></script>
+    <script src="../lib/chart.umd.js"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -140,11 +145,34 @@
                     </div>
                 </div>
 
-                <!-- Vista: Origen de Clientes (gráfica de pastel) -->
+                <!-- Vista: Origen de Clientes (pastel + leyenda con barras
+                     al lado derecho, mismo estilo que "Documentos en el
+                     Sistema" del módulo Sistema y Almacenamiento) -->
                 <div class="card chart-view" id="chart-origen">
                     <div class="card-title"><i data-lucide="users-round"></i> Origen de Clientes</div>
                     <div class="pie-flex">
                         <div class="pie-chart-wrap"><canvas id="chartOrigen"></canvas></div>
+                        <!-- Leyenda: clientes por origen con barra de proporción -->
+                        <div class="pie-legend">
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Referidos</span><span class="val">42 clientes</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:42%; background-color:#1a2b4b;"></div></div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Sitio Web</span><span class="val">28 clientes</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:28%; background-color:#10B981;"></div></div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Redes Sociales</span><span class="val">18 clientes</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:18%; background-color:#3B82F6;"></div></div>
+                            </div>
+                            <div class="legend-row">
+                                <div class="top"><span class="name">Recomendación</span><span class="val">12 clientes</span></div>
+                                <div class="legend-bar"><div class="legend-bar-fill" style="width:12%; background-color:#f59e0b;"></div></div>
+                            </div>
+                            <p class="pie-total">100 clientes</p>
+                            <p class="pie-total-label">Total registrados este mes</p>
+                        </div>
                     </div>
                 </div>
 
@@ -189,5 +217,7 @@
 
     <!-- Lógica de la página -->
     <script src="../JS/PanelAnaliticoAdmin.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
 </body>
 </html>

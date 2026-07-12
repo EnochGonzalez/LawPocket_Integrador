@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <title>LawPocket | Mis Descargas</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
     <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
     <link rel="stylesheet" href="../CSS/MisDescargasAdmin.css">
-    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <script src="../lib/lucide.min.js"></script>
 </head>
 <body>
 
@@ -175,5 +180,7 @@
                     SCRIPT DEL MÓDULO
     ============================================================ -->
     <script src="../JS/MisDescargasAdmin.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
 </body>
 </html>

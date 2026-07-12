@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <title>LawPocket | Gestión de Usuarios</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
     <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
     <link rel="stylesheet" href="../CSS/GestionUsuariosAdmin.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="../lib/lucide.min.js"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -152,6 +157,8 @@
                 <input type="hidden" id="edit-id">
                 <div class="field-group"><label><i data-lucide="user"></i> Nombre</label><input type="text" id="edit-nombre"><p class="field-error" id="err-edit-nombre" style="display:none;"></p></div>
                 <div class="field-group"><label><i data-lucide="id-card"></i> ID de Usuario</label><input type="text" id="edit-userId"><p class="field-error" id="err-edit-userId" style="display:none;"></p></div>
+                <!-- Contraseña: se puede ver (ojo) o cambiar para facilitar la recuperación -->
+                <div class="field-group"><label><i data-lucide="lock"></i> Contraseña</label><div class="password-wrap"><input type="password" id="edit-password" placeholder="••••••••"><button type="button" class="password-toggle" id="toggleEditPassword" title="Mostrar u ocultar contraseña"><i data-lucide="eye"></i></button></div><p class="field-error" id="err-edit-password" style="display:none;"></p></div>
                 <div class="field-group"><label><i data-lucide="phone"></i> Teléfono</label><input type="text" id="edit-telefono"><p class="field-error" id="err-edit-telefono" style="display:none;"></p></div>
                 <div class="field-group"><label>Rol</label><select id="edit-rol"><option value="Socio">Socio</option><option value="Abogado">Abogado</option><option value="Asistente">Asistente</option></select></div>
                 <div class="field-group"><label>Estado</label><select id="edit-activo"><option value="activo">Activo</option><option value="baja">Dar de baja</option></select></div>
@@ -200,5 +207,7 @@
 
     <!-- Lógica de la página -->
     <script src="../JS/GestionUsuariosAdmin.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
 </body>
 </html>

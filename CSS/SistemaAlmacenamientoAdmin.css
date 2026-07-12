@@ -79,6 +79,10 @@ textarea.field-textarea:focus { border-color: var(--emerald); }
 .btn-outline { background-color: white; color: var(--slate-600); border: 1px solid var(--slate-200); }
 .btn-block { width: 100%; justify-content: center; }
 .notif-success { color: var(--emerald-dark); margin-top: 0.8rem; font-size: 0.92rem; }
+/* Error al intentar guardar un aviso vacío */
+.notif-error { color: #dc2626; margin-top: 0.8rem; font-size: 0.92rem; }
+/* Borde rojo del campo de texto cuando el aviso está vacío */
+.field-textarea.input-error { border-color: #dc2626 !important; }
 
 /* Modal: overlay (fondo oscuro) */
 .modal-overlay { position: fixed; inset: 0; background-color: rgba(15, 23, 42, 0.55); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 1rem; backdrop-filter: blur(2px); }

@@ -2,17 +2,21 @@
 // AgendaAdmin.js — Lógica de la página "Agenda"
 // ============================================================
 
-const NAVY = "#1a2b4b";
-const EMERALD = "#10B981";
-
-// Estilos por categoría del caso (materia)
+// Estilos por categoría del caso (materia).
+// Cada categoría tiene su propio color ÚNICO dentro de la Agenda:
+// los colores no se repiten entre categorías de esta sección.
 const MATERIA_STYLE = {
-    Laboral:     { bg: "#744700", text: "#FFFFFF" },
-    Familiar:    { bg: "#7C3AED", text: "#FFFFFF" },
-    Penal:       { bg: "#c1ab67", text: "#1F2937" },
-    Civil:       { bg: "#1D4ED8", text: "#FFFFFF" },
-    Corporativo: { bg: "#047857", text: "#FFFFFF" }
+    Civil:     { bg: "#1D4ED8", text: "#FFFFFF" }, // Azul
+    Penal:     { bg: "#DC2626", text: "#FFFFFF" }, // Rojo
+    Laboral:   { bg: "#D97706", text: "#FFFFFF" }, // Ámbar
+    Familiar:  { bg: "#7C3AED", text: "#FFFFFF" }, // Violeta
+    Mercantil: { bg: "#047857", text: "#FFFFFF" }  // Verde
 };
+
+// Color de la etiqueta de una cita: se deriva SIEMPRE de su categoría
+function materiaColor(materia) {
+    return (MATERIA_STYLE[materia] || MATERIA_STYLE.Civil).bg;
+}
 
 const MONTH_NAMES = [
     "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
@@ -27,25 +31,25 @@ const MONTH_NAMES = [
 let events = [
     { id: 1, year: 2026, month: 5, day: 12, hora: "10:00 hrs",
       titulo: "Audiencia Inicial · EXP-2026-118",
-      desc: "Juzgado 3° Civil — María Hernández Soto", color: EMERALD, materia: "Civil" },
+      desc: "Juzgado 3° Civil — María Hernández Soto", materia: "Civil" },
     { id: 2, year: 2026, month: 5, day: 14, hora: "09:30 hrs",
       titulo: "Cita con cliente",
-      desc: "Grupo Ferretero del Sur — Revisión de contrato", color: "#3B82F6", materia: "Civil" },
+      desc: "Grupo Ferretero del Sur — Revisión de contrato", materia: "Civil" },
     { id: 3, year: 2026, month: 5, day: 16, hora: "12:00 hrs",
       titulo: "Audiencia de pruebas · EXP-2026-117",
-      desc: "Juzgado 1° Mercantil", color: "#F59E0B", materia: "Civil" },
+      desc: "Juzgado 1° Mercantil", materia: "Civil" },
     { id: 4, year: 2026, month: 5, day: 20, hora: "16:00 hrs",
       titulo: "Reunión interna",
-      desc: "Revisión semanal del despacho", color: NAVY, materia: "Civil" },
+      desc: "Revisión semanal del despacho", materia: "Civil" },
     { id: 5, year: 2026, month: 6, day: 3, hora: "11:00 hrs",
       titulo: "Audiencia preliminar · EXP-2026-120",
-      desc: "Juzgado 2° Penal", color: "#3B82F6", materia: "Penal" },
+      desc: "Juzgado 2° Penal", materia: "Penal" },
     { id: 6, year: 2026, month: 5, day: 12, hora: "15:30 hrs",
       titulo: "Reunión con perito",
-      desc: "Valoración técnica del expediente", color: "#3B82F6", materia: "Penal" },
+      desc: "Valoración técnica del expediente", materia: "Penal" },
     { id: 7, year: 2026, month: 5, day: 12, hora: "18:00 hrs",
       titulo: "Cierre del día · Notas",
-      desc: "Resumen de avances del caso María Hernández", color: "#0E7490", materia: "Civil" }
+      desc: "Resumen de avances del caso María Hernández", materia: "Civil" }
 ];
 
 let currentYear = 2026;
@@ -210,7 +214,7 @@ function renderEventsList() {
         const card = document.createElement("article");
         card.className = "event-card";
         card.innerHTML =
-            '<div class="event-color-bar" style="background-color:' + e.color + '"></div>' +
+            '<div class="event-color-bar" style="background-color:' + materiaColor(e.materia) + '"></div>' +
             '<div class="event-body">' +
                 '<div class="event-header">' +
                     '<p class="event-title">' + escapeHTML(e.titulo) + '</p>' +
@@ -281,7 +285,7 @@ function renderDrawerEvents() {
         const item = document.createElement("div");
         item.className = "timeline-item";
         item.innerHTML =
-            '<span class="timeline-dot" style="background-color:' + e.color + '"></span>' +
+            '<span class="timeline-dot" style="background-color:' + materiaColor(e.materia) + '"></span>' +
             '<div class="timeline-head">' +
                 '<p class="timeline-time"><i data-lucide="clock"></i> ' + escapeHTML(e.hora) + '</p>' +
                 '<div class="event-actions">' +
@@ -404,7 +408,6 @@ function saveCita() {
     }
 
     const materia = inputMateria.value;
-    const color = (MATERIA_STYLE[materia] || MATERIA_STYLE.Civil).bg;
 
     if (editingId === null) {
         // Alta de nueva cita
@@ -415,7 +418,6 @@ function saveCita() {
             hora: draftHora + " hrs",
             titulo: inputTitulo.value.trim(),
             desc: inputDescripcion.value.trim(),
-            color: color,
             materia: materia
         });
     } else {
@@ -426,7 +428,7 @@ function saveCita() {
                     hora: draftHora + " hrs",
                     titulo: inputTitulo.value.trim(),
                     desc: inputDescripcion.value.trim(),
-                    color: color, materia: materia }
+                    materia: materia }
                 : e
         );
     }

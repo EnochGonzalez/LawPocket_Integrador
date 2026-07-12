@@ -1,0 +1,32 @@
+{
+    "name": "LawPocket — Corporativo Jurídico Fusión TGZ",
+    "short_name": "LawPocket",
+    "description": "Gestión legal inteligente: expedientes, agenda, biblioteca digital y consulta offline para el despacho.",
+    "lang": "es",
+    "start_url": "Paginas/index.html",
+    "scope": "./",
+    "display": "standalone",
+    "orientation": "any",
+    "theme_color": "#14213d",
+    "background_color": "#f8fafc",
+    "icons": [
+        {
+            "src": "Imagenes/icono-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "Imagenes/icono-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "Imagenes/icono-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

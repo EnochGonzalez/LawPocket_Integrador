@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
     <title>LawPocket | Sistema y Almacenamiento</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
     <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
     <link rel="stylesheet" href="../CSS/SistemaAlmacenamientoAdmin.css">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <script src="../lib/lucide.min.js"></script>
+    <script src="../lib/chart.umd.js"></script>
 </head>
 <body>
     <div class="admin-layout">
@@ -167,6 +172,8 @@
                         <button class="btn btn-outline" id="clearNotifBtn">Limpiar aviso</button>
                     </div>
                     <p class="notif-success" id="notifSuccessMsg" style="display:none;">✓ Notificación guardada exitosamente.</p>
+                    <!-- Error: no se puede guardar un aviso vacío -->
+                    <p class="notif-error" id="notifErrorMsg" style="display:none;">⚠ Debes escribir un mensaje para poder guardar el aviso.</p>
                 </div>
             </main>
         </div>
@@ -194,5 +201,7 @@
 
     <!-- Lógica de la página -->
     <script src="../JS/SistemaAlmacenamientoAdmin.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
 </body>
 </html>

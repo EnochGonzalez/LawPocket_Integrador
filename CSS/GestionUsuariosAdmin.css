@@ -168,6 +168,13 @@ td code { background-color: var(--slate-100); padding: 2px 6px; border-radius: 4
 .field-group input, .field-group select { width: 100%; padding: 0.6rem 0.75rem; border-radius: 8px; border: 1px solid var(--slate-200); background-color: var(--slate-50); outline: none; font-family: inherit; }
 .field-group input:focus, .field-group select:focus { border-color: var(--emerald); background-color: white; }
 
+/* Campo de contraseña con botón para mostrar/ocultar (modal de edición) */
+.password-wrap { position: relative; display: flex; align-items: center; }
+.password-wrap input { padding-right: 2.6rem; }
+.password-toggle { position: absolute; right: 0.5rem; background: none; border: none; color: var(--slate-500); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 6px; transition: all 0.15s ease; }
+.password-toggle:hover { color: var(--slate-700); background-color: var(--slate-100); }
+.password-toggle i { width: 17px; height: 17px; }
+
 /* Errores de validación en campos */
 .field-group input.input-error { border-color: var(--red); background-color: var(--red-light); }
 .field-error { color: var(--red); font-size: 0.82rem; margin-top: 0.4rem; }

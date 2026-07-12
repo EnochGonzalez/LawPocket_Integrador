@@ -68,6 +68,33 @@ function guardarDescargas(lista) {
     }
 }
 
+/* ------------------------------------------------------------
+   Ventana emergente de aviso para descargas (se crea una sola
+   vez por página y se reutiliza; no requiere cambios en el HTML)
+------------------------------------------------------------ */
+function mostrarAvisoDescarga(titulo, mensaje) {
+    let overlay = document.getElementById("avisoDescargaOverlay");
+    if (!overlay) {
+        overlay = document.createElement("div");
+        overlay.id = "avisoDescargaOverlay";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.innerHTML =
+            '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
+                '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
+                '<h3 id="avisoDescargaTitulo" style="margin:0 0 .5rem;color:#1a2b4b;font-size:1.05rem;"></h3>' +
+                '<p id="avisoDescargaTexto" style="margin:0 0 1.1rem;color:#475569;font-size:.92rem;line-height:1.5;"></p>' +
+                '<button id="avisoDescargaCerrar" style="background:#1a2b4b;color:#fff;border:none;border-radius:8px;padding:.6rem 1.4rem;font-weight:600;cursor:pointer;">Aceptar</button>' +
+            '</div>';
+        document.body.appendChild(overlay);
+        overlay.addEventListener("click", (e) => { if (e.target === overlay) overlay.style.display = "none"; });
+        overlay.querySelector("#avisoDescargaCerrar").addEventListener("click", () => { overlay.style.display = "none"; });
+    }
+    overlay.querySelector("#avisoDescargaTitulo").textContent = titulo;
+    overlay.querySelector("#avisoDescargaTexto").textContent = mensaje;
+    overlay.style.display = "flex";
+}
+
+
 /* ============================================================
    REFERENCIAS AL DOM
 ============================================================ */
@@ -120,10 +147,43 @@ function renderDescargas() {
         info.appendChild(nombre);
         info.appendChild(meta);
 
-        /* Botón Visualizar PDF — pendiente de integrarse con el visor de PDF */
+        /* Descarga desactualizada: el documento fuente se editó
+           después de descargarse; hay que eliminarla y volver a
+           descargarla para reinstalar la versión actualizada
+           (si el original fue eliminado, ese aviso tiene prioridad) */
+        if (archivo.desactualizado && !archivo.eliminado) {
+            const aviso = document.createElement("p");
+            aviso.className = "download-meta";
+            aviso.style.cssText = "color:#D97706;font-weight:600;";
+            aviso.textContent = "\u26A0 Documento actualizado: elimina esta descarga y descárgalo nuevamente para reinstalarlo con la actualización.";
+            info.appendChild(aviso);
+        }
+
+        /* Descarga huérfana: el documento original fue eliminado del
+           sistema; la copia offline sigue disponible para consulta,
+           el aviso es únicamente informativo */
+        if (archivo.eliminado) {
+            const aviso = document.createElement("p");
+            aviso.className = "download-meta";
+            aviso.style.cssText = "color:#DC2626;font-weight:600;";
+            aviso.textContent = "\u26A0 El documento original fue eliminado del sistema. Esta copia descargada sigue disponible para su consulta.";
+            info.appendChild(aviso);
+        }
+
+        /* Botón Visualizar PDF — pendiente de integrarse con el visor
+           de PDF. Si el original fue eliminado, al visualizar se
+           muestra una advertencia informativa (la copia sí se ve) */
         const btnVer = document.createElement("button");
         btnVer.className = "btn btn-primary";
         btnVer.innerHTML = '<i data-lucide="eye"></i> Visualizar PDF';
+        btnVer.addEventListener("click", () => {
+            if (archivo.eliminado) {
+                mostrarAvisoDescarga(
+                    "Documento eliminado",
+                    '"' + archivo.name + '" fue eliminado del sistema. A\u00fan puedes visualizar esta copia descargada, pero el documento original ya no existe y no recibir\u00e1 actualizaciones.'
+                );
+            }
+        });
 
         const btnEliminar = document.createElement("button");
         btnEliminar.className = "btn btn-danger-outline";
@@ -196,3 +256,18 @@ inputFiltro.addEventListener("input", renderDescargas);
 
 /* Primer renderizado */
 renderDescargas();
+
+/* Aviso emergente al entrar si hay descargas cuyo documento fue
+   actualizado después de descargarse: hay que eliminarlas y
+   volver a descargarlas para reinstalar la versión actualizada */
+(function avisarDescargasDesactualizadas() {
+    // Las descargas cuyo original fue ELIMINADO no entran aquí:
+    // ya no tiene caso volver a descargarlas (su aviso propio se
+    // muestra en la fila y al intentar visualizarlas)
+    const pendientes = descargas.filter((d) => d.desactualizado && !d.eliminado).map((d) => '"' + d.name + '"');
+    if (pendientes.length === 0) return;
+    mostrarAvisoDescarga(
+        "Documentos actualizados",
+        "Se actualizaron después de tu descarga: " + pendientes.join(", ") + ". Elimina cada descarga y vuelve a descargar el documento para reinstalarlo con la actualización."
+    );
+})();
