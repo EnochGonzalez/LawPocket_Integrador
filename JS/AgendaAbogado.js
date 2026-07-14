@@ -582,3 +582,19 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 })();
+/* ============================================================
+   MODAL "TRABAJO SIN CONEXIÓN"
+   Aparece cada vez que el abogado entra a la Agenda; se puede
+   cerrar con la X, con "Entendido" o haciendo clic fuera.
+   (Mismo comportamiento que en el Panel Analítico del Admin.)
+============================================================ */
+(function initOfflineModal() {
+    const modal = document.getElementById("offlineModal");
+    if (!modal) return;
+    const closeBtn = document.getElementById("closeOfflineModal");
+    const dismissBtn = document.getElementById("dismissOfflineModal");
+    function hideModal() { modal.classList.add("hidden"); }
+    if (closeBtn) closeBtn.addEventListener("click", hideModal);
+    if (dismissBtn) dismissBtn.addEventListener("click", hideModal);
+    modal.addEventListener("click", (e) => { if (e.target === modal) hideModal(); });
+})();

@@ -1,29 +1,15 @@
 // ============================================================
-// ExpedientesAdmin.js — Lógica de la página "Expedientes"
+// ExpedientesAbogado.js — Lógica de "Mis Expedientes" (Abogado)
+// Vista privada: cada abogado solo ve, sube, edita y elimina
+// SUS expedientes. Comparte almacén con Expedientes del Admin.
 // ============================================================
 
 const MAX_PDF_SIZE = 20 * 1024 * 1024; // Límite de 20MB para el PDF
 
-/* El administrador también funge como abogado: se obtiene de la
-   sesión activa y se agrega automáticamente a todas las listas de
-   asignación, sin necesidad de registrarlo como un abogado nuevo. */
-const ADMIN_NAME = "Lic. " + (sessionStorage.getItem("lawpocket_name") || "González Velasco Santos Enoch");
-
-/* Plantilla del despacho: los mismos 4 miembros que aparecen en
-   "Gestión de Usuarios" (3 abogados + el admin, que también funge
-   como abogado). Si se agrega un abogado nuevo debe registrarse
-   también en Gestión de Usuarios. */
-const ABOGADOS = [
-    "Lic. Nucamendi Ruiz Leonardo",
-    "Lic. Rodriguez Cruz Pablo Isaias",
-    "Lic. González Pérez Santos Enoch"
-];
-
-// Lista completa de asignables: el admin primero + los abogados
-const ASIGNABLES = [ADMIN_NAME, ...ABOGADOS];
-
-// Colores disponibles para los avatares de abogados
-const AVATAR_COLORS = ["#1a2b4b", "#047857", "#1D4ED8", "#9333EA"];
+/* Abogado con sesión activa: todos los expedientes que se creen
+   en esta vista se asignan automáticamente a él, y la tabla solo
+   muestra los expedientes que tiene asignados. */
+const CURRENT_LAWYER = "Lic. " + (sessionStorage.getItem("lawpocket_name") || "Nucamendi Ruiz Leonardo");
 
 // Clases de pill según el estatus del expediente
 const STATUS_PILL = {
@@ -85,7 +71,6 @@ let editPdfCurrent = null;  // Nombre del PDF actual del expediente en edición
    REFERENCIAS AL DOM
 ============================================================ */
 const inputBuscar     = document.getElementById("inputBuscar");
-const filterAbogado   = document.getElementById("filterAbogado");
 const tableContainer  = document.getElementById("tableContainer");
 const tableBody       = document.getElementById("tableBody");
 const emptyState      = document.getElementById("emptyState");
@@ -97,7 +82,6 @@ const editFecha        = document.getElementById("editFecha");
 const editTipo         = document.getElementById("editTipo");
 const editOrigen       = document.getElementById("editOrigen");
 const editEstatus      = document.getElementById("editEstatus");
-const editAsignado     = document.getElementById("editAsignado");
 const errorEditCliente = document.getElementById("errorEditCliente");
 const errorEditFecha   = document.getElementById("errorEditFecha");
 const errorEditPDF     = document.getElementById("errorEditPDF");
@@ -110,7 +94,6 @@ const newCliente         = document.getElementById("newCliente");
 const newFecha           = document.getElementById("newFecha");
 const newTipo            = document.getElementById("newTipo");
 const newOrigen          = document.getElementById("newOrigen");
-const newAsignado        = document.getElementById("newAsignado");
 const createError        = document.getElementById("createError");
 const dropZone           = document.getElementById("dropZone");
 const dropZoneText       = document.getElementById("dropZoneText");
@@ -144,24 +127,6 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
-// Iniciales del abogado (sin el prefijo "Lic.")
-function initials(name) {
-    return name
-        .replace(/^Lic\.\s*/i, "")
-        .split(/\s+/)
-        .filter(Boolean)
-        .slice(0, 2)
-        .map(p => (p[0] || "").toUpperCase())
-        .join("");
-}
-
-// Color de avatar determinístico a partir del nombre
-function avatarColor(name) {
-    let h = 0;
-    for (const c of name) h = (h * 31 + c.charCodeAt(0)) >>> 0;
-    return AVATAR_COLORS[h % AVATAR_COLORS.length];
-}
-
 // Convierte fecha ISO (AAAA-MM-DD) a formato DD/MM/AAAA
 function formatFecha(iso) {
     if (!iso) return "—";
@@ -174,40 +139,26 @@ function todayISO() {
     return new Date().toISOString().slice(0, 10);
 }
 
-/* Llena los tres selects de abogados (filtro, edición y alta)
-   con la lista de asignables. El admin aparece etiquetado como
-   "(Administrador)" pero su value es su nombre real, para que
-   el filtrado por expediente asignado funcione igual. */
-function populateAbogadoSelects() {
-    const options = ASIGNABLES.map(name =>
-        '<option value="' + escapeHTML(name) + '">' +
-            escapeHTML(name) + (name === ADMIN_NAME ? " (Administrador)" : "") +
-        '</option>'
-    ).join("");
-    filterAbogado.innerHTML = '<option value="todos" selected>Filtrar por Abogado</option>' + options;
-    editAsignado.innerHTML = options;
-    newAsignado.innerHTML = options;
+// Expedientes del abogado con sesión activa (vista privada)
+function getMyRows() {
+    return rows.filter(r => r.asignado === CURRENT_LAWYER);
 }
 
-// Expedientes visibles según búsqueda y filtro de abogado
+// Mis expedientes visibles según la búsqueda
 function getFilteredRows() {
     const term = inputBuscar.value.trim().toLowerCase();
-    const abogado = filterAbogado.value;
-    return rows.filter(r => {
-        const matchesSearch =
-            r.id.toLowerCase().includes(term) ||
-            r.cliente.toLowerCase().includes(term);
-        const matchesAbogado = abogado === "todos" || r.asignado === abogado;
-        return matchesSearch && matchesAbogado;
-    });
+    return getMyRows().filter(r =>
+        r.id.toLowerCase().includes(term) ||
+        r.cliente.toLowerCase().includes(term)
+    );
 }
 
 /* ============================================================
    RENDERIZADO — TABLA DE EXPEDIENTES
 ============================================================ */
 function renderTable() {
-    // Estado vacío global: no existe ningún expediente
-    if (rows.length === 0) {
+    // Estado vacío: el abogado no tiene expedientes asignados
+    if (getMyRows().length === 0) {
         tableContainer.classList.add("hidden");
         emptyState.classList.remove("hidden");
         renderIcons();
@@ -223,7 +174,7 @@ function renderTable() {
     if (filtered.length === 0) {
         const tr = document.createElement("tr");
         tr.innerHTML =
-            '<td colspan="8" class="no-results-cell">Sin resultados para "' +
+            '<td colspan="7" class="no-results-cell">Sin resultados para "' +
             escapeHTML(inputBuscar.value) + '"</td>';
         tableBody.appendChild(tr);
         return;
@@ -238,14 +189,6 @@ function renderTable() {
             '<td class="td-cliente">' + escapeHTML(r.cliente) + '</td>' +
             '<td><span class="pill pill-tipo">' + escapeHTML(r.tipoCaso) + '</span></td>' +
             '<td><span class="pill ' + (STATUS_PILL[r.estatus] || "pill-tipo") + '">' + escapeHTML(r.estatus) + '</span></td>' +
-            '<td>' +
-                '<div class="asignado-cell">' +
-                    '<span class="asignado-avatar" style="background-color:' + avatarColor(r.asignado) + '">' +
-                        initials(r.asignado) +
-                    '</span>' +
-                    '<span>' + escapeHTML(r.asignado) + '</span>' +
-                '</div>' +
-            '</td>' +
             '<td class="td-gestion">' +
                 '<button class="btn btn-outline btn-sm" data-action="edit" data-id="' + escapeHTML(r.id) + '">' +
                     '<i data-lucide="pencil"></i> Editar' +
@@ -367,7 +310,6 @@ function openEditModal(id) {
     editTipo.value = row.tipoCaso;
     editOrigen.value = row.origen;
     editEstatus.value = row.estatus;
-    editAsignado.value = row.asignado;
 
     // Renderizar sección PDF
     renderEditPdfSection();
@@ -416,7 +358,6 @@ function saveEdit() {
                 tipoCaso: editTipo.value,
                 origen: editOrigen.value,
                 estatus: editEstatus.value,
-                asignado: editAsignado.value,
                 pdfFile: getEditPdfName()
             };
         }
@@ -443,7 +384,6 @@ function openCreateModal() {
     newFecha.value = todayISO();
     newTipo.value = "Civil";
     newOrigen.value = "Redes Sociales";
-    newAsignado.value = ASIGNABLES[0];
 
     createModalOverlay.classList.remove("hidden");
 }
@@ -495,7 +435,7 @@ function saveNew() {
         tipoCaso: newTipo.value,
         estatus: "En Proceso",
         origen: newOrigen.value,
-        asignado: newAsignado.value,
+        asignado: CURRENT_LAWYER, // asignación automática al abogado con sesión activa
         pdfFile: selectedPDF ? selectedPDF.name : null
     });
 
@@ -701,12 +641,8 @@ function closeSuccessModal() {
    INICIALIZACIÓN
 ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
-    // --- Llenar los selects de abogados (incluye al admin) ---
-    populateAbogadoSelects();
-
-    // --- Búsqueda y filtro ---
+    // --- Búsqueda ---
     inputBuscar.addEventListener("input", renderTable);
-    filterAbogado.addEventListener("change", renderTable);
 
     // --- Botones de alta ---
     document.getElementById("btnNuevoExpediente").addEventListener("click", openCreateModal);
@@ -790,7 +726,7 @@ document.addEventListener("DOMContentLoaded", () => {
    (el enlace del sidebar navega a Login.html por sí mismo).
 ============================================================ */
 (function initSession() {
-    const nombre = sessionStorage.getItem("lawpocket_name") || "González Velasco Santos Enoch";
+    const nombre = sessionStorage.getItem("lawpocket_name") || "Nucamendi Ruiz Leonardo";
     const nombreEl = document.getElementById("userName");
     const avatarEl = document.getElementById("userAvatar");
     if (nombreEl) nombreEl.textContent = nombre;

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <title>LawPocket · Mis Expedientes</title>
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
+    <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
+    <link rel="stylesheet" href="../CSS/ExpedientesAbogado.css">
+    <script src="../lib/lucide.min.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+
+        <!-- ============================================================
+                        BARRA LATERAL (SIDEBAR)
+        ============================================================ -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Abogado</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAbogado.html" class="nav-item">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAbogado.html" class="nav-item active">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAbogado.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargasAbogado.html" class="nav-item">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuarioAbogado.html" class="nav-item">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ============================================================
+                            CONTENIDO PRINCIPAL
+        ============================================================ -->
+        <div class="main">
+
+            <!-- ============================================================
+                                BARRA SUPERIOR (TOPBAR)
+            ============================================================ -->
+            <header class="topbar">
+                <div class="topbar-user">
+                    <div class="topbar-avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <span class="topbar-user-name" id="userName">González Velasco Santos Enoch</span>
+                        <span class="topbar-user-org">Corporativo Jurídico Fusión TGZ</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+
+                <!-- ============================================================
+                                ENCABEZADO DEL MÓDULO
+                ============================================================ -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Mis Expedientes</h1>
+                        <p class="page-subtitle">Consulta, descarga y administra tus casos.</p>
+                    </div>
+                    <button id="btnNuevoExpediente" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        <span>Subir Nuevo PDF</span>
+                    </button>
+                </div>
+
+                <!-- ============================================================
+                                     BARRA DE FILTROS
+                ============================================================ -->
+                <div class="filters-bar">
+                    <div class="search-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="inputBuscar" class="form-input search-input"
+                               placeholder="Buscar por ID o nombre del cliente...">
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                            TABLA DE EXPEDIENTES
+                ============================================================ -->
+                <div id="tableContainer" class="card table-card">
+                    <div class="table-scroll">
+                        <table class="expedientes-table">
+                            <thead>
+                                <tr>
+                                    <th>ID del Caso</th>
+                                    <th>Fecha</th>
+                                    <th>Cliente</th>
+                                    <th>Tipo de Caso</th>
+                                    <th>Estatus</th>
+                                    <th>Gestión</th>
+                                    <th class="th-right">Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                                <!-- Filas generadas dinámicamente por ExpedientesAdmin.js -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Estado vacío: sin expedientes registrados -->
+                <div id="emptyState" class="card empty-state hidden">
+                    <i data-lucide="folder-x" class="empty-icon"></i>
+                    <p class="empty-title">No hay expedientes activos</p>
+                    <p class="empty-text">
+                        Cuando registres un nuevo caso aparecerá aquí.
+                        Empieza subiendo el PDF de tu primer expediente.
+                    </p>
+                    <button id="btnNuevoExpedienteEmpty" class="btn btn-primary">
+                        <i data-lucide="plus"></i>
+                        <span>Subir Nuevo PDF</span>
+                    </button>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                    MODAL — EDITAR EXPEDIENTE
+    ============================================================ -->
+    <div id="editModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-form">
+            <button class="modal-close" data-close="edit" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="modal-form-header">
+                <h3 class="modal-form-title">
+                    <i data-lucide="pencil" class="title-icon-emerald"></i>
+                    <span>Editar Expediente</span>
+                </h3>
+                <p class="modal-form-subtitle">Caso <strong id="editCaseId">EXP-2026-118</strong></p>
+            </div>
+
+            <div class="modal-form-body">
+                <!-- Sección Archivo PDF en edición -->
+                <div class="form-group">
+                    <label>Archivo PDF</label>
+                    <div id="editPdfSection" class="pdf-section">
+                        <!-- Contenedor del PDF actual (mostrado dinámicamente) -->
+                    </div>
+                    <div id="editDropZone" class="drop-zone drop-zone-edit hidden">
+                        <i data-lucide="file-up" class="drop-zone-icon"></i>
+                        <p>Haz clic o arrastra un nuevo PDF para reemplazar</p>
+                        <p class="drop-zone-limit">Máx 20MB</p>
+                    </div>
+                    <input type="file" id="editInputPDF" accept="application/pdf" class="hidden">
+                    <p id="errorEditPDF" class="field-error hidden">El archivo PDF es obligatorio.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="editCliente">Nombre del Cliente</label>
+                    <input type="text" id="editCliente" class="form-input"
+                           placeholder="Nombre y apellido del cliente">
+                    <p id="errorEditCliente" class="field-error hidden">El nombre del cliente es obligatorio.</p>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editFecha">Fecha de Registro</label>
+                        <input type="date" id="editFecha" class="form-input">
+                        <p id="errorEditFecha" class="field-error hidden">La fecha de registro es obligatoria.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="editTipo">Tipo de Caso</label>
+                        <div class="select-wrapper">
+                            <select id="editTipo" class="form-input form-select">
+                                <option value="Penal">Penal</option>
+                                <option value="Civil">Civil</option>
+                                <option value="Laboral">Laboral</option>
+                                <option value="Mercantil">Mercantil</option>
+                                <option value="Familiar">Familiar</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="select-chevron"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editOrigen">Origen del Cliente</label>
+                    <div class="select-wrapper">
+                        <select id="editOrigen" class="form-input form-select">
+                            <option value="Redes Sociales">Redes Sociales</option>
+                            <option value="Recomendación">Recomendación</option>
+                            <option value="Sitio Web">Sitio Web</option>
+                            <option value="Referidos">Referidos</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="editEstatus">Estatus</label>
+                    <div class="select-wrapper">
+                        <select id="editEstatus" class="form-input form-select">
+                            <option value="En Proceso">En Proceso</option>
+                            <option value="Concluido - Ganado">Concluido - Ganado</option>
+                            <option value="Concluido - Perdido">Concluido - Perdido</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-form-footer">
+                <button class="btn btn-outline" data-close="edit">Cancelar</button>
+                <button id="btnGuardarEdicion" class="btn btn-primary">Guardar cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                    MODAL — NUEVO EXPEDIENTE
+    ============================================================ -->
+    <div id="createModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-form">
+            <button class="modal-close" data-close="create" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+
+            <div class="modal-form-header">
+                <h3 class="modal-form-title">
+                    <i data-lucide="file-up" class="title-icon-emerald"></i>
+                    <span>Nuevo Expediente</span>
+                </h3>
+                <p class="modal-form-subtitle">Sube un PDF y registra los datos del caso.</p>
+            </div>
+
+            <div class="modal-form-body">
+                <div class="form-group">
+                    <label for="newCliente">Nombre del caso / cliente</label>
+                    <input type="text" id="newCliente" class="form-input"
+                           placeholder="Ej. María Hernández Soto">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newFecha">Fecha de Registro</label>
+                        <input type="date" id="newFecha" class="form-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="newTipo">Tipo de Caso</label>
+                        <div class="select-wrapper">
+                            <select id="newTipo" class="form-input form-select">
+                                <option value="Penal">Penal</option>
+                                <option value="Civil" selected>Civil</option>
+                                <option value="Laboral">Laboral</option>
+                                <option value="Mercantil">Mercantil</option>
+                                <option value="Familiar">Familiar</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="select-chevron"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Archivo PDF</label>
+                    <div id="dropZone" class="drop-zone">
+                        <span id="dropZoneText">Arrastra el PDF aquí o haz clic para seleccionar</span>
+                    </div>
+                    <input type="file" id="inputPDF" accept="application/pdf" class="hidden">
+                </div>
+
+                <div class="form-group">
+                    <label for="newOrigen">Origen del Cliente</label>
+                    <div class="select-wrapper">
+                        <select id="newOrigen" class="form-input form-select">
+                            <option value="Redes Sociales" selected>Redes Sociales</option>
+                            <option value="Recomendación">Recomendación</option>
+                            <option value="Sitio Web">Sitio Web</option>
+                            <option value="Referidos">Referidos</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="select-chevron"></i>
+                    </div>
+                    <p class="field-hint">
+                        <i data-lucide="trending-up"></i>
+                        Este dato alimentará la gráfica de Origen de Clientes en el Panel Analítico.
+                    </p>
+                </div>
+
+                <div id="createError" class="collision-error hidden">
+                    <i data-lucide="alert-triangle"></i>
+                    <p>Error: El documento PDF excede el límite permitido de 20MB o existen campos obligatorios vacíos.</p>
+                </div>
+            </div>
+
+            <div class="modal-form-footer">
+                <button class="btn btn-outline" data-close="create">Cancelar</button>
+                <button id="btnGuardarNuevo" class="btn btn-primary">Guardar expediente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                MODAL — CONFIRMACIÓN DE ELIMINACIÓN
+    ============================================================ -->
+    <div id="deleteModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-confirm">
+            <button class="modal-close" data-close="delete" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <h3 class="modal-confirm-title">¿Eliminar expediente?</h3>
+            <p class="modal-confirm-text">Se eliminará el expediente permanentemente. Esta acción no se puede deshacer.</p>
+            <div class="modal-confirm-actions">
+                <button class="btn btn-outline" data-close="delete">Cancelar</button>
+                <button id="btnConfirmarEliminar" class="btn btn-danger">Eliminar expediente</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                 MODAL — OPERACIÓN EXITOSA
+    ============================================================ -->
+    <div id="successModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-success">
+            <button class="modal-close" data-close="success" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-success-icon">
+                <i data-lucide="check-circle-2"></i>
+            </div>
+            <h3 class="modal-success-title">¡Operación exitosa!</h3>
+            <p id="successMessage" class="modal-success-text">Expediente registrado exitosamente.</p>
+            <button class="btn btn-success-full" data-close="success">Aceptar</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                     MODAL — DESCARGA OFFLINE
+    ============================================================ -->
+    <div id="downloadModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-success">
+            <button class="modal-close" data-close="download" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-success-icon">
+                <i data-lucide="download"></i>
+            </div>
+            <h3 class="modal-success-title">Instalación efectuada con éxito</h3>
+            <p class="modal-success-text">
+                <strong id="downloadFileName">EXP-2026-118 · María Hernández Soto.pdf</strong>
+                fue descargado y guardado para uso offline.
+            </p>
+            <button class="btn btn-success-full" data-close="download">Entendido</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                  SCRIPT DEL MÓDULO
+    ============================================================ -->
+    <script src="../JS/ExpedientesAbogado.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
+</body>
+</html>

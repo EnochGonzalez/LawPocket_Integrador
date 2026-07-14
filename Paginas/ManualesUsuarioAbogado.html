@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="only light">
+    <title>LawPocket | Manuales de Usuario</title>
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="../lib/fuentes/inter.css">
+    <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
+    <link rel="stylesheet" href="../CSS/ManualesUsuarioAbogado.css">
+    <script src="../lib/lucide.min.js"></script>
+</head>
+<body>
+
+    <div class="layout">
+        <!-- ============================================================
+                                BARRA LATERAL
+        ============================================================ -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Abogado</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAbogado.html" class="nav-item">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAbogado.html" class="nav-item">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAbogado.html" class="nav-item">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargasAbogado.html" class="nav-item">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuarioAbogado.html" class="nav-item active">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+        <!-- ============================================================
+                            CONTENIDO PRINCIPAL
+        ============================================================ -->
+        <div class="main">
+
+            <!-- ----- Barra superior (usuario) ----- -->
+            <header class="topbar">
+                <div class="topbar-user">
+                    <div class="topbar-avatar" id="userAvatar">AD</div>
+                    <div class="topbar-user-info">
+                        <span class="topbar-user-name" id="userName">González Velasco Santos Enoch</span>
+                        <span class="topbar-user-org">Corporativo Jurídico Fusión TGZ</span>
+                    </div>
+                </div>
+            </header>
+
+            <main class="content">
+
+                <!-- ----- Encabezado del módulo ----- -->
+                <div class="page-header">
+                    <div>
+                        <h1 class="page-title">Guías y Manuales Operativos</h1>
+                        <p class="page-subtitle">Documentos oficiales publicados por la administración del despacho.</p>
+                    </div>
+                </div>
+
+                <!-- ============================================================
+                        CUADRÍCULA DE MANUALES
+                ============================================================ -->
+                <div id="gridManuales" class="manuals-grid"><!-- Tarjetas generadas por JS --></div>
+
+                <!-- ============================================================
+                        ESTADO VACÍO (sin manuales publicados)
+                ============================================================ -->
+                <section id="emptyCard" class="card empty-card hidden">
+                    <i data-lucide="book-marked" class="empty-icon"></i>
+                    <p class="empty-title">No hay manuales de usuario disponibles en este momento</p>
+                    <p class="empty-desc">
+                        Cuando la administración publique nuevas guías o protocolos, aparecerán aquí.
+                    </p>
+                </section>
+
+            </main>
+        </div><!-- /.main -->
+    </div><!-- /.layout -->
+
+    <!-- ============================================================
+                 MODAL — DESCARGA OFFLINE EXITOSA
+    ============================================================ -->
+    <div id="downloadModalOverlay" class="modal-overlay hidden">
+        <div class="modal modal-success">
+            <button class="modal-close" data-close="download" aria-label="Cerrar">
+                <i data-lucide="x"></i>
+            </button>
+            <div class="modal-success-icon">
+                <i data-lucide="download"></i>
+            </div>
+            <h3 class="modal-success-title">Instalación efectuada con éxito</h3>
+            <p class="modal-success-text">
+                <strong id="downloadFileName">Guía de Inicio Rápido.pdf</strong>
+                fue descargado y guardado para uso offline.
+            </p>
+            <button class="btn btn-success-full" data-close="download">Entendido</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+                    SCRIPT DEL MÓDULO
+    ============================================================ -->
+    <script src="../JS/ManualesUsuarioAbogado.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
+</body>
+</html>

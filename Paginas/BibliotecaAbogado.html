@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="only light">
+  <title>Biblioteca Jurídica | LawPocket Abogado</title>
+    <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
+    <link rel="manifest" href="../manifest.webmanifest">
+    <meta name="theme-color" content="#14213d">
+    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
+  <link rel="stylesheet" href="../lib/fuentes/inter.css">
+  <link rel="stylesheet" href="../CSS/SidebarAdmin.css">
+  <link rel="stylesheet" href="../CSS/BibliotecaAbogado.css" />
+  <script src="../lib/lucide.min.js"></script>
+</head>
+<body>
+
+  <div class="layout">
+
+  <!-- ============================================================
+                  BARRA LATERAL (SIDEBAR)
+       ============================================================ -->
+  <aside class="sidebar">
+            <div class="sidebar-logo">
+                <i data-lucide="scale" class="logo-icon"></i>
+                <div class="logo-text">
+                    <span class="logo-title">LawPocket</span>
+                    <span class="logo-subtitle">Abogado</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <p class="nav-section-label">Herramientas de Trabajo</p>
+                <a href="AgendaAbogado.html" class="nav-item">
+                    <i data-lucide="calendar-days"></i>
+                    <span>Agenda</span>
+                </a>
+                <a href="ExpedientesAbogado.html" class="nav-item">
+                    <i data-lucide="folder-open"></i>
+                    <span>Expedientes</span>
+                </a>
+                <a href="BibliotecaAbogado.html" class="nav-item active">
+                    <i data-lucide="book-open"></i>
+                    <span>Biblioteca Digital</span>
+                </a>
+                <a href="MisDescargasAbogado.html" class="nav-item">
+                    <i data-lucide="download"></i>
+                    <span>Mis Descargas</span>
+                </a>
+                <a href="ManualesUsuarioAbogado.html" class="nav-item">
+                    <i data-lucide="book-marked"></i>
+                    <span>Manuales de Usuario</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <a href="Login.html" class="nav-item" id="logoutBtn">
+                    <i data-lucide="log-out"></i>
+                    <span>Cerrar sesión</span>
+                </a>
+            </div>
+        </aside>
+
+  <!-- ============================================================
+                    CONTENIDO PRINCIPAL
+       ============================================================ -->
+  <div class="main">
+
+    <!-- ----- Barra superior (usuario) ----- -->
+    <header class="topbar">
+      <div class="topbar-user">
+        <div class="topbar-avatar" id="userAvatar">AD</div>
+        <div class="topbar-user-info">
+          <span class="topbar-user-name" id="userName">González Velasco Santos Enoch</span>
+          <span class="topbar-user-org">Corporativo Jurídico Fusión TGZ</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ----- Encabezado de la página ----- -->
+      <div class="page-header">
+        <div>
+          <h1 class="page-title">Biblioteca Jurídica</h1>
+          <p class="page-subtitle">Consulta y descarga tus libros de leyes esenciales.</p>
+        </div>
+        <button id="btnAgregarLibro" class="btn btn-primary">
+          <i data-lucide="plus"></i> Agregar libro personal
+        </button>
+      </div>
+
+      <!-- ----- Buscador ----- -->
+      <div class="search-wrapper">
+        <i data-lucide="search" class="search-icon"></i>
+        <input
+          type="text"
+          id="inputBusqueda"
+          class="search-input"
+          placeholder="Buscar libros, códigos o leyes..."
+        />
+      </div>
+
+      <!-- ----- Pestañas de categorías ----- -->
+      <div class="tabs" id="tabsCategorias">
+        <button class="tab active" data-categoria="Todos">Todos</button>
+        <button class="tab" data-categoria="Códigos Penales">Códigos Penales</button>
+        <button class="tab" data-categoria="Código Civil">Código Civil</button>
+        <button class="tab" data-categoria="Leyes Estatales">Leyes Estatales</button>
+        <button class="tab" data-categoria="Doctrina/Libros">Doctrina/Libros</button>
+      </div>
+
+      <!-- ----- Cuadrícula de libros (se genera con JS) ----- -->
+      <div class="books-grid" id="booksGrid"></div>
+
+      <!-- ----- Estado vacío ----- -->
+      <p class="empty-state" id="emptyState" hidden>No hay libros en esta categoría.</p>
+
+    </main>
+  </div><!-- /.main -->
+
+  </div><!-- /.layout -->
+
+  <!-- ============================================================
+                    MODAL: AGREGAR / EDITAR LIBRO
+       ============================================================ -->
+  <div class="modal-overlay" id="modalLibro" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close="modalLibro" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="modal-header-inline">
+        <i data-lucide="book-open" class="modal-title-icon"></i>
+        <h2 class="modal-title" id="modalLibroTitulo">Agregar libro personal</h2>
+      </div>
+      <p class="modal-description" id="modalLibroDescripcion">
+        Registra un libro propio para tu biblioteca jurídica.
+      </p>
+
+      <!-- Campo: Título -->
+      <div class="form-group">
+        <label for="campoTitulo" id="labelTitulo">Título del libro:</label>
+        <input type="text" id="campoTitulo" placeholder="Ej. Manual de Derecho Procesal" />
+        <p class="field-error" id="errorTitulo" hidden>Título del libro obligatorio</p>
+      </div>
+
+      <!-- Campo: Autor -->
+      <div class="form-group">
+        <label for="campoAutor" id="labelAutor">Autor:</label>
+        <input type="text" id="campoAutor" placeholder="Ej. García Máynez" />
+        <p class="field-error" id="errorAutor" hidden>Autor obligatorio</p>
+      </div>
+
+      <!-- Campo: Categoría -->
+      <div class="form-group">
+        <label for="campoCategoria">Categoría</label>
+        <select id="campoCategoria">
+          <option value="Códigos Penales">Códigos Penales</option>
+          <option value="Código Civil">Código Civil</option>
+          <option value="Leyes Estatales">Leyes Estatales</option>
+          <option value="Doctrina/Libros" selected>Doctrina/Libros</option>
+        </select>
+      </div>
+
+      <!-- Campo: Archivo PDF -->
+      <div class="form-group">
+        <label class="label-with-icon">
+          <i data-lucide="paperclip"></i> Archivo PDF
+        </label>
+        <div class="dropzone" id="dropzonePdf">
+          <button type="button" class="dropzone-placeholder" id="dropzonePlaceholder">
+            Arrastra el PDF aquí o haz clic para seleccionar
+          </button>
+          <div class="dropzone-file" id="dropzoneFile" hidden>
+            <span class="dropzone-filename" id="dropzoneFilename"></span>
+            <button type="button" class="dropzone-remove" id="btnQuitarPdf">Quitar</button>
+          </div>
+          <input type="file" id="campoPdf" accept="application/pdf" hidden />
+        </div>
+      </div>
+
+      <!-- Mensaje de error general -->
+      <div class="form-error-banner" id="errorLibro" hidden>
+        <i data-lucide="alert-triangle"></i>
+        <p id="errorLibroTexto"></p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" data-close="modalLibro">Cancelar</button>
+        <button class="btn btn-primary" id="btnGuardarLibro">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+                   MODAL: AVISO DE DERECHOS DE AUTOR
+       ============================================================ -->
+  <div class="modal-overlay modal-overlay-top" id="modalCopyright" hidden>
+    <div class="modal">
+      <button class="modal-close" data-close="modalCopyright" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+
+      <div class="modal-header-inline">
+        <i data-lucide="shield-alert" class="modal-title-icon icon-danger"></i>
+        <h2 class="modal-title title-danger">Aviso de Derechos de Autor</h2>
+      </div>
+      <p class="modal-description">
+        Está estrictamente prohibido subir material pirata, escaneos ilegales
+        o documentos protegidos por derechos de autor sin la autorización
+        correspondiente. El incumplimiento puede acarrear sanciones legales
+        para el despacho.
+      </p>
+
+      <label class="checkbox-row">
+        <input type="checkbox" id="checkCopyright" />
+        <span>Confirmo que el documento es original o de uso libre.</span>
+      </label>
+
+      <div class="modal-actions">
+        <button class="btn btn-outline" data-close="modalCopyright">Cancelar</button>
+        <button class="btn btn-primary" id="btnAceptarCopyright" disabled>Aceptar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+                 MODAL: CONFIRMAR ELIMINACIÓN
+       ============================================================ -->
+  <div class="modal-overlay" id="modalEliminar" hidden>
+    <div class="modal modal-center">
+      <button class="modal-close" data-close="modalEliminar" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-icon-circle danger">
+        <i data-lucide="trash-2"></i>
+      </div>
+      <h2 class="modal-title-center">¿Eliminar libro?</h2>
+      <p class="modal-message">El libro será eliminado de tu biblioteca personal.</p>
+      <div class="modal-actions modal-actions-center">
+        <button class="btn btn-outline" data-close="modalEliminar">Cancelar</button>
+        <button class="btn btn-danger" id="btnConfirmarEliminar">Eliminar libro</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+                   MODAL: OPERACIÓN EXITOSA
+       ============================================================ -->
+  <div class="modal-overlay" id="modalExito" hidden>
+    <div class="modal modal-center">
+      <button class="modal-close" data-close="modalExito" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-icon-circle success">
+        <i data-lucide="check-circle-2"></i>
+      </div>
+      <h2 class="modal-title-center">¡Operación exitosa!</h2>
+      <p class="modal-message" id="mensajeExito"></p>
+      <button class="btn btn-primary btn-full" data-close="modalExito">Aceptar</button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+                   MODAL: DESCARGA COMPLETADA
+       ============================================================ -->
+  <div class="modal-overlay" id="modalDescarga" hidden>
+    <div class="modal modal-center">
+      <button class="modal-close" data-close="modalDescarga" aria-label="Cerrar">
+        <i data-lucide="x"></i>
+      </button>
+      <div class="modal-icon-circle success">
+        <i data-lucide="download"></i>
+      </div>
+      <h2 class="modal-title-center">Instalación efectuada con éxito</h2>
+      <p class="modal-message">
+        <strong id="nombreArchivoDescarga"></strong> fue descargado y guardado para uso offline.
+      </p>
+      <button class="btn btn-primary btn-full" data-close="modalDescarga">Entendido</button>
+    </div>
+  </div>
+
+  <script src="../JS/BibliotecaAbogado.js"></script>
+    <!-- PWA: registro del service worker (consulta offline) -->
+    <script src="../JS/sw-register.js"></script>
+</body>
+</html>

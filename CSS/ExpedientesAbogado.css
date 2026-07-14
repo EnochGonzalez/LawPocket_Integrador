@@ -1,0 +1,835 @@
+:root {
+    --navy: #1a2b4b;
+    --navy-dark: #14213d;
+    --emerald: #10B981;
+    --emerald-dark: #0ea271;
+    --slate-50: #f8fafc;
+    --slate-100: #f1f5f9;
+    --slate-200: #e2e8f0;
+    --slate-300: #cbd5e1;
+    --slate-500: #64748b;
+    --slate-600: #475569;
+    --slate-700: #334155;
+    --red-500: #ef4444;
+    --red-600: #dc2626;
+    --red-700: #b91c1c;
+    --radius: 12px;
+    --shadow-card: 0 1px 3px rgba(15, 23, 42, 0.08);
+    --shadow-modal: 0 20px 50px rgba(15, 23, 42, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: var(--slate-100);
+    color: var(--navy);
+    font-size: 14px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* ============================================================
+   ESTRUCTURA GENERAL (LAYOUT)
+============================================================ */
+.layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.content {
+    padding: 28px 36px 48px;
+}
+
+/* ============================================================
+   BARRA SUPERIOR (TOPBAR)
+============================================================ */
+.topbar {
+    background-color: #ffffff;
+    border-bottom: 1px solid var(--slate-200);
+    padding: 12px 36px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.topbar-user {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.topbar-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background-color: var(--navy-dark);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.78rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-user-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.25;
+}
+
+.topbar-user-name {
+    font-weight: 700;
+    color: var(--navy);
+    font-size: 0.85rem;
+}
+
+.topbar-user-org {
+    color: var(--slate-500);
+    font-size: 0.78rem;
+}
+
+/* ============================================================
+   ENCABEZADO DEL MÓDULO
+============================================================ */
+.page-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.page-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--navy);
+}
+
+.page-subtitle {
+    color: var(--slate-500);
+    margin-top: 2px;
+}
+
+/* ============================================================
+   BOTONES
+============================================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.btn i,
+.btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-primary {
+    background-color: var(--emerald);
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: var(--emerald-dark);
+}
+
+.btn-outline {
+    background-color: #ffffff;
+    color: var(--navy);
+    border: 1px solid var(--slate-300);
+}
+
+.btn-outline:hover {
+    background-color: var(--slate-100);
+}
+
+.btn-danger {
+    background-color: var(--red-600);
+    color: #ffffff;
+}
+
+.btn-danger:hover {
+    background-color: var(--red-700);
+}
+
+.btn-success-full {
+    width: 100%;
+    background-color: var(--emerald);
+    color: #ffffff;
+    padding: 12px;
+}
+
+.btn-success-full:hover {
+    background-color: var(--emerald-dark);
+}
+
+/* Botón pequeño de tabla (Editar) */
+.btn-sm {
+    padding: 7px 12px;
+    font-size: 0.8rem;
+}
+
+.btn-sm i,
+.btn-sm svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ============================================================
+   BARRA DE FILTROS
+   Búsqueda por ID/cliente y filtro por abogado asignado.
+============================================================ */
+.filters-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.search-wrapper {
+    position: relative;
+    flex: 1;
+    max-width: 420px;
+    min-width: 240px;
+}
+
+.search-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--slate-600);
+    pointer-events: none;
+}
+
+.form-input.search-input {
+    padding-left: 38px;
+}
+
+.filter-abogado {
+    width: 260px;
+}
+
+/* ============================================================
+   TARJETAS Y TABLA DE EXPEDIENTES
+============================================================ */
+.card {
+    background-color: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--slate-200);
+}
+
+.table-card {
+    overflow: hidden;
+}
+
+.table-scroll {
+    overflow-x: auto;
+}
+
+.expedientes-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.expedientes-table thead {
+    background-color: var(--slate-100);
+}
+
+.expedientes-table th {
+    text-align: left;
+    padding: 12px 24px;
+    color: var(--slate-600);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.expedientes-table th.th-right {
+    text-align: right;
+}
+
+.expedientes-table td {
+    padding: 16px 24px;
+    color: var(--slate-700);
+    border-top: 1px solid var(--slate-100);
+    vertical-align: middle;
+}
+
+.expedientes-table tbody tr {
+    transition: background-color 0.12s ease;
+}
+
+.expedientes-table tbody tr:hover {
+    background-color: var(--slate-50);
+}
+
+/* Celdas de gestión y acciones con padding reducido */
+.expedientes-table td.td-gestion,
+.expedientes-table td.td-acciones {
+    padding-left: 16px;
+    padding-right: 16px;
+}
+
+.td-cliente {
+    color: var(--navy);
+    font-weight: 500;
+}
+
+/* --- Pills (tipo de caso y estatus) --- */
+.pill {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+.pill-tipo {
+    background-color: var(--slate-100);
+    color: var(--slate-700);
+}
+
+.pill-proceso {
+    background-color: #dbeafe;
+    color: #1d4ed8;
+}
+
+.pill-ganado {
+    background-color: #d1fae5;
+    color: #047857;
+}
+
+.pill-perdido {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* --- Abogado asignado (avatar + nombre) --- */
+.asignado-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.asignado-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+/* --- Botones de acción de la tabla --- */
+.actions-cell {
+    display: flex;
+    justify-content: flex-end;
+    gap: 4px;
+}
+
+.icon-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    color: var(--slate-600);
+    transition: background-color 0.15s ease;
+}
+
+.icon-btn i,
+.icon-btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+.icon-btn:hover {
+    background-color: var(--slate-100);
+}
+
+.icon-btn.icon-btn-emerald {
+    color: var(--emerald);
+}
+
+.icon-btn.icon-btn-emerald:hover {
+    background-color: #ecfdf5;
+}
+
+.icon-btn.icon-btn-danger {
+    color: var(--red-600);
+}
+
+.icon-btn.icon-btn-danger:hover {
+    background-color: #fef2f2;
+}
+
+/* Fila de "sin resultados" de la búsqueda */
+.no-results-cell {
+    padding: 40px 24px !important;
+    text-align: center;
+    color: var(--slate-500);
+}
+
+/* ============================================================
+   ESTADO VACÍO — SIN EXPEDIENTES
+============================================================ */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 64px 24px;
+}
+
+.empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--slate-300);
+    margin-bottom: 16px;
+}
+
+.empty-title {
+    color: var(--navy);
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.empty-text {
+    color: var(--slate-500);
+    margin-top: 4px;
+    max-width: 380px;
+}
+
+.empty-state .btn {
+    margin-top: 20px;
+}
+
+/* ============================================================
+   SISTEMA DE MODALES — BASE
+============================================================ */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.modal {
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 14px;
+    box-shadow: var(--shadow-modal);
+    width: 100%;
+    margin: auto;
+}
+
+.modal-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--slate-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+}
+
+.modal-close:hover {
+    background-color: var(--slate-100);
+}
+
+.modal-close i,
+.modal-close svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================================
+   MODAL DE FORMULARIO (EDITAR / NUEVO EXPEDIENTE)
+============================================================ */
+.modal-form {
+    max-width: 430px;
+    padding: 22px 24px;
+}
+
+.modal-form-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--navy);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-form-title i,
+.modal-form-title svg {
+    width: 20px;
+    height: 20px;
+}
+
+.title-icon-emerald {
+    color: var(--emerald);
+}
+
+.modal-form-subtitle {
+    color: var(--slate-500);
+    margin-top: 4px;
+    font-size: 0.85rem;
+}
+
+.modal-form-subtitle strong {
+    color: var(--slate-700);
+}
+
+.modal-form-body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 18px 0 6px;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-group label {
+    display: block;
+    color: var(--slate-600);
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.form-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+    background-color: var(--slate-50);
+    color: var(--navy);
+    font-size: 0.88rem;
+    color-scheme: only light;
+}
+
+.form-input:focus {
+    outline: 2px solid var(--emerald);
+    outline-offset: 0;
+    border-color: transparent;
+}
+
+/* Mensajes de error por campo */
+.field-error {
+    color: var(--red-600);
+    font-size: 0.8rem;
+    margin-top: 4px;
+}
+
+/* Nota informativa bajo un campo */
+.field-hint {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 8px;
+    color: var(--slate-500);
+    font-size: 0.82rem;
+}
+
+.field-hint i,
+.field-hint svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+    color: var(--emerald);
+}
+
+/* --- Selects con chevron --- */
+.select-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.form-select {
+    appearance: none;
+    padding-right: 34px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.select-chevron {
+    position: absolute;
+    right: 12px;
+    width: 16px;
+    height: 16px;
+    color: var(--slate-500);
+    pointer-events: none;
+}
+
+/* --- Zona de arrastre de PDF --- */
+.drop-zone {
+    border: 2px dashed var(--slate-300);
+    border-radius: 10px;
+    padding: 24px;
+    text-align: center;
+    color: var(--slate-500);
+    cursor: pointer;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.drop-zone:hover,
+.drop-zone.drag-over {
+    border-color: var(--emerald);
+    background-color: #f0fdf9;
+}
+
+.drop-zone.has-file {
+    border-color: var(--emerald);
+    color: var(--navy);
+    font-weight: 600;
+}
+
+/* --- Zona de PDF en modal de edición --- */
+.drop-zone-edit {
+    padding: 16px 20px;
+}
+
+.drop-zone-edit p {
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.drop-zone-icon {
+    width: 32px;
+    height: 32px;
+    margin-bottom: 8px;
+}
+
+.drop-zone-limit {
+    font-size: 0.78rem !important;
+    color: var(--slate-500) !important;
+    margin-top: 4px !important;
+}
+
+/* --- Contenedor del PDF actual --- */
+.pdf-section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.pdf-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    background-color: var(--slate-50);
+    border: 1px solid var(--slate-200);
+    border-radius: 8px;
+}
+
+.pdf-item-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.pdf-item-icon {
+    width: 18px;
+    height: 18px;
+    color: var(--emerald);
+    flex-shrink: 0;
+}
+
+.pdf-item-text {
+    color: var(--navy);
+    font-weight: 500;
+    word-break: break-word;
+}
+
+.pdf-item-delete {
+    background: none;
+    border: none;
+    padding: 6px;
+    border-radius: 6px;
+    color: var(--red-600);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+}
+
+.pdf-item-delete:hover {
+    background-color: #fef2f2;
+}
+
+.pdf-item-delete i,
+.pdf-item-delete svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Mensaje de error general del formulario */
+.collision-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #b91c1c;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 0.85rem;
+}
+
+.collision-error i,
+.collision-error svg {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.modal-form-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 14px;
+}
+
+/* ============================================================
+   MODAL DE CONFIRMACIÓN (ELIMINAR EXPEDIENTE)
+============================================================ */
+.modal-confirm {
+    max-width: 430px;
+    padding: 22px 24px;
+}
+
+.modal-confirm-title {
+    color: var(--red-600);
+    font-size: 1.1rem;
+    font-weight: 700;
+}
+
+.modal-confirm-text {
+    color: var(--slate-600);
+    margin-top: 6px;
+}
+
+.modal-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+/* ============================================================
+   MODALES DE ÉXITO Y DESCARGA
+============================================================ */
+.modal-success {
+    max-width: 430px;
+    padding: 30px 24px 24px;
+    text-align: center;
+}
+
+.modal-success-icon {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 14px;
+    border-radius: 50%;
+    background-color: #d1fae5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--emerald);
+}
+
+.modal-success-icon i,
+.modal-success-icon svg {
+    width: 30px;
+    height: 30px;
+}
+
+.modal-success-title {
+    color: var(--navy);
+    font-size: 1.05rem;
+    font-weight: 700;
+}
+
+.modal-success-text {
+    color: var(--slate-500);
+    margin: 8px 0 18px;
+}
+
+.modal-success-text strong {
+    color: var(--slate-700);
+}
+
+/* ============================================================
+   DISEÑO RESPONSIVO
+============================================================ */
+@media (max-width: 768px) {
+    .content {
+        padding: 20px 16px 40px;
+    }
+
+    .topbar {
+        padding: 12px 16px;
+    }
+
+    .search-wrapper,
+    .filter-abogado {
+        width: 100%;
+        max-width: none;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}

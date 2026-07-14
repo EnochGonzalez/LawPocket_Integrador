@@ -25,7 +25,7 @@
       service worker y vuelve a guardar todo actualizado.
 ============================================================ */
 
-const VERSION = 'lawpocket-v1';
+const VERSION = 'lawpocket-v2';
 const CACHE_API = 'lawpocket-api-v1'; // caché aparte para respuestas de la API
 
 /* ------------------------------------------------------------
@@ -48,6 +48,11 @@ const ARCHIVOS_APP = [
     'Paginas/BibliotecaAdmin.html',
     'Paginas/MisDescargasAdmin.html',
     'Paginas/ManualesUsuarioAdmin.html',
+    'Paginas/AgendaAbogado.html',
+    'Paginas/ExpedientesAbogado.html',
+    'Paginas/BibliotecaAbogado.html',
+    'Paginas/MisDescargasAbogado.html',
+    'Paginas/ManualesUsuarioAbogado.html',
 
     // ---------- Hojas de estilo ----------
     'CSS/Landing.css',
@@ -61,6 +66,11 @@ const ARCHIVOS_APP = [
     'CSS/BibliotecaAdmin.css',
     'CSS/MisDescargasAdmin.css',
     'CSS/ManualesUsuarioAdmin.css',
+    'CSS/AgendaAbogado.css',
+    'CSS/ExpedientesAbogado.css',
+    'CSS/BibliotecaAbogado.css',
+    'CSS/MisDescargasAbogado.css',
+    'CSS/ManualesUsuarioAbogado.css',
 
     // ---------- Lógica de cada módulo ----------
     'JS/Landing.js',
@@ -72,6 +82,11 @@ const ARCHIVOS_APP = [
     'JS/BibliotecaAdmin.js',
     'JS/MisDescargasAdmin.js',
     'JS/ManualesUsuarioAdmin.js',
+    'JS/AgendaAbogado.js',
+    'JS/ExpedientesAbogado.js',
+    'JS/BibliotecaAbogado.js',
+    'JS/MisDescargasAbogado.js',
+    'JS/ManualesUsuarioAbogado.js',
     'JS/sw-register.js',
 
     // ---------- Librerías locales (antes venían de CDN) ----------
