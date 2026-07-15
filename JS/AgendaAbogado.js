@@ -1,7 +1,10 @@
 // ============================================================
-// AgendaAdmin.js — Lógica de la página "Agenda"
+// AgendaAbogado.js — Lógica de la página "Agenda"
 // ============================================================
 
+// Estilos por categoría del caso (materia).
+// Cada categoría tiene su propio color ÚNICO dentro de la Agenda:
+// los colores no se repiten entre categorías de esta sección.
 const MATERIA_STYLE = {
     Civil:     { bg: "#1D4ED8", text: "#FFFFFF" }, // Azul
     Penal:     { bg: "#DC2626", text: "#FFFFFF" }, // Rojo
@@ -24,8 +27,19 @@ const MONTH_NAMES = [
    ESTADO DEL MÓDULO
 ============================================================ */
 
-// Eventos iniciales de demostración (month: 0-11)
-let events = [
+/* Usuario con sesión activa: cada usuario del despacho tiene SU
+   propia agenda (clave por usuario en sessionStorage) */
+const USUARIO_ACTUAL = sessionStorage.getItem("lawpocket_user") || "ABG01";
+
+/* ============================================================
+   CITAS — ALMACÉN POR USUARIO (sessionStorage)
+   La agenda es individual: las citas de cada usuario se guardan
+   bajo su propia clave y no se mezclan con las de los demás.
+============================================================ */
+const CITAS_KEY = "lawpocket_citas::" + USUARIO_ACTUAL;
+
+// Citas iniciales de demostración (month: 0-11)
+const CITAS_DEMO = [
     { id: 1, year: 2026, month: 5, day: 12, hora: "10:00 hrs",
       titulo: "Audiencia Inicial · EXP-2026-118",
       desc: "Juzgado 3° Civil — María Hernández Soto", materia: "Civil" },
@@ -48,6 +62,27 @@ let events = [
       titulo: "Cierre del día · Notas",
       desc: "Resumen de avances del caso María Hernández", materia: "Civil" }
 ];
+
+function obtenerCitas() {
+    try {
+        const raw = sessionStorage.getItem(CITAS_KEY);
+        if (raw) return JSON.parse(raw);
+    } catch (e) {
+        console.warn("No se pudo leer la agenda del usuario:", e);
+    }
+    guardarCitas(CITAS_DEMO);
+    return CITAS_DEMO.map((c) => ({ ...c }));
+}
+
+function guardarCitas(lista) {
+    try {
+        sessionStorage.setItem(CITAS_KEY, JSON.stringify(lista));
+    } catch (e) {
+        console.warn("No se pudo guardar la agenda del usuario:", e);
+    }
+}
+
+let events = obtenerCitas();
 
 let currentYear = 2026;
 let currentMonth = 5;          // Junio (0-11)
@@ -344,6 +379,7 @@ function openNewModal() {
     inputTitulo.value = "";
     inputDescripcion.value = "";
     inputMateria.value = "Civil";
+    actualizarColorSelectMateria();
     updateMateriaDot();
 
     citaModalOverlay.classList.remove("hidden");
@@ -363,6 +399,7 @@ function openEditModal(id) {
     inputTitulo.value = ev.titulo;
     inputDescripcion.value = ev.desc;
     inputMateria.value = ev.materia;
+    actualizarColorSelectMateria();
     updateMateriaDot();
 
     citaModalOverlay.classList.remove("hidden");
@@ -377,6 +414,31 @@ function closeCitaModal() {
    Valida campos obligatorios, verifica colisión de fecha/hora
    (excluyendo la cita en edición) y crea o actualiza el evento.
 ============================================================ */
+
+
+/* ============================================================
+   COMBO DE CATEGORÍA CON PUNTITO DE COLOR
+   Cada opción del select muestra "●" con el color de su materia,
+   visible al desplegar el combo (no solo después de guardar).
+============================================================ */
+function decorarSelectMateria() {
+    Array.from(inputMateria.options).forEach((opt) => {
+        const estilo = MATERIA_STYLE[opt.value];
+        if (!estilo) return;
+        if (opt.textContent.indexOf("●") !== 0) {
+            opt.textContent = "● " + opt.textContent;
+        }
+        opt.style.color = estilo.bg;
+    });
+    actualizarColorSelectMateria();
+}
+
+// El valor seleccionado del combo también se pinta con su color
+function actualizarColorSelectMateria() {
+    const estilo = MATERIA_STYLE[inputMateria.value];
+    inputMateria.style.color = estilo ? estilo.bg : "";
+}
+
 function saveCita() {
     clearFormErrors();
 
@@ -430,6 +492,8 @@ function saveCita() {
         );
     }
 
+    guardarCitas(events);
+
     const message = editingId === null
         ? "Cita registrada exitosamente."
         : "Cita actualizada exitosamente.";
@@ -456,6 +520,7 @@ function confirmDelete() {
     if (deleteTargetId === null) return;
 
     events = events.filter(e => e.id !== deleteTargetId);
+    guardarCitas(events);
     deleteTargetId = null;
     closeDeleteModal();
 
@@ -518,6 +583,9 @@ function renderAll() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    decorarSelectMateria();
+    inputMateria.addEventListener("change", actualizarColorSelectMateria);
+
     // --- Navegación del calendario ---
     document.getElementById("btnMesAnterior").addEventListener("click", goPrevMonth);
     document.getElementById("btnMesSiguiente").addEventListener("click", goNextMonth);
@@ -567,7 +635,7 @@ document.addEventListener("DOMContentLoaded", () => {
    (el enlace del sidebar navega a Login.html por sí mismo).
 ============================================================ */
 (function initSession() {
-    const nombre = sessionStorage.getItem("lawpocket_name") || "González Velasco Santos Enoch";
+    const nombre = sessionStorage.getItem("lawpocket_name") || "Nucamendi Ruiz Leonardo";
     const nombreEl = document.getElementById("userName");
     const avatarEl = document.getElementById("userAvatar");
     if (nombreEl) nombreEl.textContent = nombre;
@@ -593,8 +661,52 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!modal) return;
     const closeBtn = document.getElementById("closeOfflineModal");
     const dismissBtn = document.getElementById("dismissOfflineModal");
-    function hideModal() { modal.classList.add("hidden"); }
+    function hideModal() {
+        modal.classList.add("hidden");
+        // Tras el aviso de trabajo sin conexión se muestra, si hay,
+        // la notificación vigente del despacho creada por el admin
+        mostrarNotificacionDespacho();
+    }
     if (closeBtn) closeBtn.addEventListener("click", hideModal);
     if (dismissBtn) dismissBtn.addEventListener("click", hideModal);
     modal.addEventListener("click", (e) => { if (e.target === modal) hideModal(); });
 })();
+
+/* ============================================================
+   NOTIFICACIÓN DEL DESPACHO
+   El administrador la crea en "Sistema y Almacenamiento" con una
+   duración estipulada (localStorage "lawpocket_notification").
+   Se muestra a todos los miembros del despacho MENOS al admin,
+   justo después del aviso de trabajo sin conexión, mientras esté
+   vigente. Si el admin limpia el aviso, deja de mostrarse.
+============================================================ */
+function mostrarNotificacionDespacho() {
+    // El admin no recibe sus propias notificaciones
+    if (sessionStorage.getItem("lawpocket_role") === "admin") return;
+
+    let notif = null;
+    try {
+        notif = JSON.parse(localStorage.getItem("lawpocket_notification"));
+    } catch (e) {
+        return;
+    }
+    if (!notif || !notif.message || !notif.createdAt) return;
+
+    // Vigencia: duración en días (puede ser fracción, ej. 0.25 = 6 hrs)
+    const vigenciaMs = parseFloat(notif.duration) * 24 * 60 * 60 * 1000;
+    if (!vigenciaMs || Date.now() > notif.createdAt + vigenciaMs) {
+        localStorage.removeItem("lawpocket_notification"); // aviso vencido
+        return;
+    }
+
+    const modal = document.getElementById("notifDespachoModal");
+    if (!modal) return;
+    document.getElementById("notifDespachoTexto").textContent = notif.message;
+    modal.classList.remove("hidden");
+    renderIcons();
+
+    const cerrar = () => modal.classList.add("hidden");
+    document.getElementById("closeNotifDespacho").addEventListener("click", cerrar);
+    document.getElementById("dismissNotifDespacho").addEventListener("click", cerrar);
+    modal.addEventListener("click", (e) => { if (e.target === modal) cerrar(); });
+}

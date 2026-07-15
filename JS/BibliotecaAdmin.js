@@ -27,7 +27,37 @@ function colorCategoria(categoria) {
   return CATEGORIA_COLORES[categoria] || "#475569";
 }
 
-let libros = LIBROS_INICIALES.map((l) => ({ ...l }));
+/* Usuario con sesión activa: biblioteca y descargas por usuario */
+const USUARIO_ACTUAL = sessionStorage.getItem("lawpocket_user") || "ADMIN01";
+
+/* ============================================================
+   LIBROS — ALMACÉN POR USUARIO (sessionStorage)
+   La biblioteca es individual: cada usuario parte de los libros
+   predefinidos del despacho (LIBROS_INICIALES) y sus cambios
+   (libros personales, ediciones, bajas) solo afectan SU copia.
+============================================================ */
+const LIBROS_KEY = "lawpocket_libros::" + USUARIO_ACTUAL;
+
+function obtenerLibros() {
+  try {
+    const raw = sessionStorage.getItem(LIBROS_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    console.warn("No se pudo leer la biblioteca del usuario:", e);
+  }
+  guardarLibros(LIBROS_INICIALES.map((l) => ({ ...l })));
+  return LIBROS_INICIALES.map((l) => ({ ...l }));
+}
+
+function guardarLibros(lista) {
+  try {
+    sessionStorage.setItem(LIBROS_KEY, JSON.stringify(lista));
+  } catch (e) {
+    console.warn("No se pudo guardar la biblioteca del usuario:", e);
+  }
+}
+
+let libros = obtenerLibros();
 let categoriaActiva = "Todos";
 let textoBusqueda = "";
 let tituloEnEdicion = null;   // null = agregando; string = título original del libro editado
@@ -125,7 +155,7 @@ function escaparHTML(texto) {
    Mismo almacén que usan "Mis Descargas" y "Manuales de Usuario":
    toda descarga se registra aquí para aparecer en esa sección.
 ============================================================ */
-const DESCARGAS_KEY = "lawpocket_descargas";
+const DESCARGAS_KEY = "lawpocket_descargas::" + USUARIO_ACTUAL;
 
 const DESCARGAS_DEMO = [
     { name: "EXP-2026-118 · María Hernández.pdf", size: "2.4 MB", date: "10 Jun 2026" },
@@ -176,7 +206,7 @@ function mostrarAvisoDescarga(titulo, mensaje) {
     if (!overlay) {
         overlay = document.createElement("div");
         overlay.id = "avisoDescargaOverlay";
-        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
         overlay.innerHTML =
             '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
                 '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
@@ -224,26 +254,38 @@ function intentarDescarga(nombreArchivo) {
 }
 
 /* Marca la descarga de un documento como desactualizada (cuando el
-   documento fuente se edita después de haberse descargado) */
+   documento fuente se edita después de haberse descargado).
+   El aviso llega a TODOS los usuarios que lo hayan descargado. */
 function marcarDescargaDesactualizada(nombreArchivo) {
-    const descargas = obtenerDescargas();
-    const d = descargas.find((x) => x.name === nombreArchivo);
-    if (d && !d.desactualizado) {
-        d.desactualizado = true;
-        guardarDescargas(descargas);
-    }
+    marcarEnTodasLasDescargas(nombreArchivo, "desactualizado");
 }
 
 /* Marca la descarga de un documento como eliminada (cuando el
    documento fuente se borra del sistema después de descargarse).
    La copia offline sigue disponible; "Mis Descargas" solo avisa
-   al usuario que el original ya no existe. */
+   que el original ya no existe. El aviso llega a TODOS los
+   usuarios que lo hayan descargado. */
 function marcarDescargaEliminada(nombreArchivo) {
-    const descargas = obtenerDescargas();
-    const d = descargas.find((x) => x.name === nombreArchivo);
-    if (d && !d.eliminado) {
-        d.eliminado = true;
-        guardarDescargas(descargas);
+    marcarEnTodasLasDescargas(nombreArchivo, "eliminado");
+}
+
+/* Recorre las listas de descargas de TODOS los usuarios (claves
+   "lawpocket_descargas::<usuario>") y aplica la marca indicada
+   al archivo, si ese usuario lo tenía descargado. */
+function marcarEnTodasLasDescargas(nombreArchivo, marca) {
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const clave = sessionStorage.key(i);
+        if (!clave || clave.indexOf("lawpocket_descargas::") !== 0) continue;
+        try {
+            const lista = JSON.parse(sessionStorage.getItem(clave)) || [];
+            const d = lista.find((x) => x.name === nombreArchivo);
+            if (d && !d[marca]) {
+                d[marca] = true;
+                sessionStorage.setItem(clave, JSON.stringify(lista));
+            }
+        } catch (e) {
+            console.warn("No se pudo marcar la descarga en", clave, e);
+        }
     }
 }
 
@@ -395,6 +437,7 @@ function abrirAgregar() {
   campoTitulo.value = "";
   campoAutor.value = "";
   campoCategoria.value = "Doctrina/Libros";
+  actualizarColorSelectCategoria();
   establecerPdf("");
   limpiarErroresFormulario();
   abrirModal(modalLibro);
@@ -408,6 +451,7 @@ function abrirEdicion(libro) {
   campoTitulo.value = libro.titulo;
   campoAutor.value = libro.autor;
   campoCategoria.value = libro.categoria;
+  actualizarColorSelectCategoria();
   establecerPdf(libro.pdfNombre || "");
   limpiarErroresFormulario();
   abrirModal(modalLibro);
@@ -458,6 +502,30 @@ dropzonePdf.addEventListener("drop", (e) => {
 /* ============================================================
    GUARDADO DEL LIBRO (VALIDACIÓN + COMMIT)
    ============================================================ */
+
+
+/* ============================================================
+   COMBO DE CATEGORÍA CON PUNTITO DE COLOR
+   Cada opción del select muestra "●" con el color de su
+   categoría, visible al desplegar el combo.
+============================================================ */
+function decorarSelectCategoria() {
+  Array.from(campoCategoria.options).forEach((opt) => {
+    const color = CATEGORIA_COLORES[opt.value];
+    if (!color) return;
+    if (opt.textContent.indexOf("●") !== 0) {
+      opt.textContent = "● " + opt.textContent;
+    }
+    opt.style.color = color;
+  });
+  actualizarColorSelectCategoria();
+}
+
+// El valor seleccionado del combo también se pinta con su color
+function actualizarColorSelectCategoria() {
+  campoCategoria.style.color = CATEGORIA_COLORES[campoCategoria.value] || "";
+}
+
 function guardarLibro() {
   limpiarErroresFormulario();
 
@@ -507,6 +575,7 @@ function guardarLibro() {
         categoria,
         pdfNombre: pdfSeleccionado,
       });
+      guardarLibros(libros);
       mostrarExito("Libro agregado exitosamente.");
     } else {
       /* Si el libro ya estaba descargado, su copia offline queda
@@ -517,6 +586,7 @@ function guardarLibro() {
           ? { ...l, titulo: titulo.trim(), autor: autor.trim(), categoria, pdfNombre: pdfSeleccionado }
           : l
       );
+      guardarLibros(libros);
       mostrarExito("Libro actualizado exitosamente.");
     }
     cerrarModal(modalLibro);
@@ -564,6 +634,7 @@ btnConfirmarEliminar.addEventListener("click", () => {
      eliminado (la copia se puede seguir viendo) */
   marcarDescargaEliminada(libroAEliminar + ".pdf");
   libros = libros.filter((l) => l.titulo !== libroAEliminar);
+  guardarLibros(libros);
   libroAEliminar = null;
   cerrarModal(modalEliminar);
   renderizarLibros();
@@ -595,6 +666,9 @@ document.querySelectorAll("[data-close]").forEach((boton) => {
    INICIALIZACIÓN
    ============================================================ */
 document.addEventListener("DOMContentLoaded", () => {
+  decorarSelectCategoria();
+  campoCategoria.addEventListener("change", actualizarColorSelectCategoria);
+
   renderizarLibros();
   refrescarIconos();
 });

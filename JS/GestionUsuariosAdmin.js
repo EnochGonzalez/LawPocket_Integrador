@@ -235,6 +235,16 @@ document.getElementById('openCreateModal').addEventListener('click', () => {
 // Guardar nuevo abogado: valida campos obligatorios, verifica que el
 // nombre, el ID y el teléfono no estén repetidos (la contraseña sí
 // puede repetirse) y agrega el usuario a la lista
+/* Valida que el nombre esté completo: nombre(s) + DOS apellidos.
+   La base de datos guarda el nombre completo con ambos apellidos,
+   por lo que se exige un mínimo de 3 palabras (una persona puede
+   tener un solo nombre, pero siempre dos apellidos). El prefijo
+   "Lic." se ignora si el admin lo escribe. */
+function nombreCompletoValido(nombre) {
+    const limpio = nombre.replace(/^Lic\.?\s+/i, "").trim();
+    return limpio.split(/\s+/).filter(Boolean).length >= 3;
+}
+
 document.getElementById('saveCreateBtn').addEventListener('click', () => {
     clearCreateErrors();
     const nombre = document.getElementById('create-nombre').value.trim();
@@ -251,6 +261,7 @@ document.getElementById('saveCreateBtn').addEventListener('click', () => {
         err.textContent = msg; err.style.display = 'block'; hasError = true;
     };
     if (!nombre) setErr('nombre', 'El nombre es obligatorio.');
+    else if (!nombreCompletoValido(nombre)) setErr('nombre', 'Error: Escribe el nombre completo con sus dos apellidos.');
     if (!userId) setErr('userId', 'El ID es obligatorio.');
     if (!password) setErr('password', 'Contraseña obligatoria.');
     if (!telefono) setErr('telefono', 'Teléfono obligatorio.');
@@ -336,6 +347,7 @@ document.getElementById('saveEditBtn').addEventListener('click', () => {
 
     // Validaciones de campos obligatorios
     if (!nombre) setErr('nombre', 'El nombre es obligatorio.');
+    else if (!nombreCompletoValido(nombre)) setErr('nombre', 'Error: Escribe el nombre completo con sus dos apellidos.');
     if (!userId) setErr('userId', 'El ID de usuario es obligatorio.');
     if (!password) setErr('password', 'La contraseña es obligatoria.');
     if (!telefono) setErr('telefono', 'El teléfono es obligatorio.');

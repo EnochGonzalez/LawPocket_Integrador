@@ -25,7 +25,7 @@
       service worker y vuelve a guardar todo actualizado.
 ============================================================ */
 
-const VERSION = 'lawpocket-v2';
+const VERSION = 'lawpocket-v5';
 const CACHE_API = 'lawpocket-api-v1'; // caché aparte para respuestas de la API
 
 /* ------------------------------------------------------------
@@ -87,6 +87,7 @@ const ARCHIVOS_APP = [
     'JS/BibliotecaAbogado.js',
     'JS/MisDescargasAbogado.js',
     'JS/ManualesUsuarioAbogado.js',
+    'JS/api.js',
     'JS/sw-register.js',
 
     // ---------- Librerías locales (antes venían de CDN) ----------

@@ -17,7 +17,7 @@ try {
    (el enlace del sidebar navega a Login.html por sí mismo).
 ============================================================ */
 (function initSession() {
-    const nombre = sessionStorage.getItem("lawpocket_name") || "González Velasco Santos Enoch";
+    const nombre = sessionStorage.getItem("lawpocket_name") || "Nucamendi Ruiz Leonardo";
     const nombreEl = document.getElementById("userName");
     const avatarEl = document.getElementById("userAvatar");
     if (nombreEl) nombreEl.textContent = nombre;
@@ -40,7 +40,10 @@ try {
    descargarlos y este módulo los muestre. Si no existe aún,
    se siembra con los datos demo del diseño.
 ============================================================ */
-const DESCARGAS_KEY = "lawpocket_descargas";
+/* Usuario con sesión activa: cada usuario del despacho tiene SU
+   propia lista de descargas (clave por usuario en sessionStorage) */
+const USUARIO_ACTUAL = sessionStorage.getItem("lawpocket_user") || "ABG01";
+const DESCARGAS_KEY = "lawpocket_descargas::" + USUARIO_ACTUAL;
 
 const DESCARGAS_DEMO = [
     { name: "EXP-2026-118 · María Hernández.pdf", size: "2.4 MB", date: "10 Jun 2026" },
@@ -77,7 +80,7 @@ function mostrarAvisoDescarga(titulo, mensaje) {
     if (!overlay) {
         overlay = document.createElement("div");
         overlay.id = "avisoDescargaOverlay";
-        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
         overlay.innerHTML =
             '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
                 '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +

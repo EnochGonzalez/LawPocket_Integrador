@@ -131,3 +131,14 @@ textarea.field-textarea:focus { border-color: var(--emerald); }
 /* Modal de éxito (¡Operación exitosa!) */
 .success-modal { max-width: 420px; }
 .success-modal .modal-content { text-align: center; padding: 2rem 1.5rem 1.5rem; }
+/* ============================================================
+   FONDO BORROSO UNIFICADO
+   Todas las ventanas emergentes (éxito, error, confirmaciones,
+   formularios y avisos) usan el mismo fondo oscurecido y borroso
+   que el aviso de "Trabajo sin conexión".
+============================================================ */
+.modal-overlay {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}

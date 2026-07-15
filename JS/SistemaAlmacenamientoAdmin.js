@@ -201,15 +201,29 @@ document.getElementById('notifMessage').addEventListener('input', () => {
     document.getElementById('notifMessage').classList.remove('input-error');
 });
 
-// Limpiar aviso: vacía el campo de texto, elimina la notificación
-// guardada en localStorage y muestra el modal de limpieza exitosa
+// Limpiar aviso: vacía el campo de texto y elimina la notificación
+// guardada en localStorage. Si no hay nada que borrar (ni aviso
+// guardado ni texto en el campo), se informa en lugar de mostrar
+// un falso mensaje de éxito.
 document.getElementById('clearNotifBtn').addEventListener('click', () => {
     const textarea = document.getElementById('notifMessage');
+    const hayGuardado = localStorage.getItem('lawpocket_notification') !== null;
+    const hayTexto = textarea.value.trim() !== '';
+
+    document.getElementById('notifSuccessMsg').style.display = 'none';
+    document.getElementById('notifErrorMsg').style.display = 'none';
+
+    // Nada guardado y campo vacío: no hay nada que limpiar
+    if (!hayGuardado && !hayTexto) {
+        const err = document.getElementById('notifErrorMsg');
+        err.textContent = '⚠ No hay ningún aviso que borrar: el campo está vacío.';
+        err.style.display = 'block';
+        return;
+    }
+
     textarea.value = '';
     textarea.classList.remove('input-error');
     localStorage.removeItem('lawpocket_notification');
-    document.getElementById('notifSuccessMsg').style.display = 'none';
-    document.getElementById('notifErrorMsg').style.display = 'none';
     document.getElementById('successMessage').textContent = 'Aviso limpiado exitosamente.';
     openModal('successModal');
 });

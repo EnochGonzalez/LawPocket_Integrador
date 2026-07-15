@@ -308,6 +308,32 @@
     </div>
 
     <!-- ============================================================
+            MODAL — NOTIFICACIÓN DEL DESPACHO (creada por el admin)
+    ============================================================ -->
+    <div class="modal-overlay hidden" id="notifDespachoModal">
+        <div class="modal offline-modal">
+            <div class="offline-modal-header">
+                <div style="flex: 1;"></div>
+                <button class="offline-modal-close" id="closeNotifDespacho">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="offline-modal-content">
+                <div class="offline-modal-icon-wrap notif-despacho-icon">
+                    <i data-lucide="bell"></i>
+                </div>
+                <div class="offline-modal-message">
+                    <div class="title">Notificación del Despacho</div>
+                    <div class="description" id="notifDespachoTexto"></div>
+                </div>
+            </div>
+            <div class="offline-modal-footer">
+                <button class="offline-modal-btn" id="dismissNotifDespacho">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
                     SCRIPT DEL MÓDULO
     ============================================================ -->
     <script src="../JS/AgendaAbogado.js"></script>

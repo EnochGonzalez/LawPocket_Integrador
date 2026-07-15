@@ -833,3 +833,47 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* ============================================================
+   AVISO DE EXPEDIENTE MOVIDO POR EL ADMINISTRADOR
+   Reutiliza el modal de éxito, con acento azul informativo.
+============================================================ */
+.aviso-movido-icon {
+    background-color: #dbeafe;
+    color: #0284c7;
+}
+
+.aviso-movido-lista {
+    margin: 0 0 1.25rem;
+}
+
+.aviso-movido-item {
+    color: #475569;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin: 0 0 0.6rem;
+}
+
+.aviso-movido-item:last-child {
+    margin-bottom: 0;
+}
+
+.btn-aviso-movido {
+    background-color: #0284c7;
+}
+
+.btn-aviso-movido:hover {
+    background-color: #0369a1;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}
+
+/* ============================================================
+   FONDO BORROSO UNIFICADO
+   Todas las ventanas emergentes (éxito, error, confirmaciones,
+   formularios y avisos) usan el mismo fondo oscurecido y borroso
+   que el aviso de "Trabajo sin conexión".
+============================================================ */
+.modal-overlay {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}

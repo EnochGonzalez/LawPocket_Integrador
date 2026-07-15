@@ -833,3 +833,14 @@ body {
         grid-template-columns: 1fr;
     }
 }
+/* ============================================================
+   FONDO BORROSO UNIFICADO
+   Todas las ventanas emergentes (éxito, error, confirmaciones,
+   formularios y avisos) usan el mismo fondo oscurecido y borroso
+   que el aviso de "Trabajo sin conexión".
+============================================================ */
+.modal-overlay {
+    background-color: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}

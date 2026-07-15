@@ -205,10 +205,17 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="editCliente">Nombre del Cliente</label>
+                    <label for="editCliente">Nombre del cliente</label>
                     <input type="text" id="editCliente" class="form-input"
-                           placeholder="Nombre y apellido del cliente">
+                           placeholder="Ej. María Hernández Soto">
                     <p id="errorEditCliente" class="field-error hidden">El nombre del cliente es obligatorio.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="editTelefono">Teléfono del cliente</label>
+                    <input type="text" id="editTelefono" class="form-input"
+                           placeholder="Ej. 961 000 0000" maxlength="12">
+                    <p id="errorEditTelefono" class="field-error hidden">El teléfono es obligatorio.</p>
                 </div>
 
                 <div class="form-row">
@@ -293,9 +300,17 @@
 
             <div class="modal-form-body">
                 <div class="form-group">
-                    <label for="newCliente">Nombre del caso / cliente</label>
+                    <label for="newCliente">Nombre del cliente</label>
                     <input type="text" id="newCliente" class="form-input"
                            placeholder="Ej. María Hernández Soto">
+                    <p id="errorNewCliente" class="field-error hidden">El nombre del cliente es obligatorio.</p>
+                </div>
+
+                <div class="form-group">
+                    <label for="newTelefono">Teléfono del cliente</label>
+                    <input type="text" id="newTelefono" class="form-input"
+                           placeholder="Ej. 961 000 0000" maxlength="12">
+                    <p id="errorNewTelefono" class="field-error hidden">El teléfono es obligatorio.</p>
                 </div>
 
                 <div class="form-row">

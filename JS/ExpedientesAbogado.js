@@ -31,12 +31,12 @@ const EXPEDIENTES_KEY = "lawpocket_expedientes";
 
 // Expedientes iniciales de demostración (fecha en formato ISO)
 const EXPEDIENTES_DEMO = [
-    { id: "EXP-2026-118", cliente: "María Hernández Soto",     fecha: "2026-05-12", tipoCaso: "Civil",     estatus: "En Proceso",          origen: "Referidos",      asignado: "Lic. Nucamendi Ruiz Leonardo",      pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-117", cliente: "Grupo Ferretero del Sur",  fecha: "2026-05-08", tipoCaso: "Mercantil", estatus: "En Proceso",          origen: "Sitio Web",      asignado: "Lic. Rodriguez Cruz Pablo Isaias",  pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-115", cliente: "Carlos Mendoza Ruiz",      fecha: "2026-04-22", tipoCaso: "Penal",     estatus: "Concluido - Ganado",  origen: "Recomendación",  asignado: "Lic. González Pérez Santos Enoch",  pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-114", cliente: "Distribuidora La Roca SA", fecha: "2026-04-18", tipoCaso: "Mercantil", estatus: "Concluido - Perdido", origen: "Publicidad",     asignado: "Lic. González Velasco Santos Enoch", pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-113", cliente: "Ana Lucía Robles",         fecha: "2026-04-10", tipoCaso: "Familiar",  estatus: "En Proceso",          origen: "Redes Sociales", asignado: "Lic. Nucamendi Ruiz Leonardo",      pdfFile: "nuevo_documento_cargado.pdf" },
-    { id: "EXP-2026-112", cliente: "José Antonio Pérez",       fecha: "2026-03-28", tipoCaso: "Laboral",   estatus: "Concluido - Ganado",  origen: "Referidos",      asignado: "Lic. Rodriguez Cruz Pablo Isaias",  pdfFile: "nuevo_documento_cargado.pdf" }
+    { id: "EXP-2026-118", cliente: "María Hernández Soto",     fecha: "2026-05-12", tipoCaso: "Civil",     estatus: "En Proceso",          origen: "Referidos",      asignado: "Lic. Nucamendi Ruiz Leonardo",      telefono: "961 111 0118", pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-117", cliente: "Grupo Ferretero del Sur",  fecha: "2026-05-08", tipoCaso: "Mercantil", estatus: "En Proceso",          origen: "Sitio Web",      asignado: "Lic. Rodriguez Cruz Pablo Isaias",  telefono: "961 111 0117", pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-115", cliente: "Carlos Mendoza Ruiz",      fecha: "2026-04-22", tipoCaso: "Penal",     estatus: "Concluido - Ganado",  origen: "Recomendación",  asignado: "Lic. González Pérez Santos Enoch",  telefono: "961 111 0115", pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-114", cliente: "Distribuidora La Roca SA", fecha: "2026-04-18", tipoCaso: "Mercantil", estatus: "Concluido - Perdido", origen: "Publicidad",     asignado: "Lic. González Velasco Santos Enoch", telefono: "961 111 0114", pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-113", cliente: "Ana Lucía Robles",         fecha: "2026-04-10", tipoCaso: "Familiar",  estatus: "En Proceso",          origen: "Redes Sociales", asignado: "Lic. Nucamendi Ruiz Leonardo",      telefono: "961 111 0113", pdfFile: "nuevo_documento_cargado.pdf" },
+    { id: "EXP-2026-112", cliente: "José Antonio Pérez",       fecha: "2026-03-28", tipoCaso: "Laboral",   estatus: "Concluido - Ganado",  origen: "Referidos",      asignado: "Lic. Rodriguez Cruz Pablo Isaias",  telefono: "961 111 0112", pdfFile: "nuevo_documento_cargado.pdf" }
 ];
 
 function obtenerExpedientes() {
@@ -60,6 +60,48 @@ function guardarExpedientes(lista) {
 
 let rows = obtenerExpedientes();
 
+/* ============================================================
+   VALIDACIONES DE CLIENTE Y TELÉFONO
+   La base de datos guarda el nombre completo del cliente (con
+   sus dos apellidos) y su teléfono a 10 dígitos; ninguno de los
+   dos puede repetirse entre expedientes.
+============================================================ */
+
+// Nombre completo del cliente: mínimo 3 palabras
+function nombreClienteValido(nombre) {
+    return (nombre || "").trim().split(/\s+/).filter(Boolean).length >= 3;
+}
+
+// Solo los dígitos de un teléfono (quita espacios, guiones, etc.)
+function soloDigitos(telefono) {
+    return (telefono || "").replace(/\D/g, "");
+}
+
+// El teléfono debe tener los 10 dígitos completos (Ej. 961 000 0000)
+function telefonoValido(telefono) {
+    return soloDigitos(telefono).length === 10;
+}
+
+// Da formato de despacho al teléfono: "961 000 0000"
+function formatearTelefono(telefono) {
+    const d = soloDigitos(telefono);
+    return d.slice(0, 3) + " " + d.slice(3, 6) + " " + d.slice(6);
+}
+
+// ¿Otro expediente ya tiene este cliente? (excluye al propio)
+function existeClienteDuplicado(nombre, idExcluido) {
+    const buscado = (nombre || "").trim().toLowerCase();
+    return rows.some(r => r.id !== idExcluido &&
+        (r.cliente || "").trim().toLowerCase() === buscado);
+}
+
+// ¿Otro expediente ya tiene este teléfono? (excluye al propio)
+function existeTelefonoDuplicado(telefono, idExcluido) {
+    const buscado = soloDigitos(telefono);
+    return rows.some(r => r.id !== idExcluido &&
+        r.telefono && soloDigitos(r.telefono) === buscado);
+}
+
 let editingId = null;       // ID del expediente en edición
 let deleteTargetId = null;  // ID del expediente pendiente de eliminar
 let selectedPDF = null;     // Archivo PDF seleccionado en el modal de alta
@@ -78,6 +120,8 @@ const emptyState      = document.getElementById("emptyState");
 const editModalOverlay = document.getElementById("editModalOverlay");
 const editCaseId       = document.getElementById("editCaseId");
 const editCliente      = document.getElementById("editCliente");
+const editTelefono     = document.getElementById("editTelefono");
+const errorEditTelefono = document.getElementById("errorEditTelefono");
 const editFecha        = document.getElementById("editFecha");
 const editTipo         = document.getElementById("editTipo");
 const editOrigen       = document.getElementById("editOrigen");
@@ -91,6 +135,9 @@ const editInputPDF     = document.getElementById("editInputPDF");
 
 const createModalOverlay = document.getElementById("createModalOverlay");
 const newCliente         = document.getElementById("newCliente");
+const newTelefono        = document.getElementById("newTelefono");
+const errorNewCliente    = document.getElementById("errorNewCliente");
+const errorNewTelefono   = document.getElementById("errorNewTelefono");
 const newFecha           = document.getElementById("newFecha");
 const newTipo            = document.getElementById("newTipo");
 const newOrigen          = document.getElementById("newOrigen");
@@ -232,6 +279,7 @@ function renderTable() {
 ============================================================ */
 function clearEditErrors() {
     errorEditCliente.classList.add("hidden");
+    errorEditTelefono.classList.add("hidden");
     errorEditFecha.classList.add("hidden");
     errorEditPDF.classList.add("hidden");
 }
@@ -306,6 +354,7 @@ function openEditModal(id) {
 
     editCaseId.textContent = row.id;
     editCliente.value = row.cliente;
+    editTelefono.value = row.telefono || "";
     editFecha.value = row.fecha;
     editTipo.value = row.tipoCaso;
     editOrigen.value = row.origen;
@@ -327,7 +376,28 @@ function saveEdit() {
     clearEditErrors();
 
     let hasErrors = false;
-    if (!editCliente.value.trim()) { errorEditCliente.classList.remove("hidden"); hasErrors = true; }
+
+    // --- Nombre del cliente: obligatorio, completo y sin repetir ---
+    const clienteEditado = editCliente.value.trim();
+    if (!clienteEditado) {
+        errorEditCliente.textContent = "El nombre del cliente es obligatorio.";
+        errorEditCliente.classList.remove("hidden"); hasErrors = true;
+    } else if (!nombreClienteValido(clienteEditado)) {
+        errorEditCliente.textContent = "Error: Escribe el nombre completo del cliente (mínimo 3 palabras).";
+        errorEditCliente.classList.remove("hidden"); hasErrors = true;
+    } else if (existeClienteDuplicado(clienteEditado, editingId)) {
+        errorEditCliente.textContent = "Error: Ya existe un expediente registrado con este cliente.";
+        errorEditCliente.classList.remove("hidden"); hasErrors = true;
+    }
+
+    // --- Teléfono: 10 dígitos completos y sin repetir ---
+    if (!telefonoValido(editTelefono.value)) {
+        errorEditTelefono.textContent = "Error: El teléfono debe tener los 10 dígitos completos (Ej. 961 000 0000).";
+        errorEditTelefono.classList.remove("hidden"); hasErrors = true;
+    } else if (existeTelefonoDuplicado(editTelefono.value, editingId)) {
+        errorEditTelefono.textContent = "Error: Este teléfono ya está registrado en otro expediente.";
+        errorEditTelefono.classList.remove("hidden"); hasErrors = true;
+    }
     if (!editFecha.value)          { errorEditFecha.classList.remove("hidden");   hasErrors = true; }
 
     // El expediente debe tener un archivo PDF asociado
@@ -354,6 +424,7 @@ function saveEdit() {
         if (r.id === editingId) {
             return { ...r,
                 cliente: editCliente.value.trim(),
+                telefono: formatearTelefono(editTelefono.value),
                 fecha: editFecha.value,
                 tipoCaso: editTipo.value,
                 origen: editOrigen.value,
@@ -381,6 +452,7 @@ function openCreateModal() {
     dropZoneText.textContent = "Arrastra el PDF aquí o haz clic para seleccionar";
 
     newCliente.value = "";
+    newTelefono.value = "";
     newFecha.value = todayISO();
     newTipo.value = "Civil";
     newOrigen.value = "Redes Sociales";
@@ -411,14 +483,41 @@ function setSelectedPDF(file) {
    o si el PDF seleccionado excede el límite de 20MB. */
 function saveNew() {
     createError.classList.add("hidden");
+    errorNewCliente.classList.add("hidden");
+    errorNewTelefono.classList.add("hidden");
 
-    const emptyFields = !newCliente.value.trim() || !newFecha.value || selectedPDF === null;
+    let hasErrors = false;
+
+    // --- Nombre del cliente: obligatorio, completo y sin repetir ---
+    const clienteNuevo = newCliente.value.trim();
+    if (!clienteNuevo) {
+        errorNewCliente.textContent = "El nombre del cliente es obligatorio.";
+        errorNewCliente.classList.remove("hidden"); hasErrors = true;
+    } else if (!nombreClienteValido(clienteNuevo)) {
+        errorNewCliente.textContent = "Error: Escribe el nombre completo del cliente (mínimo 3 palabras).";
+        errorNewCliente.classList.remove("hidden"); hasErrors = true;
+    } else if (existeClienteDuplicado(clienteNuevo, null)) {
+        errorNewCliente.textContent = "Error: Ya existe un expediente registrado con este cliente.";
+        errorNewCliente.classList.remove("hidden"); hasErrors = true;
+    }
+
+    // --- Teléfono: 10 dígitos completos y sin repetir ---
+    if (!telefonoValido(newTelefono.value)) {
+        errorNewTelefono.textContent = "Error: El teléfono debe tener los 10 dígitos completos (Ej. 961 000 0000).";
+        errorNewTelefono.classList.remove("hidden"); hasErrors = true;
+    } else if (existeTelefonoDuplicado(newTelefono.value, null)) {
+        errorNewTelefono.textContent = "Error: Este teléfono ya está registrado en otro expediente.";
+        errorNewTelefono.classList.remove("hidden"); hasErrors = true;
+    }
+
+    const emptyFields = !newFecha.value || selectedPDF === null;
     const pdfTooBig = selectedPDF !== null && selectedPDF.size > MAX_PDF_SIZE;
 
     if (emptyFields || pdfTooBig) {
         createError.classList.remove("hidden");
-        return;
+        hasErrors = true;
     }
+    if (hasErrors) return;
 
     // Genera el siguiente ID consecutivo (EXP-2026-N)
     const maxIdNum = rows.reduce((max, r) => {
@@ -431,6 +530,7 @@ function saveNew() {
     rows.unshift({
         id: nextId,
         cliente: newCliente.value.trim(),
+        telefono: formatearTelefono(newTelefono.value),
         fecha: newFecha.value,
         tipoCaso: newTipo.value,
         estatus: "En Proceso",
@@ -482,7 +582,10 @@ function confirmDelete() {
    Mismo almacén que usan "Mis Descargas" y "Manuales de Usuario":
    toda descarga se registra aquí para aparecer en esa sección.
 ============================================================ */
-const DESCARGAS_KEY = "lawpocket_descargas";
+/* Usuario con sesión activa: cada usuario del despacho tiene SU
+   propia lista de descargas (clave por usuario en sessionStorage) */
+const USUARIO_ACTUAL = sessionStorage.getItem("lawpocket_user") || "ABG01";
+const DESCARGAS_KEY = "lawpocket_descargas::" + USUARIO_ACTUAL;
 
 const DESCARGAS_DEMO = [
     { name: "EXP-2026-118 · María Hernández.pdf", size: "2.4 MB", date: "10 Jun 2026" },
@@ -533,7 +636,7 @@ function mostrarAvisoDescarga(titulo, mensaje) {
     if (!overlay) {
         overlay = document.createElement("div");
         overlay.id = "avisoDescargaOverlay";
-        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
+        overlay.style.cssText = "position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);display:flex;align-items:center;justify-content:center;z-index:1000;padding:1rem;";
         overlay.innerHTML =
             '<div style="background:#fff;border-radius:16px;max-width:430px;width:100%;padding:1.6rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25);">' +
                 '<div style="font-size:2rem;line-height:1;margin-bottom:.6rem;">\u26A0\uFE0F</div>' +
@@ -581,26 +684,89 @@ function intentarDescarga(nombreArchivo) {
 }
 
 /* Marca la descarga de un documento como desactualizada (cuando el
-   documento fuente se edita después de haberse descargado) */
+   documento fuente se edita después de haberse descargado).
+   El aviso llega a TODOS los usuarios que lo hayan descargado. */
 function marcarDescargaDesactualizada(nombreArchivo) {
-    const descargas = obtenerDescargas();
-    const d = descargas.find((x) => x.name === nombreArchivo);
-    if (d && !d.desactualizado) {
-        d.desactualizado = true;
-        guardarDescargas(descargas);
-    }
+    marcarEnTodasLasDescargas(nombreArchivo, "desactualizado");
 }
 
 /* Marca la descarga de un documento como eliminada (cuando el
    documento fuente se borra del sistema después de descargarse).
    La copia offline sigue disponible; "Mis Descargas" solo avisa
-   al usuario que el original ya no existe. */
+   que el original ya no existe. El aviso llega a TODOS los
+   usuarios que lo hayan descargado. */
 function marcarDescargaEliminada(nombreArchivo) {
-    const descargas = obtenerDescargas();
-    const d = descargas.find((x) => x.name === nombreArchivo);
-    if (d && !d.eliminado) {
-        d.eliminado = true;
-        guardarDescargas(descargas);
+    marcarEnTodasLasDescargas(nombreArchivo, "eliminado");
+}
+
+/* Recorre las listas de descargas de TODOS los usuarios (claves
+   "lawpocket_descargas::<usuario>") y aplica la marca indicada
+   al archivo, si ese usuario lo tenía descargado. */
+function marcarEnTodasLasDescargas(nombreArchivo, marca) {
+    for (let i = 0; i < sessionStorage.length; i++) {
+        const clave = sessionStorage.key(i);
+        if (!clave || clave.indexOf("lawpocket_descargas::") !== 0) continue;
+        try {
+            const lista = JSON.parse(sessionStorage.getItem(clave)) || [];
+            const d = lista.find((x) => x.name === nombreArchivo);
+            if (d && !d[marca]) {
+                d[marca] = true;
+                sessionStorage.setItem(clave, JSON.stringify(lista));
+            }
+        } catch (e) {
+            console.warn("No se pudo marcar la descarga en", clave, e);
+        }
+    }
+}
+
+/* ============================================================
+   AVISOS DE EXPEDIENTES MOVIDOS (localStorage)
+   Al entrar a "Mis Expedientes", si el administrador movió alguno
+   de los expedientes de este abogado, se muestra un aviso UNA sola
+   vez: al cerrarlo, se elimina y no vuelve a aparecer. No se
+   indica a quién fue reasignado.
+============================================================ */
+const AVISOS_EXP_KEY = "lawpocket_avisos_expedientes";
+
+function mostrarAvisosExpedientesMovidos() {
+    let avisos = [];
+    try {
+        avisos = JSON.parse(localStorage.getItem(AVISOS_EXP_KEY)) || [];
+    } catch (e) {
+        return;
+    }
+    const mios = avisos.filter((a) => a.paraNombre === CURRENT_LAWYER);
+    if (mios.length === 0) return;
+
+    const overlay = document.getElementById("avisoMovidoOverlay");
+    const lista = document.getElementById("avisoMovidoLista");
+    if (!overlay || !lista) return;
+
+    lista.innerHTML = "";
+    mios.forEach((a) => {
+        const p = document.createElement("p");
+        p.className = "aviso-movido-item";
+        p.textContent = "El expediente " + a.expedienteId + " (" + a.cliente + ") fue movido por el administrador.";
+        lista.appendChild(p);
+    });
+
+    overlay.classList.remove("hidden");
+    overlay.addEventListener("click", (e) => {
+        if (e.target === overlay) cerrarAvisoMovido();
+    });
+    renderIcons();
+}
+
+/* Cierra el aviso y lo elimina del almacén: ya no volverá a salir */
+function cerrarAvisoMovido() {
+    const overlay = document.getElementById("avisoMovidoOverlay");
+    if (overlay) overlay.classList.add("hidden");
+    try {
+        const avisos = JSON.parse(localStorage.getItem(AVISOS_EXP_KEY)) || [];
+        localStorage.setItem(AVISOS_EXP_KEY,
+            JSON.stringify(avisos.filter((a) => a.paraNombre !== CURRENT_LAWYER)));
+    } catch (e) {
+        console.warn("No se pudo limpiar el aviso de expediente movido:", e);
     }
 }
 
@@ -643,6 +809,9 @@ function closeSuccessModal() {
 document.addEventListener("DOMContentLoaded", () => {
     // --- Búsqueda ---
     inputBuscar.addEventListener("input", renderTable);
+
+    // --- Avisos de expedientes movidos por el administrador ---
+    mostrarAvisosExpedientesMovidos();
 
     // --- Botones de alta ---
     document.getElementById("btnNuevoExpediente").addEventListener("click", openCreateModal);
@@ -696,6 +865,7 @@ document.addEventListener("DOMContentLoaded", () => {
             else if (target === "delete") closeDeleteModal();
             else if (target === "success") closeSuccessModal();
             else if (target === "download") closeDownloadModal();
+            else if (target === "avisoMovido") cerrarAvisoMovido();
         });
     });
 

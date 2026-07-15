@@ -144,6 +144,7 @@
 
             // Credenciales correctas: guardar sesión y redirigir a su página
             if (user && user.password === password) {
+                sessionStorage.setItem('lawpocket_user', id);
                 sessionStorage.setItem('lawpocket_role', user.role);
                 sessionStorage.setItem('lawpocket_name', user.name);
                 window.location.href = user.redirect;
