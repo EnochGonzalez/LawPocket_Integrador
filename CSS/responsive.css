@@ -1,0 +1,323 @@
+/* ============================================================
+   responsive.css — Capa móvil COMPARTIDA de LawPocket
+   ------------------------------------------------------------
+   Este archivo es el ÚNICO lugar donde se define el diseño
+   móvil global de la app. Todas las páginas con sidebar lo
+   enlazan DESPUÉS de su CSS propio (lo inyecta
+   tools/inyectar_responsive.py):
+
+       <link rel="stylesheet" href="../CSS/<Modulo>.css">
+       <link rel="stylesheet" href="../CSS/responsive.css">
+
+   Trabaja en pareja con JS/responsive.js, que crea el botón
+   hamburguesa, el overlay del drawer y etiqueta las tablas
+   con data-label para la vista de tarjetas.
+
+   Puntos de quiebre:
+   - ≤ 1024px  sidebar → drawer deslizable con overlay
+   - ≤ 768px   tablas → tarjetas · gráficas apiladas ·
+               encabezados y filtros en columna
+   - ≤ 480px   ajustes finos de espaciado y tipografía
+============================================================ */
+
+/* ------------------------------------------------------------
+   BOTÓN HAMBURGUESA (lo crea responsive.js)
+   Oculto en escritorio; visible solo cuando hay drawer.
+------------------------------------------------------------ */
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    flex-shrink: 0;
+    border: none;
+    border-radius: 10px;
+    background-color: transparent;
+    color: var(--navy-dark, #14213d);
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.hamburger-btn:hover {
+    background-color: rgba(20, 33, 61, 0.08);
+}
+
+.hamburger-btn i,
+.hamburger-btn svg {
+    width: 24px;
+    height: 24px;
+}
+
+/* ------------------------------------------------------------
+   OVERLAY DEL DRAWER (lo crea responsive.js)
+------------------------------------------------------------ */
+.drawer-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(15, 23, 42, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+    z-index: 1199;
+}
+
+.drawer-overlay.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* ============================================================
+   ≤ 1024px — SIDEBAR SE CONVIERTE EN DRAWER
+   El diseño canónico (240px, navy #14213d, activos emerald)
+   se conserva intacto; solo cambia CÓMO aparece: se desliza
+   desde la izquierda sobre el contenido.
+============================================================ */
+@media (max-width: 1024px) {
+
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        height: 100dvh;
+        width: 240px;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+        z-index: 1200;
+    }
+
+    .sidebar.drawer-open {
+        transform: translateX(0);
+        box-shadow: 10px 0 34px rgba(2, 6, 23, 0.35);
+    }
+
+    /* Al sacar el sidebar del flujo, .main / .main-area
+       ocupan todo el ancho automáticamente (flex: 1). */
+
+    .hamburger-btn {
+        display: inline-flex;
+    }
+
+    .topbar {
+        justify-content: space-between;
+        gap: 12px;
+    }
+
+    /* Evita el scroll del fondo con el drawer abierto */
+    body.drawer-lock {
+        overflow: hidden;
+    }
+}
+
+/* ============================================================
+   ≤ 768px — CONTENIDO EN COLUMNA
+============================================================ */
+@media (max-width: 768px) {
+
+    /* --------------------------------------------------------
+       TABLAS → TARJETAS APILADAS
+       Aplica a los contenedores de tabla existentes:
+       .table-scroll (Expedientes) y .table-wrap (Usuarios).
+       responsive.js coloca data-label en cada <td> a partir
+       de los <th> del <thead>.
+    -------------------------------------------------------- */
+    .table-scroll,
+    .table-wrap {
+        overflow: visible;
+    }
+
+    .table-scroll table,
+    .table-wrap table {
+        display: block;
+        width: 100%;
+        border-collapse: separate;
+    }
+
+    .table-scroll table thead,
+    .table-wrap table thead {
+        display: none;
+    }
+
+    .table-scroll table tbody,
+    .table-wrap table tbody {
+        display: grid;
+        gap: 12px;
+    }
+
+    .table-scroll table tbody tr,
+    .table-wrap table tbody tr {
+        display: block;
+        background-color: #ffffff;
+        border: 1px solid var(--slate-200, #e2e8f0);
+        border-radius: 12px;
+        padding: 12px 14px;
+        box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);
+    }
+
+    .table-scroll table tbody td,
+    .table-wrap table tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 7px 0;
+        border: none;
+        text-align: right;
+    }
+
+    .table-scroll table tbody td::before,
+    .table-wrap table tbody td::before {
+        content: attr(data-label);
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        color: var(--slate-500, #64748b);
+        text-align: left;
+        flex-shrink: 0;
+    }
+
+    /* Celdas de mensaje ("Sin resultados...") ocupan todo */
+    .table-scroll table tbody td[colspan],
+    .table-wrap table tbody td[colspan] {
+        display: block;
+        text-align: center;
+    }
+
+    .table-scroll table tbody td[colspan]::before,
+    .table-wrap table tbody td[colspan]::before {
+        content: none;
+    }
+
+    /* --------------------------------------------------------
+       ENCABEZADO DE MÓDULO, FILTROS Y TOOLBARS EN COLUMNA
+    -------------------------------------------------------- */
+    .page-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .page-header .btn {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filters-bar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .table-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .table-toolbar .search-wrap,
+    .table-toolbar .btn {
+        width: 100%;
+        max-width: none;
+        justify-content: center;
+    }
+
+    /* --------------------------------------------------------
+       GRÁFICAS (Chart.js) APILADAS VERTICALMENTE
+       Panel Analítico y Sistema y Almacenamiento.
+    -------------------------------------------------------- */
+    .split-flex,
+    .pie-flex,
+    .storage-flex {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 18px;
+    }
+
+    .split-chart,
+    .pie-chart,
+    .donut-wrap {
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+        min-height: 220px;
+    }
+
+    /* Pestañas de gráficas: carrusel horizontal táctil */
+    .tab-pills {
+        display: flex;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+    }
+
+    .tab-pills .tab-pill {
+        flex: 0 0 auto;
+        white-space: nowrap;
+    }
+
+    /* --------------------------------------------------------
+       MODALES: siempre dentro de la pantalla
+    -------------------------------------------------------- */
+    .modal {
+        max-width: min(480px, 94vw);
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   ≤ 480px — TELÉFONOS
+============================================================ */
+@media (max-width: 480px) {
+
+    .content {
+        padding: 16px 12px 40px;
+    }
+
+    .topbar {
+        padding: 10px 12px;
+    }
+
+    /* Solo avatar en la barra superior: el nombre completo
+       y la organización no caben junto al título del módulo */
+    .topbar-user-info {
+        display: none;
+    }
+
+    .topbar-title h1 {
+        font-size: 1rem;
+    }
+
+    .topbar-title p {
+        display: none;
+    }
+
+    .page-title {
+        font-size: 1.25rem;
+    }
+
+    /* Calendario de Agenda más compacto */
+    .calendar-weekdays,
+    .calendar-days {
+        gap: 4px;
+    }
+
+    .calendar-day {
+        font-size: 0.85rem;
+        border-radius: 8px;
+    }
+
+    .day-badge {
+        top: 2px;
+        right: 2px;
+        padding: 0 4px;
+        font-size: 9px;
+    }
+}

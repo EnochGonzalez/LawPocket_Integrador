@@ -422,6 +422,14 @@ function closeCitaModal() {
    visible al desplegar el combo (no solo después de guardar).
 ============================================================ */
 function decorarSelectMateria() {
+    /* El puntito de texto sustituye al círculo decorativo anterior
+       (materiaDot): se oculta y se devuelve el padding normal al
+       select para que no se vea un punto doble. */
+    if (materiaDot) {
+        materiaDot.style.display = "none";
+        inputMateria.style.paddingLeft = "12px";
+    }
+
     Array.from(inputMateria.options).forEach((opt) => {
         const estilo = MATERIA_STYLE[opt.value];
         if (!estilo) return;

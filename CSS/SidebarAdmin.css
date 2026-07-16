@@ -122,24 +122,7 @@ button {
     border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* Responsive: en pantallas angostas el sidebar se colapsa a iconos */
-@media (max-width: 900px) {
-    .sidebar {
-        width: 70px;
-    }
-
-    .sidebar .logo-text,
-    .sidebar .nav-item span,
-    .sidebar .nav-section-label {
-        display: none;
-    }
-
-    .sidebar .nav-item {
-        justify-content: center;
-    }
-
-    .sidebar .nav-item.active {
-        padding-left: 12px;
-        border-left: none;
-    }
-}
+/* Responsive: en pantallas angostas (≤ 1024px) el sidebar se
+   convierte en un drawer deslizable con botón hamburguesa.
+   Ese comportamiento vive en CSS/responsive.css + JS/responsive.js
+   (el antiguo colapso a iconos de 900px fue reemplazado). */

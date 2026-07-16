@@ -449,7 +449,6 @@ body {
     align-items: center;
     justify-content: center;
     padding: 20px;
-    overflow-y: auto;
 }
 
 .modal {
@@ -458,6 +457,11 @@ body {
     border-radius: 14px;
     box-shadow: var(--shadow-modal);
     width: 100%;
+    /* El desplazamiento vive DENTRO del modal (una sola barra),
+       igual que en el modal de editar usuario de Gestión de
+       Usuarios: el formulario se recorre de arriba a abajo. */
+    max-height: 90vh;
+    overflow-y: auto;
     margin: auto;
 }
 
