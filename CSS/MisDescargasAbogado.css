@@ -479,12 +479,50 @@ body {
         padding: 20px 16px;
     }
 
+    /* Vista móvil: la info ocupa toda la fila (nombre completo,
+       ya no aplastado) y los dos botones quedan lado a lado
+       debajo. Se logra con flex-wrap: la info fuerza el salto de
+       línea al ocupar el 100%, y los botones fluyen en la
+       siguiente línea repartiéndose el ancho. */
     .download-row {
-        padding: 14px 16px;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 10px 12px;
+        padding: 16px;
     }
 
+    /* El ícono no aporta en móvil y roba espacio al nombre */
+    .download-row > i,
+    .download-row > svg {
+        display: none;
+    }
+
+    /* La info ocupa toda la fila para provocar el salto de línea */
+    .download-info {
+        flex: 1 0 100%;
+        width: 100%;
+    }
+
+    /* El nombre ahora puede verse completo en varias líneas */
+    .download-name {
+        white-space: normal;
+        overflow: visible;
+        text-overflow: clip;
+        word-break: break-word;
+        font-size: 1rem;
+        line-height: 1.3;
+    }
+
+    .download-meta {
+        font-size: 0.85rem;
+        line-height: 1.35;
+    }
+
+    /* Los dos botones comparten la fila de abajo, mitad y mitad */
     .download-row .btn {
-        flex: 1;
+        flex: 1 1 0;
+        justify-content: center;
+        min-width: 0;
     }
 }
 
