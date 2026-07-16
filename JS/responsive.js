@@ -26,7 +26,51 @@
     document.addEventListener("DOMContentLoaded", function () {
         iniciarDrawer();
         iniciarEtiquetadoDeTablas();
+        iniciarTipDeRotacion();
     });
+
+    /* ------------------------------------------------------------
+       TIP "GIRA EL TELÉFONO" (solo móvil, páginas con gráficas)
+       ------------------------------------------------------------
+       Algunas gráficas se aprecian mejor con el teléfono en
+       horizontal. Se inserta un aviso al inicio del contenido en
+       las páginas que tienen <canvas>. El CSS lo muestra solo en
+       pantallas angostas y en vertical. Se puede cerrar y no
+       reaparece durante la sesión.
+    ------------------------------------------------------------ */
+    function iniciarTipDeRotacion() {
+        if (!document.querySelector("canvas")) return; // solo páginas con gráficas
+
+        var contenido = document.querySelector(".content");
+        if (!contenido) return;
+
+        try {
+            if (sessionStorage.getItem("lawpocket_rotate_tip_cerrado") === "1") return;
+        } catch (e) { /* sessionStorage no disponible: se muestra igual */ }
+
+        var tip = document.createElement("div");
+        tip.className = "rotate-tip";
+        tip.setAttribute("role", "note");
+        tip.innerHTML =
+            '<i data-lucide="rotate-cw-square"></i>' +
+            '<span class="rotate-tip-text">Tip: para ver mejor las gráficas, gira tu teléfono en posición horizontal.</span>' +
+            '<button type="button" class="rotate-tip-close" aria-label="Cerrar aviso">&times;</button>';
+
+        contenido.insertBefore(tip, contenido.firstChild);
+
+        try {
+            if (window.lucide && typeof lucide.createIcons === "function") {
+                lucide.createIcons();
+            }
+        } catch (e) { /* sin ícono, el aviso sigue siendo legible */ }
+
+        tip.querySelector(".rotate-tip-close").addEventListener("click", function () {
+            tip.remove();
+            try {
+                sessionStorage.setItem("lawpocket_rotate_tip_cerrado", "1");
+            } catch (e) { /* sin persistencia */ }
+        });
+    }
 
     /* ------------------------------------------------------------
        1. DRAWER (menú lateral deslizable)

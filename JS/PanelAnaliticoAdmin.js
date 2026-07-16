@@ -37,7 +37,7 @@ function axisTitle(text) {
 new Chart(document.getElementById('chartDisponible'), {
     type: 'doughnut',
     data: { datasets: [{ data: [62, 38], backgroundColor: [EMERALD, SLATE_200], borderWidth: 0 }] },
-    options: { cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, rotation: -90, circumference: 360 }
+    options: { maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, rotation: -90, circumference: 360 }
 });
 
 // ------------------------------------------------------------
@@ -76,7 +76,7 @@ function renderAnaliticoChart(key) {
                 labels: ['Ganados', 'Perdidos'],
                 datasets: [{ data: [64, 18], backgroundColor: [EMERALD, RED], borderRadius: 6, barThickness: 40 }]
             },
-            options: { indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 80, title: axisTitle('Cantidad de casos') }, y: { grid: { display: false }, title: axisTitle('Resultado') } } }
+            options: { maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, max: 80, title: axisTitle('Cantidad de casos') }, y: { grid: { display: false }, title: axisTitle('Resultado') } } }
         });
     }
 
@@ -90,7 +90,7 @@ function renderAnaliticoChart(key) {
                 labels: ['Referidos', 'Sitio Web', 'Redes Sociales', 'Recomendación'],
                 datasets: [{ data: [42, 28, 18, 12], backgroundColor: [NAVY, EMERALD, BLUE, '#f59e0b'], borderWidth: 2, borderColor: '#fff' }]
             },
-            options: { plugins: { legend: { display: false } } }
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
     }
 
@@ -99,7 +99,7 @@ function renderAnaliticoChart(key) {
         new Chart(document.getElementById('chartTipos'), {
             type: 'bar',
             data: { labels: ['Civil', 'Penal', 'Laboral', 'Mercantil', 'Familiar'], datasets: [{ data: [24, 17, 30, 12, 21], backgroundColor: NAVY, borderRadius: 6, barThickness: 46 }] },
-            options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 32, title: axisTitle('Cantidad') }, x: { grid: { display: false }, title: axisTitle('Tipo de caso') } } }
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, max: 32, title: axisTitle('Cantidad') }, x: { grid: { display: false }, title: axisTitle('Tipo de caso') } } }
         });
     }
 
@@ -111,7 +111,7 @@ function renderAnaliticoChart(key) {
                 labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun'],
                 datasets: [{ label: 'efectividad', data: [72, 76, 74, 80, 85, 83], borderColor: EMERALD, backgroundColor: EMERALD, tension: 0.35 }]
             },
-            options: { plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: 100, title: axisTitle('Efectividad (%)') }, x: { grid: { display: false }, title: axisTitle('Mes') } } }
+            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { beginAtZero: true, max: 100, title: axisTitle('Efectividad (%)') }, x: { grid: { display: false }, title: axisTitle('Mes') } } }
         });
     }
 }

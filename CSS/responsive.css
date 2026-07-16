@@ -21,6 +21,36 @@
 ============================================================ */
 
 /* ------------------------------------------------------------
+   INPUTS DE FECHA Y HORA (nativos de iOS/Safari)
+   ------------------------------------------------------------
+   En iOS los <input type="date"> y <input type="time"> tienen
+   un tamaño intrínseco propio: ignoran width:100% y centran su
+   contenido, por lo que se salen del margen del formulario en
+   Agenda y Expedientes. Se normalizan para que respeten el ancho
+   de su campo y alineen el texto a la izquierda como los demás.
+------------------------------------------------------------ */
+input[type="date"].form-input,
+input[type="time"].form-input {
+    -webkit-appearance: none;
+    appearance: none;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+input[type="date"].form-input::-webkit-date-and-time-value,
+input[type="time"].form-input::-webkit-date-and-time-value {
+    text-align: left;
+    margin: 0;
+}
+
+input[type="date"].form-input::-webkit-calendar-picker-indicator,
+input[type="time"].form-input::-webkit-calendar-picker-indicator {
+    margin-left: auto;
+}
+
+/* ------------------------------------------------------------
    BOTÓN HAMBURGUESA (lo crea responsive.js)
    Oculto en escritorio; visible solo cuando hay drawer.
 ------------------------------------------------------------ */
@@ -226,6 +256,8 @@
     /* --------------------------------------------------------
        GRÁFICAS (Chart.js) APILADAS VERTICALMENTE
        Panel Analítico y Sistema y Almacenamiento.
+       Los contenedores flex pasan a columna y cada gráfica se
+       centra ocupando el ancho disponible sin desbordarse.
     -------------------------------------------------------- */
     .split-flex,
     .pie-flex,
@@ -235,13 +267,39 @@
         gap: 18px;
     }
 
-    .split-chart,
-    .pie-chart,
+    /* Dona y pastel: deben quedar CIRCULARES. Se limita el ancho
+       y se fija una proporción 1:1 para que el círculo no se
+       recorte ni se deforme (antes se veían aplastados). */
     .donut-wrap {
-        width: 100%;
-        max-width: 320px;
+        width: 190px;
+        max-width: 70vw;
+        height: auto;
+        aspect-ratio: 1 / 1;
         margin: 0 auto;
-        min-height: 220px;
+    }
+
+    .pie-chart-wrap {
+        width: 260px;
+        max-width: 80vw;
+        height: auto;
+        aspect-ratio: 1 / 1;
+        margin: 0 auto;
+    }
+
+    /* Barras (ganados/perdidos): ancho completo, alto cómodo */
+    .split-chart {
+        width: 100%;
+        min-width: 0;
+        height: 240px;
+        margin: 0 auto;
+    }
+
+    /* El canvas nunca debe salirse de su contenedor */
+    .donut-wrap canvas,
+    .pie-chart-wrap canvas,
+    .split-chart canvas,
+    .chart-box canvas {
+        max-width: 100%;
     }
 
     /* Pestañas de gráficas: carrusel horizontal táctil */
@@ -269,6 +327,64 @@
 
     .form-row {
         grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================================
+   AVISO "GIRA EL TELÉFONO" (tip para gráficas en móvil)
+   ------------------------------------------------------------
+   Lo crea responsive.js solo en las páginas con gráficas.
+   Oculto por defecto; se muestra únicamente en móvil vertical.
+============================================================ */
+.rotate-tip {
+    display: none;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 11px 12px;
+    border: 1px solid rgba(16, 185, 129, 0.35);
+    border-left: 3px solid var(--emerald, #10B981);
+    border-radius: 10px;
+    background-color: rgba(16, 185, 129, 0.08);
+    color: var(--navy-dark, #14213d);
+    font-size: 0.82rem;
+    line-height: 1.35;
+}
+
+.rotate-tip i,
+.rotate-tip svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--emerald, #10B981);
+}
+
+.rotate-tip .rotate-tip-text {
+    flex: 1;
+}
+
+.rotate-tip .rotate-tip-close {
+    flex-shrink: 0;
+    border: none;
+    background: transparent;
+    color: var(--slate-500, #64748b);
+    cursor: pointer;
+    padding: 0 2px;
+    font-size: 1rem;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .rotate-tip {
+        display: flex;
+    }
+
+    /* Si el teléfono ya está en horizontal, el tip sobra */
+    @media (orientation: landscape) {
+        .rotate-tip {
+            display: none;
+        }
     }
 }
 

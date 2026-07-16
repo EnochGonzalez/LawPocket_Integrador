@@ -53,7 +53,9 @@ const CON_SIDEBAR = [
     "BibliotecaAbogado.html", "MisDescargasAbogado.html",
     "ManualesUsuarioAbogado.html",
 ];
-const SIN_SIDEBAR = ["Login.html", "index.html"];
+const SIN_SIDEBAR = ["Login.html"];
+// index.html vive en la raíz (para Vercel), no en Paginas/
+const SIN_SIDEBAR_RAIZ = ["index.html"];
 
 for (const nombre of CON_SIDEBAR) {
     const html = fs.readFileSync(path.join(PAGINAS, nombre), "utf-8");
@@ -69,6 +71,12 @@ for (const nombre of SIN_SIDEBAR) {
     const html = fs.readFileSync(path.join(PAGINAS, nombre), "utf-8");
     assert(!html.includes("responsive.css") && !html.includes("responsive.js"),
         nombre + " NO lleva capa de drawer (sin sidebar)");
+}
+
+for (const nombre of SIN_SIDEBAR_RAIZ) {
+    const html = fs.readFileSync(path.join(RAIZ, nombre), "utf-8");
+    assert(!html.includes("responsive.css") && !html.includes("responsive.js"),
+        nombre + " (raíz) NO lleva capa de drawer (sin sidebar)");
 }
 
 /* ------------------------------------------------------------
@@ -180,7 +188,7 @@ console.log("\nC. Etiquetado automático de tablas");
 function parteD() {
     console.log("\nD. Service worker");
     const sw = fs.readFileSync(path.join(RAIZ, "sw.js"), "utf-8");
-    assert(sw.includes("const VERSION = 'lawpocket-v7';"), "VERSION subida a lawpocket-v7");
+    assert(sw.includes("const VERSION = 'lawpocket-v8';"), "VERSION subida a lawpocket-v8");
     assert(sw.includes("'CSS/responsive.css',"), "responsive.css está en ARCHIVOS_APP");
     assert(sw.includes("'JS/responsive.js',"), "responsive.js está en ARCHIVOS_APP");
 

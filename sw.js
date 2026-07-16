@@ -25,7 +25,7 @@
       service worker y vuelve a guardar todo actualizado.
 ============================================================ */
 
-const VERSION = 'lawpocket-v7';
+const VERSION = 'lawpocket-v8';
 const CACHE_API = 'lawpocket-api-v1'; // caché aparte para respuestas de la API
 
 /* ------------------------------------------------------------
@@ -38,7 +38,7 @@ const ARCHIVOS_APP = [
     'manifest.webmanifest',
 
     // ---------- Páginas ----------
-    'Paginas/index.html',
+    'index.html',
     'Paginas/Login.html',
     'Paginas/PanelAnaliticoAdmin.html',
     'Paginas/GestionUsuariosAdmin.html',

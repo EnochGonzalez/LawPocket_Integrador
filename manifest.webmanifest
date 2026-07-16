@@ -3,7 +3,7 @@
     "short_name": "LawPocket",
     "description": "Gestión legal inteligente: expedientes, agenda, biblioteca digital y consulta offline para el despacho.",
     "lang": "es",
-    "start_url": "Paginas/index.html",
+    "start_url": "index.html",
     "scope": "./",
     "display": "standalone",
     "orientation": "any",

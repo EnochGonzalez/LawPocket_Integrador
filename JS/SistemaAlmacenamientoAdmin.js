@@ -98,7 +98,7 @@ function etiquetasAbogados(usuarios) {
 new Chart(document.getElementById('chartCache'), {
     type: 'doughnut',
     data: { datasets: [{ data: [43, 57], backgroundColor: [EMERALD, SLATE_200], borderWidth: 0 }] },
-    options: { cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, rotation: -90, circumference: 360 }
+    options: { maintainAspectRatio: false, cutout: '72%', plugins: { legend: { display: false }, tooltip: { enabled: false } }, rotation: -90, circumference: 360 }
 });
 
 // ------------------------------------------------------------
@@ -143,7 +143,7 @@ function renderSistemaChart(key) {
                 labels,
                 datasets: [{ data, backgroundColor: NAVY, borderRadius: 6, barThickness: 30 }]
             },
-            options: {
+            options: { maintainAspectRatio: false,
                 indexAxis: 'y', plugins: { legend: { display: false } },
                 scales: { x: { beginAtZero: true, max: maxGB, title: axisTitle('Caché utilizada (GB)') }, y: { grid: { display: false }, title: axisTitle('Abogado') } }
             }
@@ -159,7 +159,7 @@ function renderSistemaChart(key) {
                 labels: ['Expedientes', 'Biblioteca', 'Manuales'],
                 datasets: [{ data: [842, 287, 118], backgroundColor: [NAVY, EMERALD, BLUE], borderWidth: 2, borderColor: '#fff' }]
             },
-            options: { plugins: { legend: { display: false } } }
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } } }
         });
     }
 }
@@ -167,6 +167,37 @@ function renderSistemaChart(key) {
 // ------------------------------------------------------------
 // Notificaciones del Despacho
 // ------------------------------------------------------------
+
+// Restaurar el aviso guardado al cargar la página.
+// El aviso vive en localStorage (persistente entre sesiones), así
+// que al volver a entrar el admin debe seguir viendo su último
+// aviso en el campo de texto, con su duración, hasta que expire.
+// Si ya venció, se elimina y el campo queda vacío.
+(function restaurarNotificacion() {
+    let notif = null;
+    try {
+        notif = JSON.parse(localStorage.getItem('lawpocket_notification'));
+    } catch (e) {
+        return;
+    }
+    if (!notif || !notif.message || !notif.createdAt) return;
+
+    // Vigencia: duración en días (puede ser fracción, ej. 0.25 = 6 hrs)
+    const vigenciaMs = parseFloat(notif.duration) * 24 * 60 * 60 * 1000;
+    if (!vigenciaMs || Date.now() > notif.createdAt + vigenciaMs) {
+        localStorage.removeItem('lawpocket_notification'); // aviso vencido
+        return;
+    }
+
+    // Aún vigente: repoblar el campo de texto y el selector de duración
+    const textarea = document.getElementById('notifMessage');
+    const select = document.getElementById('notifDuration');
+    if (textarea) textarea.value = notif.message;
+    if (select) {
+        const existe = Array.from(select.options).some((o) => o.value === String(notif.duration));
+        if (existe) select.value = String(notif.duration);
+    }
+})();
 
 // Guardar notificación: valida que el mensaje NO esté vacío
 // (si lo está, muestra un mensaje de error y no guarda nada).

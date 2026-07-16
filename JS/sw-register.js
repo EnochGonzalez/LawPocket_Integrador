@@ -9,8 +9,15 @@
     if (!('serviceWorker' in navigator)) return; // navegador sin soporte
 
     window.addEventListener('load', () => {
-        // Las páginas viven en /Paginas/, por eso la ruta sube un nivel
-        navigator.serviceWorker.register('../sw.js')
+        // index.html vive en la raíz; las demás páginas en /Paginas/.
+        // Se calcula la ruta a sw.js según dónde esté la página actual,
+        // para que el registro funcione en ambos casos y el alcance
+        // (scope) sea siempre la raíz del sitio.
+        const enPaginas = window.location.pathname.includes('/Paginas/');
+        const rutaSW = enPaginas ? '../sw.js' : 'sw.js';
+        const scope = enPaginas ? '../' : './';
+
+        navigator.serviceWorker.register(rutaSW, { scope })
             .then((registro) => {
                 // Detectar cuando se instala una versión nueva de la app
                 registro.addEventListener('updatefound', () => {
