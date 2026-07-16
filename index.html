@@ -6,12 +6,12 @@
     <meta name="color-scheme" content="only light">
     <title>LawPocket | Gestión Legal Inteligente</title>
     <!-- PWA: ficha de instalación, color de la barra e ícono de iOS -->
-    <link rel="manifest" href="../manifest.webmanifest">
+    <link rel="manifest" href="manifest.webmanifest">
     <meta name="theme-color" content="#14213d">
-    <link rel="apple-touch-icon" href="../Imagenes/icono-apple.png">
-    <link rel="stylesheet" href="../lib/fuentes/inter.css">
-    <link rel="stylesheet" href="../CSS/Landing.css">
-    <script src="../lib/lucide.min.js"></script>
+    <link rel="apple-touch-icon" href="Imagenes/icono-apple.png">
+    <link rel="stylesheet" href="lib/fuentes/inter.css">
+    <link rel="stylesheet" href="CSS/Landing.css">
+    <script src="lib/lucide.min.js"></script>
 </head>
 <body>
 
@@ -29,7 +29,8 @@
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#beneficios">Beneficios</a></li>
                     <li><a href="#funcionalidades">Funcionalidades</a></li>
-                    <li><a href="Login.html" class="btn-primary">Acceso al Sistema</a></li>
+                    <!-- RUTA ACTUALIZADA HACIA LA CARPETA PAGINAS -->
+                    <li><a href="Paginas/Login.html" class="btn-primary">Acceso al Sistema</a></li>
                 </ul>
             </nav>
         </div>
@@ -135,7 +136,8 @@
             <div class="inner">
                 <h2>¿Listo para llevar tu despacho en el bolsillo?</h2>
                 <p>Accede al sistema y descubre cómo LawPocket puede ayudarte hoy.</p>
-                <a href="Login.html" class="btn-primary">Acceso al Sistema</a>
+                <!-- RUTA ACTUALIZADA HACIA LA CARPETA PAGINAS -->
+                <a href="Paginas/Login.html" class="btn-primary">Acceso al Sistema</a>
             </div>
         </section>
     </main>
@@ -171,8 +173,8 @@
     </footer>
 
     <!-- Lógica de la página -->
-    <script src="../JS/Landing.js"></script>
+    <script src="JS/Landing.js"></script>
     <!-- PWA: registro del service worker (consulta offline) -->
-    <script src="../JS/sw-register.js"></script>
+    <script src="JS/sw-register.js"></script>
 </body>
 </html>
